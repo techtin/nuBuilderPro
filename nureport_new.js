@@ -24,23 +24,25 @@
             d.setAttribute('id', 'object' + i);
  
             $('#nuSectionIndex20').after(d);
-            $('#' + d.id).css( 'position', 'absolute');
-            $('#' + d.id).css( 'height', '20px');
-            $('#' + d.id).css( 'left',  '100px');
-            $('#' + d.id).css( 'top',   '50px');
-            $('#' + d.id).css( 'width', '100px');
-            $('#' + d.id).css( 'z-index', '100');
-            $('#' + d.id).css( 'border-style',  'solid');
-            $('#' + d.id).css( 'border-width',  '0px');
-            $('#' + d.id).css( 'font-family',  'helvetica');
-            $('#' + d.id).css( 'font-size',  '14px');
-            $('#' + d.id).css( 'font-weight',  'normal');
-            $('#' + d.id).css( 'color',  'black');
-            $('#' + d.id).css( 'background-color',  'white');
-            $('#' + d.id).css( 'text-align',  'left');
-            $('#' + d.id).css( 'cursor',  'cell');
-            $('#' + d.id).css( 'overflow',  'hidden');
-            $('#' + d.id).addClass( 'nuReportObject');
+            $('#' + d.id).css({
+                'position'         : 'absolute',
+                'height'           : '20px',
+                'left'             : '100px',
+                'top'              : '50px',
+                'width'            : '100px',
+                'z-index'          : '100',
+                'border-style'     : 'solid',
+                'border-width'     : '0px',
+                'font-family'      : 'helvetica',
+                'font-size'        : '14px',
+                'font-weight'      : 'normal',
+                'color'            : 'black',
+                'background-color' : 'white',
+                'text-align'       : 'left',
+                'cursor'           : 'cell',
+                'overflow'         : 'hidden'
+            })
+            .addClass( 'nuReportObject');
 
             var o     = new nuOBJECT('object' + i);
             
@@ -51,23 +53,25 @@
             o.top     = nuGetSectionValue(window.GRP[o.group].sections[o.section].sectionID, 'top');
  
             $('#nuSectionIndex20').after(d);
-            $('#' + d.id).css( 'position', 'absolute');
-            $('#' + d.id).css( 'height', o.height);
-            $('#' + d.id).css( 'left',  o.left + 30);
-            $('#' + d.id).css( 'top', o.top);
-            $('#' + d.id).css( 'width', o.width);
-            $('#' + d.id).css( 'z-index', o.zIndex);
-            $('#' + d.id).css( 'border-style',  o.borderStyle);
-            $('#' + d.id).css( 'border-width',  o.borderWidth);
-            $('#' + d.id).css( 'font-family',  o.familyFont);
-            $('#' + d.id).css( 'font-size',  o.fontSize);
-            $('#' + d.id).css( 'font-weight',  o.fontWeight);
-            $('#' + d.id).css( 'color',  o.color);
-            $('#' + d.id).css( 'background-color',  o.backgroundColor);
-            $('#' + d.id).css( 'text-align',  o.textAlign);
-            $('#' + d.id).css( 'cursor',  'cell');
-            $('#' + d.id).css( 'overflow',  'hidden');
-            $('#' + d.id).addClass( 'nuReportObject');
+            $('#' + d.id).css({
+                'position'         : 'absolute',
+                'height'           : o.height,
+                'left'             : o.left + 30,
+                'top'              : o.top,
+                'width'            : o.width,
+                'z-index'          : o.zIndex,
+                'border-style'     : o.borderStyle,
+                'border-width'     : o.borderWidth,
+                'font-family'      : o.familyFont,
+                'font-size'        : o.fontSize,
+                'font-weight'      : o.fontWeight,
+                'color'            : o.color,
+                'background-color' : o.backgroundColor,
+                'text-align'       : o.textAlign,
+                'cursor'           : 'cell',
+                'overflow'         : 'hidden',
+            })
+            .addClass( 'nuReportObject');
             
             g = o.group;
             s = o.section;
@@ -83,15 +87,14 @@
             },
 
             drag: function( event, ui ){
-                    nuMoveSelected(this.id);
+                nuMoveSelected(this.id);
             },
             
             stop: function( event, ui ){
-                    nuReadjustSections();                    //-- make Sections Bigger if an Object overlaps it
-                    nuMoveAllObjects();
-                    nuReopenSelectObjects();
-                    nuSaveReport();
-
+                nuReadjustSections();                    //-- make Sections Bigger if an Object overlaps it
+                nuMoveAllObjects();
+                nuReopenSelectObjects();
+                nuSaveReport();
             }
 
         });

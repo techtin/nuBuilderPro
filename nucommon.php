@@ -62,7 +62,7 @@ function nuDebug($t){
     
     $s->execute(array($i, $t, $d));
     
-    if($nuDB->errorCode()){
+    if($nuDB->errorCode() !== '00000'){
         error_log($nuDB->errorCode() . ": Could not establish nuBuilder database connection");
     }
 
@@ -311,15 +311,16 @@ function nuF($field){    //-- fields from current Form
 
 
 function nuSessionArray($i){
-
+	
 	$A                        = array();
 	$s                        = "
 		SELECT 
 		zzzsys_user_id         AS user_id, 
-		sug_code              AS user_group, 
-		sal_code              AS access_level, 
+		sug_code               AS user_group, 
+		sal_code               AS access_level, 
 		zzzsys_access_level_id AS access_level_id, 
-		sus_name              AS user_name,
+		sus_name               AS user_name,
+		sus_email              AS email,
 		sal_zzzsys_form_id     AS form_id
 		FROM zzzsys_session 
 		INNER JOIN zzzsys_user         ON sss_zzzsys_user_id         = zzzsys_user_id
@@ -332,19 +333,23 @@ function nuSessionArray($i){
 	$t                        = nuRunQuery($s, array($i));
 
 	if($t->rowCount() == 0){
-		$A['nu_user_id']      = 'globeadmin';
-		$A['nu_user_group']   = 'globeadmin';
-		$A['nu_access_level'] = 'globeadmin';
-		$A['nu_user_name']    = 'globeadmin';
-		$A['nu_index_id']     = 'nuindex';
+		$A['nu_user_id']          = 'globeadmin';
+		$A['nu_user_group']       = 'globeadmin';
+		$A['nu_access_level']     = 'globeadmin';
+		$A['nu_user_name']        = 'globeadmin';
+		$A['nu_index_id']         = 'nuindex';
+		$A['nu_smtp_to_address']  = '';
+		$A['nu_smtp_to_name']     = '';
         nuV('nu_access_level_id', 'globeadmin');
 	}else{
-		$r                    = db_fetch_object($t);
-		$A['nu_user_id']      = $r->user_id;
-		$A['nu_user_group']   = $r->user_group;
-		$A['nu_access_level'] = $r->access_level;
-		$A['nu_user_name']    = $r->user_name;
-		$A['nu_index_id']     = $r->form_id;
+		$r                        = db_fetch_object($t);
+		$A['nu_user_id']          = $r->user_id;
+		$A['nu_user_group']       = $r->user_group;
+		$A['nu_access_level']     = $r->access_level;
+		$A['nu_user_name']        = $r->user_name;
+		$A['nu_index_id']         = $r->form_id;
+		$A['nu_smtp_to_address']  = $r->email;
+		$A['nu_smtp_to_name']     = $r->user_name;
         nuV('nu_access_level_id', $r->access_level_id);
 	}
         
@@ -374,51 +379,67 @@ function nuHashData(){
 	
 	for($f = 0 ; $f < count($form_data['data']) ; $f++){	
 	
-		for($r = 0 ; $r < count($form_data['data'][$f]['records']) ; $r++){
-		
-			for($i = 0 ; $i < count($form_data['data'][$f]['records'][$r]['fields']) ; $i++){
+        if(array_key_exists('records',$form_data['data'][$f])) {
+            for($r = 0 ; $r < count($form_data['data'][$f]['records']) ; $r++){
 			
-				$fd                        = $form_data['data'][$f]['records'][$r]['fields'][$i];
-				
-				if($form_data['data'][$f]['subform'] == ''){
-					$prefix    = '';
-				}else{
-					$prefix    = $form_data['data'][$f]['subform'] . substr('000'.$r, -4);
-				}
-				
-				$h[$prefix.$fd['field']]   = $fd['value'];
-				
-			}
+				if(isset($form_data['data'][$f]['records'][$r]['fields'])){
+            
+					for($i = 0 ; $i < count($form_data['data'][$f]['records'][$r]['fields']) ; $i++){
+					
+						$fd                                     = $form_data['data'][$f]['records'][$r]['fields'][$i];
+						
+						if($form_data['data'][$f]['subform'] == ''){
+							$prefix                             = '';
+						}else{
+							$prefix                             = $form_data['data'][$f]['subform'] . substr('000'.$r, -4);
+						}
+						
+						$h[$prefix.$fd['field']]                = $fd['value'];
+						
+					}
 
-			if($form_data['data'][$f]['subform'] != ''){
-				$h[$form_data['data'][$f]['subform']][] = $prefix;
+					if($form_data['data'][$f]['subform'] != ''){
+						$h[$form_data['data'][$f]['subform']][] = $prefix;
 
-				if($form_data['data'][$f]['records'][$r]['delete_record'] == 'no'){
-					$h[$form_data['data'][$f]['subform'].'_save'][] = $prefix;
+						if($form_data['data'][$f]['records'][$r]['delete_record'] == 'no'){
+							$h[$form_data['data'][$f]['subform'].'_save'][] = $prefix;
+						}
+					}
 				}
-			}
-	
+        
+            }
 		}
-		
+        
 	}
 
-    $recordData                = nuRecordArray($h);                    //-- record data
-    $sessionData               = nuSessionArray(nuV('session_id'));  //-- user and access info
+	$setup                         = $GLOBALS['nuSetup'];                                                                          //-- Read SMTP AUTH Settings from zzsys_setup table
+	
+	$h['nu_smtp_username']         = $setup->set_smtp_username;
+	$h['nu_smtp_password']         = $setup->set_smtp_password;
+	$h['nu_smtp_host']             = $setup->set_smtp_host;
+	$h['nu_smtp_from_address']     = $setup->set_smtp_from_address;
+	$h['nu_smtp_port']             = $setup->set_smtp_port;
+	$h['nu_smtp_use_ssl']          = $setup->set_smtp_use_ssl;
+	$h['nu_smtp_from_name']        = $setup->set_smtp_from_name;
 
-    foreach($_POST['nuWindow'] as $key => $value){               //-- add current hash variables
+    $recordData                    = nuRecordArray($h);                       //-- record data
+    $sessionData                   = nuSessionArray(nuV('session_id'));       //-- user and access info
+
+    foreach($_POST['nuWindow'] as $key => $value){                        //-- add current hash variables
     
-        $h[$key]               = $value;
+        $h[$key]                   = $value;
         
     }
     
 
-    for($i = 0 ; $i < count($form_data['data'][0]['records'][0]['fields']) ; $i++){               //-- reapply hash variables from calling edit page (incase over written by $_POST['nuWindow'])
-    
-        $fd                    = $form_data['data'][0]['records'][0]['fields'][$i];
-        $h[$fd['field']]       = $fd['value'];
-        
-    }
-
+	if(isset($form_data['data'][0]['records'][0]['fields'])){
+		for($i = 0 ; $i < count($form_data['data'][0]['records'][0]['fields']) ; $i++){               //-- reapply hash variables from calling edit page (incase over written by $_POST['nuWindow'])
+		
+			$fd                       = $form_data['data'][0]['records'][0]['fields'][$i];
+			$h[$fd['field']]           = $fd['value'];
+			
+		}
+	}
     return array_merge($recordData, $sessionData, $h);
 
 }
@@ -430,47 +451,47 @@ function nuRecordArray($hashData){
     $ignore[]              = 'form_data';
     $ignore[]              = 'slp_php';
     $noResult              = true;
-
-    $t                     = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
-    $r                     = db_fetch_object($t);
-
-    if(nuV('call_type') != 'geteditform'){
-    
-        $bb                = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
-        eval($bb);
-    
-    }
-    
-	$table                 = nuReplaceHashes($r->sfo_table, $hashData);
-    $T                     = nuRunQuery("SELECT * FROM $table WHERE $r->sfo_primary_key = ? ", array(nuV('record_id')));
-    $R                     = db_fetch_array($T);
     $A                     = array();
+	
+	$t                     = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
+	$r                     = db_fetch_object($t);
+
+	if(nuV('call_type') != 'geteditform'){
+	
+		$bb                = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
+		eval($bb);
+	
+	}
+	
+	$table                 = nuReplaceHashes($r->sfo_table, $hashData);
+	$T                     = nuRunQuery("SELECT * FROM $table WHERE $r->sfo_primary_key = ? ", array(nuV('record_id')));
+	$R                     = db_fetch_array($T);
    
-    if (is_array($R)) {
+	if (is_array($R)) {
 	foreach($R as $key => $value){                                           //-- add current hash variables
 
-        	$noResult          = false;
-        
-	        if(!is_numeric($key)){
-            
-        	    if(!in_array($key, $ignore)){
-                	$A[$key]   = $value;
-            		}
-        	}
-   	  }
-    }	
-    
-    if($noResult){                                                           //-- set fields to blank values
-        
-        $flds              = db_columns($table);
-        
-        for($i = 0 ; $i < count($flds) ; $i ++){
-            
-            $A[$flds[$i]]  = '';
-            
-        }
-        
-    }
+			$noResult          = false;
+		
+			if(!is_numeric($key)){
+			
+				if(!in_array($key, $ignore)){
+					$A[$key]   = $value;
+					}
+			}
+	  }
+	}	
+	
+	if($noResult){                                                           //-- set fields to blank values
+		
+		$flds              = db_columns($table);
+		
+		for($i = 0 ; $i < count($flds) ; $i ++){
+			
+			$A[$flds[$i]]  = '';
+			
+		}
+		
+	}
         
 	nuRunQuery("DROP TABLE IF EXISTS ".$hashData['TABLE_ID']);
 		
@@ -482,8 +503,9 @@ function nuRecordArray($hashData){
 function nuReplaceHashes($str, $arr){
 
 	while(list($key, $value) = each($arr)){
-		$newValue = str_replace("'","\'",$value);
-		if($value != '' and $str != '' and $key != ''){
+        $newValue = str_replace("'","\'",$value);
+//		if(!is_array($value) and $value != '' and $str != '' and $key != ''){
+		if(!is_array($value) and $str != '' and $key != ''){
 			$str = str_replace('#'.$key.'#', $newValue, $str);
 		}
 	}
@@ -1050,51 +1072,30 @@ function nuUploadCodesToMessage($code) {
 
 
 
-function nuPDForPHPParameters($data, $hashData) {
+function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
-    $hash = array();
+    $hash               = array();
+	
+	if($validate == ''){                                                     //-- (runphp or printpdf)
+		$theID          = $hashData['parent_record_id'];
+	}else{                                                                   //-- just validate user access
+		nuV('call_type', $validate);
+		$theID          = nuV('code');
+	}
     
-    $theID = $hashData['parent_record_id'];
-
-    if(isset($data['data'][0]['records'])){                                  //-- variables from Edit Form
-        
-        $RECORDS = $data['data'][0]['records'];
-        
-        for ($R = 0; $R < count($RECORDS); $R++) {                           //-- loop through form field values
-            $RECORD = $RECORDS[$R];
-            $FIELDS = $RECORD['fields'];
-
-            for ($F = 0; $F < count($FIELDS); $F++) {
-
-                $FIELD = $FIELDS[$F];
-                $hash[$FIELD['field']] = $FIELD['value'];
-            }
-        }
-    }else{                                                                   //-- variables from Table Row
-
-        foreach ($data as $key => $val){
-            
-            if(!is_numeric($key)){
-                $hash[$key] = $val;
-            }
-            
-        }
-        
-    }
-
     foreach ($hashData as $key => $val) {                                    //-- add current hash variables
-        $hash[$key] = $val;
+        $hash[$key]     = $val;
     }
 
     if (nuV('call_type') == 'runphp') {                                      //-- add php record to hash variables
     
-        $s = "SELECT * FROM  zzzsys_php WHERE slp_code = '$theID'";
-        $t = nuRunQuery($s);
+        $s              = "SELECT * FROM  zzzsys_php WHERE slp_code = '$theID'";
+        $t              = nuRunQuery($s);
         if (nuErrorFound()) {
             return;
         }
 
-        $r = db_fetch_object($t);
+        $r              = db_fetch_object($t);
         if(!nuPHPAccess($r->zzzsys_php_id)){
             nuDisplayError("Access denied to PHP - ($theID)");
             return;
@@ -1107,34 +1108,44 @@ function nuPDForPHPParameters($data, $hashData) {
 
     if (nuV('call_type') == 'printpdf') {                                    //-- add report record to hash variables
         
-        $s = "SELECT * FROM  zzzsys_report INNER JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
-        $t = nuRunQuery($s);
+        $s              = "SELECT * FROM  zzzsys_report INNER JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
+        $t              = nuRunQuery($s);
         
         if (nuErrorFound()) {
             return;
         }
-        $r = db_fetch_object($t);
+        $r              = db_fetch_object($t);
 
         if(!nuReportAccess($r->zzzsys_report_id)){
 
 		nuDisplayError("Access denied to Report - ($theID)");
             return;
         }
-        
+
         foreach ($r as $key => $v) {                                          //-- add pdf hash variables
             $hash[$key] = $v;
         }
     }
 
-    $i    = nuID();
-    $j    = json_encode($hash);
-    $d    = date('Y-m-d h:i:s');
+	if($validate != '' and $saveToFile == false){return;}                                              //-- just check
+	
+    $i                  = nuID();
+    $hash['sfi_blob']   = null;  
+    $j                  = json_encode($hash);
+    $d                  = date('Y-m-d h:i:s');
 
     nuRunQuery("INSERT INTO zzzsys_debug (zzzsys_debug_id, deb_message, deb_added) VALUES(?, ?, ?)", array($i, $j, $d));
     
     if (nuErrorFound()) {
         return;
     }
+	
+    if (nuV('call_type') == 'printpdf' and nuV('filename') != '' ) {                                    //-- save pdf to server
+
+		return nuEmailGetReportFile($i);
+		
+	}
+
 
     return $i;
     
@@ -1182,234 +1193,90 @@ function nuCreateFile($c){
     return $file;
 }
 
-function nuSendEmail($to, $replyto = "", $content = "nuBuilder Email", $html = false, $subject = "", $wordWrap = 120, $filelist, $replytoname="", $toname="") {
-
-	require_once("phpmailer/class.phpmailer.php");
-
-	$error = 0; 
-	$errorText = "";
-
-	// Read SMTP AUTH Settings from zzzsys_setup table
-	//$setup = nuSetup();
-	$setup = $GLOBALS['nuSetup'];
-	if (!empty($setup->set_smtp_username)) 		{ $SMTPuser = trim($setup->set_smtp_username);} 	else { $error += 1; $errorText .= "SMTP Username not set.\n";}
-	if (!empty($setup->set_smtp_password)) 		{ $SMTPpass = trim($setup->set_smtp_password);} 	else { $error += 1; $errorText .= "SMTP Password not set.\n";}
-	if (!empty($setup->set_smtp_host)) 		{ $SMTPhost = trim($setup->set_smtp_host);} 		else { $error += 1; $errorText .= "SMTP Host not set.\n";}
-	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}	else { $error += 1; $errorText .= "SMTP From Address not set.\n";}
-	if (!empty($setup->set_smtp_port)) 		{ $SMTPport = intval($setup->set_smtp_port);} 		else { $error += 1; $errorText .= "SMTP PORT not set.\n";}
-	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else { $SMTPauth = false;}
-	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	else { $SMTPname = "nuBuilder";}
-		
-	if ($error > 0) {
-		$result[0] = false;
-		$result[1] = "Unable to send SMTP Email, the following error(s) occured:\n" . $errorText;
-		return $result;
-	}
-	
-	try {
-	
-	        $mail = new PHPMailer();
-		$mail->IsSMTP();
-	        $mail->Host     	= $SMTPhost;
-        	$mail->Port     	= $SMTPport;
-	        $mail->SMTPSecure 	= $SMTPauth ? 'ssl' : '';
-	        $mail->SMTPAuth 	= $SMTPauth;
-
-        	if ($SMTPauth) {
-			$mail->Username = $SMTPuser;
-			$mail->Password = $SMTPpass;
-		}
-
-		if ($receipt) { 
-			$mail->ConfirmReadingTo = $replyto; 
-		}
-	
-		if (empty($replyto)) {
-			$mail->AddReplyTo($SMTPfrom,'');
-			$mail->FromName = $SMTPname;
-		} else {
-			$mail->AddReplyTo($replyto, $replytoname);
-			$mail->FromName = $replytoname;
-		}
-		$mail->From = $SMTPfrom;
-
-	
-		$tonameArray = explode(',',$toname);
-		$toArray = explode(',',$to);
-	
-		for ($i = 0; $i < count($toArray); $i++){
-			if ($toArray[$i]) {
-				if (isset($tonameArray[$i])) { 
-					$thisToName = $tonameArray[$i]; 
-				} else { 
-					$thisToName = "";
-				}
-				$mail->AddAddress($toArray[$i], $thisToName);
-			}
-		}
-	
-		$mail->WordWrap = $wordWrap;
-		$mail->IsHTML($html);
-
-		if(isset($filelist)) {
-			foreach($filelist as $filename=>$filesource) {
-				$mail->AddAttachment($filesource,$filename);
-			}
-		}
-		
-		$mail->Subject = $subject;
-		$mail->Body    = $content;
-
-		$result[0] = $mail->Send();
-        	$result[1] = "Message sent successfully";
-
-	} catch (phpmailerException $e) {
-		$result[0] = false;
-                $result[1] = $e->errorMessage(); //Pretty error messages from PHPMailer
-        } catch (Exception $e) {
-		$result[0] = false;
-                $result[1] = $e->errorMessage(); //Boring error messages from anything else!
-        }
-
-        return $result;
-}
-
-function nuValidateEmailAddress($email) {
-
-   $isValid = true;
-   $atIndex = strrpos($email, "@");
-
-   if (is_bool($atIndex) && !$atIndex) {
-
-      $isValid = false;
-
-   } else {
-
-      $domain = substr($email, $atIndex+1);
-      $local = substr($email, 0, $atIndex);
-      $localLen = strlen($local);
-      $domainLen = strlen($domain);
-
-      if ($localLen < 1 || $localLen > 64) {
-         // local part length exceeded
-         $isValid = false;
-      } else if ($domainLen < 1 || $domainLen > 255) {
-         // domain part length exceeded
-         $isValid = false;
-      } else if ($local[0] == '.' || $local[$localLen-1] == '.') {
-         // local part starts or ends with '.'
-         $isValid = false;
-      } else if (preg_match('/\\.\\./', $local)) {
-         // local part has two consecutive dots
-         $isValid = false;
-      } else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {
-         // character not valid in domain part
-         $isValid = false;
-      } else if (preg_match('/\\.\\./', $domain)) {
-         // domain part has two consecutive dots
-         $isValid = false;
-      } else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',str_replace("\\\\","",$local))) {
-         // character not valid in local part unless
-         // local part is quoted
-         if (!preg_match('/^"(\\\\"|[^"])+"$/',
-             str_replace("\\\\","",$local)))
-         {
-            $isValid = false;
-         }
-      }
-
-      if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
-         // domain not found in DNS
-         $isValid = false;
-      }
-	     }
-   return $isValid;
-}
 
 function nuEmailGetReportFile($request, $request_url = null) {
 
 	if ($request_url == null) {
-	        $request_url = "https://";
-        	$this_url = $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	        $this_url = explode("/",$this_url);
-        	for ($x=0; $x<count($this_url)-1;$x++) {
-                	$request_url .= $this_url[$x]."/";
-	        }
-        	$request_url .= "nurunpdf.php?i=".$request;
+	
+		if (!empty($_SERVER['HTTPS'])) {
+			$request_url      = "https://";
+		} else {
+			$request_url      = "http://";	
+		}
+		$this_url             = $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+		$this_url             = explode("/",$this_url);
+		for ($x=0; $x<count($this_url)-1;$x++) {
+			$request_url     .= $this_url[$x]."/";
+		}
+		
+		$request_url         .= "nurunpdf.php?i=".$request;
+		
 	}
 
-        $urlHandle = fopen($request_url, "rb");
-        $contents  = stream_get_contents($urlHandle);
-        fclose($urlHandle);
+	$urlHandle                = fopen($request_url, "rb");
+	$contents                 = stream_get_contents($urlHandle);
+	fclose($urlHandle);
 
-        $tmp_file = tempnam( sys_get_temp_dir(), "nu");
-        $handle = fopen($tmp_file, "w");
-        fwrite($handle, $contents);
-        fclose($handle);
-        return $tmp_file;
+	$tmp_file                 = tempnam( sys_get_temp_dir(), "nu");
+	$handle                   = fopen($tmp_file, "w");
+	fwrite($handle, $contents);
+	fclose($handle);
+nuDebug($tmp_file);	
+	return $tmp_file;
 }
 
 function nuNextNumberTables(){
 
-    $a               = array();                                        //-- array of tables that meet the specs for generating an incremented file
-    $d               = $_SESSION['DBName'];
-    $s               = "
+//-- (test 1) table has only 2 fields
+    $a = array();                                        //-- array of tables that meet the specs for generating an incremented file
+    $d = $_SESSION['DBName']; 
+    $s = "
+        SELECT 
+            table_name, 
+            count(table_name) as CT, 
+            column_name
+        FROM information_schema.columns 
+        WHERE table_schema = '$d'
+        GROUP BY table_name
+        HAVING CT = 2
+        ";
 
-                        SELECT TABLE_NAME 
-                        FROM INFORMATION_SCHEMA.TABLES 
-                        WHERE TABLE_SCHEMA = '$d' 
-                        AND TABLE_NAME NOT LIKE 'zzzsys_%'
-
-                        ";
-
-    $t                = nuRunQuery($s);
+    $t = nuRunQuery($s);
 
     while($r = db_fetch_row($t)){
-    
-        $l            = db_columns($r[0]);
-        
-        if(count($l) == 2){                                            //-- (test 1) table has only 2 fields
+        $s  = "
+                SELECT COLUMN_KEY 
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = '$d' 
+                AND TABLE_NAME     = '$r[0]' 
+                AND COLUMN_NAME    = '$r[2]' 
+                AND EXTRA          LIKE '%auto_increment%'
+            ";
+        $ct = nuRunQuery($s);
+        $cr = db_fetch_row($ct);
 
-            $s        = "
+        if($cr[0] == 'PRI'){                                       //-- (test 2) first field is a auto increment Primary Key
 
-                        SELECT COLUMN_KEY 
-                        FROM INFORMATION_SCHEMA.COLUMNS 
-                        WHERE TABLE_SCHEMA = '$d' 
-                        AND TABLE_NAME     = '$r[0]' 
-                        AND COLUMN_NAME    = '$l[0]' 
-                        AND EXTRA          LIKE '%auto_increment%'
+            $s  = "
+                SELECT CONCAT(DATA_TYPE, CHARACTER_MAXIMUM_LENGTH)
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = '$d' 
+                AND TABLE_NAME     = '$r[0]' 
+                AND COLUMN_NAME    = '$r[2]' 
+                AND DATA_TYPE      = 'varchar'
+                ";
+            $ct = nuRunQuery($s);
+            $cr = db_fetch_row($ct);
 
-                        ";
-            $ct       = nuRunQuery($s);
-            $cr       = db_fetch_row($ct);
-            
-            if($cr[0] == 'PRI'){                                       //-- (test 2) first field is a auto increment Primary Key
+            if($cr[0] == 'varchar25'){                               //-- (test 3) second field is a varchar
 
-                $s    = "
-
-                        SELECT CONCAT(DATA_TYPE, CHARACTER_MAXIMUM_LENGTH)
-                        FROM INFORMATION_SCHEMA.COLUMNS 
-                        WHERE TABLE_SCHEMA = '$d' 
-                        AND TABLE_NAME     = '$r[0]' 
-                        AND COLUMN_NAME    = '$l[1]' 
-                        AND DATA_TYPE      = 'varchar'
-
-                        ";
-                $ct   = nuRunQuery($s);
-                $cr   = db_fetch_row($ct);
-
-                if($cr[0] == 'varchar25'){                               //-- (test 3) second field is a varchar
-                
-                    $a[]  = $r[0];
-                }
-            
+                $a[]  = $r[0];
             }
-            
         
         }
-    
+ 
     }
-    
+
     return $a;
     
 }
@@ -1479,5 +1346,312 @@ function nuReportAccess($i){
 
 }
 
+
+
+function nuEmailPDF($p) {
+
+	$to                             = '';
+	$toname                         = '';
+	$replyto                        = '';
+	$replytoname                    = '';
+	$content                        = 'nuBuilder Email';
+	$html                           = false;
+	$subject                        = '';
+	$wordWrap                       = 120;
+	$filelist                       = array();
+
+	foreach($p as $key => $value) {                                //-- rest any passed values
+		${$key}                     = $value;
+	}
+	
+	require_once("phpmailer/class.phpmailer.php");
+
+	$errorText                      = "";
+   	$setup                          = $GLOBALS['nuSetup'];         //-- Read SMTP AUTH Settings from zzsys_setup table	
+	
+	if (!empty($setup->set_smtp_username)) 		{ $SMTPuser = trim($setup->set_smtp_username);}                        else{$errorText .= "SMTP Username not set.\n";}
+	if (!empty($setup->set_smtp_password)) 		{ $SMTPpass = trim($setup->set_smtp_password);}                        else{$errorText .= "SMTP Password not set.\n";}
+	if (!empty($setup->set_smtp_host)) 		    { $SMTPhost = trim($setup->set_smtp_host);}                            else{$errorText .= "SMTP Host not set.\n";}
+	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}                    else{$errorText .= "SMTP From Address not set.\n";}
+	if (!empty($setup->set_smtp_port)) 		    { $SMTPport = intval($setup->set_smtp_port);}                          else{$errorText .= "SMTP PORT not set.\n";}
+	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else{$SMTPauth = false;}
+	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	                   else{$SMTPname = "nuBuilder";}
+		nuDebug(print_r($p,1));
+	if ($errorText != '') {
+		$result[0]                  = false;
+		$result[1]                  = "Unable to send SMTP Email, the following error(s) occured:\n" . $errorText;
+		
+		foreach($filelist as $filename=>$filesource) {
+			@unlink($filesource);
+		}
+		
+		return $result;
+	}
+	
+	try{
+
+		$mail                        = new PHPMailer();
+		$mail->IsSMTP();
+		$mail->Host                  = $SMTPhost;
+		$mail->Port                  = $SMTPport;
+		$mail->SMTPSecure            = $SMTPauth ? 'ssl' : '';
+		$mail->SMTPAuth              = $SMTPauth;
+
+		if ($SMTPauth) {
+			$mail->Username          = $SMTPuser;
+			$mail->Password          = $SMTPpass;
+		}
+
+		if ($receipt) { 
+			$mail->ConfirmReadingTo  = $replyto; 
+		}
+
+		if (empty($replyto)) {
+			$mail->AddReplyTo($SMTPfrom,'');
+			$mail->FromName          = $SMTPname;
+		} else {
+			$mail->AddReplyTo($replyto, $replytoname);
+			$mail->FromName          = $replytoname;
+		}
+		$mail->From                  = $SMTPfrom;
+	
+		$tonameArray                 = explode(',',$toname);
+		$toArray                     = explode(',',$to);
+	
+		for ($i = 0; $i < count($toArray); $i++){
+			if ($toArray[$i]) {
+				if (isset($tonameArray[$i])) { 
+					$thisToName      = $tonameArray[$i]; 
+				} else { 
+					$thisToName      = "";
+				}
+				$mail->AddAddress($toArray[$i], $thisToName);
+			}
+		}
+	
+		$mail->WordWrap              = $wordWrap;
+		$mail->IsHTML($html);
+
+		foreach($filelist as $filename=>$filesource) {
+			$mail->AddAttachment($filesource,$filename);
+		}
+		
+		$mail->Subject               = $subject;
+		$mail->Body                  = $content;
+		$result[0]                   = $mail->Send();
+		$result[1]                   = "Message sent successfully";
+
+	}catch(phpmailerException $e) {
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Pretty error messages from PHPMailer
+	}catch(Exception $e){
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Boring error messages from anything else!
+	}
+
+	foreach($filelist as $filename=>$filesource) {
+		@unlink($filesource);
+	}
+	
+	return $result;
+}
+
+function nuEmailValidateAddress($email) {
+
+   $isValid             = true;
+   $atIndex             = strrpos($email, "@");
+
+	if(is_bool($atIndex) && !$atIndex) {
+
+		$isValid        = false;
+
+	}else{
+
+		$domain           = substr($email, $atIndex + 1);
+		$local            = substr($email, 0, $atIndex);
+		$localLen         = strlen($local);
+		$domainLen        = strlen($domain);
+
+		if ($localLen < 1 || $localLen > 64) {                                                                             //-- local part length exceeded
+			$isValid      = false;
+		} else if ($domainLen < 1 || $domainLen > 255) {                                                                   //-- domain part length exceeded
+			$isValid      = false;
+		} else if ($local[0] == '.' || $local[$localLen-1] == '.') {                                                       //-- local part starts or ends with '.'
+			$isValid      = false;
+		} else if (preg_match('/\\.\\./', $local)) {                                                                       //-- local part has two consecutive dots
+			$isValid      = false;
+		} else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain)) {                                                       //-- character not valid in domain part
+			$isValid      = false;
+		} else if (preg_match('/\\.\\./', $domain)) {                                                                      //-- domain part has two consecutive dots
+			$isValid      = false;
+		} else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',str_replace("\\\\","",$local))) {         //-- character not valid in local part unless local part is quoted
+			if (!preg_match('/^"(\\\\"|[^"])+"$/',
+				str_replace("\\\\","",$local))){
+				$isValid  = false;
+			}
+		}
+
+		if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {                                          //-- domain not found in DNS
+			$isValid      = false;
+		}
+	}
+	
+	return $isValid;
+   
+}
+
+
+
+function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
+    $sesh                                        = $hashData['session_id'];
+    $s                                           = "SELECT * FROM zzzsys_session INNER JOIN zzzsys_user ON sss_zzzsys_user_id = zzzsys_user_id WHERE zzzsys_session_id = '$sesh'";
+    $t                                           = nuRunQuery($s);
+    $r                                           = db_fetch_object($t);
+    
+    if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
+        nuDisplayError("To Email validation failed");
+        return;
+    }
+	    
+
+	$toname                                      = '';
+
+
+
+	$html                                        = false;
+
+	$wordWrap                                    = 120;
+	$filelist                                    = array();
+	
+	require_once("phpmailer/class.phpmailer.php");
+
+	$errorText                                   = "";
+   	$setup                                       = $GLOBALS['nuSetup'];                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
+	
+	if (!empty($setup->set_smtp_username)) 		{ $SMTPuser = trim($setup->set_smtp_username);}                        else{$errorText .= "SMTP Username not set.\n";}
+	if (!empty($setup->set_smtp_password)) 		{ $SMTPpass = trim($setup->set_smtp_password);}                        else{$errorText .= "SMTP Password not set.\n";}
+	if (!empty($setup->set_smtp_host)) 		    { $SMTPhost = trim($setup->set_smtp_host);}                            else{$errorText .= "SMTP Host not set.\n";}
+	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}                    else{$errorText .= "SMTP From Address not set.\n";}
+	if (!empty($setup->set_smtp_port)) 		    { $SMTPport = intval($setup->set_smtp_port);}                          else{$errorText .= "SMTP PORT not set.\n";}
+    if ($r->sus_name == '') 		            { $errorText .= "User Reply-To-Name not set.\n";}
+    if ($r->sus_email == '')                    { $errorText .= "User Reply-Email not set.\n";}
+	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else{$SMTPauth = false;}
+	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	                   else{$SMTPname = "nuBuilder";}
+
+	if ($errorText != '') {
+
+		nuDisplayError("Unable to send SMTP Email, the following error(s) occured:\n" . $errorText);
+
+		return;
+	}
+
+    $s                                           = "SELECT * FROM  zzzsys_report WHERE sre_code = '$pPDForPHP'";
+    $t                                           = nuRunQuery($s);
+    $r                                           = db_fetch_object($t);
+ 
+    if($r != '') {
+        nuV('code', $pPDForPHP);
+        nuV('call_type', 'printpdf');
+        nuV('filename', $hashData['nu_email_file_name']);
+		
+        $hashData['parent_record_id']            = $pPDForPHP;
+        $tmp_nu_file                             = nuPDForPHPParameters($hashData);
+		$finfo                                   = finfo_open(FILEINFO_MIME_TYPE);                     //-- check to see if the file being sent is a PDF file
+		
+		if(finfo_file($finfo, $tmp_nu_file) != 'application/pdf') {
+		
+			nuDisplayError(file_get_contents($tmp_nu_file, true));
+			finfo_close($finfo);
+			
+			return;
+			
+		}
+		
+    } else {
+        $s                                       = "SELECT slp_php FROM  zzzsys_php WHERE slp_code = '$pPDForPHP'";
+        $t                                       = nuRunQuery($s);
+        $r                                       = db_fetch_object($t);
+        if($r != '') {                                                                                      //-- run some php
+            $php                                 = nuReplaceHashes($r->slp_php, $hashData);
+            eval($php);
+            
+            return;
+
+        }
+    }
+    if($pPDForPHP != '') {                                                                                  //-- no file to attach, send normal email
+        $filelist[$hashData['nu_email_file_name']]  = $tmp_nu_file;
+
+    }
+	
+	try{
+
+		$mail                        = new PHPMailer();
+		$mail->IsSMTP();
+		$mail->Host                  = $SMTPhost;
+		$mail->Port                  = $SMTPport;
+		$mail->SMTPSecure            = $SMTPauth ? 'ssl' : '';
+		$mail->SMTPAuth              = $SMTPauth;
+
+		if ($SMTPauth) {
+			$mail->Username          = $SMTPuser;
+			$mail->Password          = $SMTPpass;
+		}
+
+		if ($receipt) { 
+			$mail->ConfirmReadingTo  = $r->sus_email; 
+		}
+
+		if (empty($r->sus_email)) {
+			$mail->AddReplyTo($SMTPfrom,'');
+			$mail->FromName          = $SMTPname;
+		} else {
+			$mail->AddReplyTo($r->sus_email, $r->sus_name);
+			$mail->FromName          = $r->sus_name;
+		}
+		$mail->From                  = $SMTPfrom;
+	
+		$tonameArray                 = explode(',',$toname);
+		$toArray                     = explode(',',$pEmailTo);
+	
+		for ($i = 0; $i < count($toArray); $i++){
+			if ($toArray[$i]) {
+				if (isset($tonameArray[$i])) { 
+					$thisToName      = $tonameArray[$i]; 
+				} else { 
+					$thisToName      = "";
+				}
+				$mail->AddAddress($toArray[$i], $thisToName);
+			}
+		}
+	
+		$mail->WordWrap              = $wordWrap;
+		$mail->IsHTML($html);
+
+		foreach($filelist as $filename=>$filesource) {
+			$mail->AddAttachment($filesource,$filename);
+		}
+		
+		$mail->Subject               = $pSubject;
+		$mail->Body                  = $pMessage;
+
+		$result[0]                   = $mail->Send();
+		$result[1]                   = "Message sent successfully";
+
+	}catch(phpmailerException $e) {
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Pretty error messages from PHPMailer
+	}catch(Exception $e){
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Boring error messages from anything else!
+	}
+
+	foreach($filelist as $filename=>$filesource) {
+		@unlink($filesource);
+	}
+	
+	return $result;
+	
+}
 
 ?>

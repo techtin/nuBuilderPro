@@ -97,23 +97,27 @@ function nuSetCurrentGroup(id){
 
     function nuHideSection(c){
 
-        $('#' + c).css('visibility', 'hidden');
-        $('#' + c).css('border-width', 0);
-        $('#' + c).css('height', 0);
-        $('#' + c).css('background-color', '#FFFFFF');
+        $('#' + c).css({
+            'visibility'       : 'hidden',
+            'border-width'     : 0,
+            'height'           : 0,
+            'background-color' : '#FFFFFF'
+        });
     
     }
 
     function nuShowSection(c){
     
-        $('#' + c).css('visibility', 'visible');
-        $('#' + c).css('border-width', 1);
+        $('#' + c).css({
+            'visibility'   : 'visible',
+            'border-width' : 1
+        });
     
     }
 
     function nuSetSectionProperties(){
 
-        var g                                    = REPORT.currentGroup;
+        var g = REPORT.currentGroup;
       
         if($('#' + GRP[g].groupField).val() == ''){
             
@@ -127,15 +131,14 @@ function nuSetCurrentGroup(id){
                 }
                 REPORT.groups[g].sections[0].objects.length = 0;
                 REPORT.groups[g].sections[1].objects.length = 0;
-                
-                REPORT.groups[g].sortField           = '';
-                REPORT.groups[g].sortBy              = '';
-                REPORT.groups[g].sections[0].height  = 0;
-                REPORT.groups[g].sections[0].color   = '#FFFFFF';
-                REPORT.groups[g].sections[0].label   = ' Header';
-                REPORT.groups[g].sections[1].height  = 0;
-                REPORT.groups[g].sections[1].color   = '#FFFFFF';
-                REPORT.groups[g].sections[1].label   = ' Footer';
+                REPORT.groups[g].sortField                  = '';
+                REPORT.groups[g].sortBy                     = '';
+                REPORT.groups[g].sections[0].height         = 0;
+                REPORT.groups[g].sections[0].color          = '#FFFFFF';
+                REPORT.groups[g].sections[0].label          = ' Header';
+                REPORT.groups[g].sections[1].height         = 0;
+                REPORT.groups[g].sections[1].color          = '#FFFFFF';
+                REPORT.groups[g].sections[1].label          = ' Footer';
                 
                 nuBuildGroupFromREPORT(g);
                 nuMoveAllObjects();
@@ -179,7 +182,7 @@ function nuSetCurrentGroup(id){
         
         for(var idx = 3; idx < REPORT.groups.length; idx++ ) {
             if( $('#' + GRP[idx].groupField).val() != '' ) {
-                REPORT.groups[idx].sortBy           = $('#' + GRP[idx].groupSort).val();
+                REPORT.groups[idx].sortBy = $('#' + GRP[idx].groupSort).val();
             }
         }
         
@@ -199,11 +202,13 @@ function nuDialogButtons(){
     e.setAttribute('onclick', "nuMoveGroupUp()");
     $('#nuProperties').append(e);
     $('#' + e.id).val('Move Group Up');
-    $('#' + e.id).css('height', 30);
-    $('#' + e.id).css('width', 140);
-    $('#' + e.id).css('position', 'absolute');
-    $('#' + e.id).css('left', 8);
-    $('#' + e.id).css('top', 120);
+    $('#' + e.id).css({
+        'height'   : 30,
+        'width'    : 140,
+        'position' : 'absolute',
+        'left'     : 8,
+        'top'      : 120
+    });
     
     e = document.createElement('input');
     e.setAttribute('type', 'button');
@@ -211,11 +216,13 @@ function nuDialogButtons(){
     e.setAttribute('onclick', "nuMoveGroupDown()");
     $('#nuProperties').append(e);
     $('#' + e.id).val('Move Group Down');
-    $('#' + e.id).css('height', 30);
-    $('#' + e.id).css('width', 140);
-    $('#' + e.id).css('position', 'absolute');
-    $('#' + e.id).css('left', 8);
-    $('#' + e.id).css('top', 160);
+    $('#' + e.id).css({
+        'height'   : 30,
+        'width'    : 140,
+        'position' : 'absolute',
+        'left'     : 8,
+        'top'      : 160
+    });
     
 }
 
@@ -336,7 +343,7 @@ function nuDialogButtons(){
 
         var grp = [];
         grp     = REPORT.groups.splice(REPORT.currentGroup, 1);
-        REPORT.groups.splice(REPORT.currentGroup + 1 , 0, grp[0])
+        REPORT.groups.splice(REPORT.currentGroup + 1 , 0, grp[0]);
 
 
         nuDisplayGroupProperties(GRP[REPORT.currentGroup].groupField);

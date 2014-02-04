@@ -8,7 +8,7 @@ function nuStringify(){
         }
 
         window.opener.document.getElementById('sre_layout').value = JSON.stringify(REPORT);
-        alert('Copied to Report Successfully..')
+        alert('Copied to Report Successfully..');
         window.opener.nuSetEdited();
         window.close();
     }else{

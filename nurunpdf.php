@@ -149,9 +149,8 @@ function nuBuildReport($PDF, $REPORT, $TABLE_ID){
     $order['d']                             = 'desc ';
     
     for($i = 3 ; $i < 8 ; $i++){
-    
         if($REPORT->groups[$i]->sortField != ''){              //-- loop through groups
-        
+            
             $order_by                       = ' ORDER BY ';
             $groupBy[]                      = $REPORT->groups[$i]->sortField . ' ' . $order[$REPORT->groups[$i]->sortBy];
             $groups[]                       = $REPORT->groups[$i]->sortField;
@@ -303,11 +302,9 @@ class nuSECTION{
         $this->pageHeight     = $this->LAY->height;
         $this->sectionTop     = $sectionTop;
         $this->sectionHeight  = $this->LAY->groups[$group]->sections[$section]->height;
-
     }
 
     public function buildSection(){
-    
         $this->O              = $this->setObjectLines($this->O);
         $nextTop              = $this->chopSectionOverPages();
         $GLOBALS['nu_report'] = array_merge($GLOBALS['nu_report'], $this->SECTIONS);
@@ -370,13 +367,15 @@ class nuSECTION{
     }
 
     private function chopSectionOverPages(){
-
         $sectionObjects                       = array();
         $sectionTop                           = $this->sectionTop;
         $objectParts                          = array();
         $pages                                = 0;
         $expandedSectionHeight                = $this->sectionHeight + $this->extendedHeight() - .25;
-        $pageBreak                            = $this->LAY->groups[$this->group]->sections[$this->section]->page_break;
+        $pageBreak                            = 0;
+        if( property_exists($this->LAY->groups[$this->group]->sections[$this->section], 'page_break') ) {
+            $pageBreak                            = $this->LAY->groups[$this->group]->sections[$this->section]->page_break;
+        }
 
         for($i = 0 ; $i < count($this->O) ; $i++){
             $sectionObjects[]                 = $this->O[$i]->id;
@@ -484,7 +483,7 @@ class nuSECTION{
 
         $S                 = $this->LAY->groups[2]->sections[$section];
         $O                 = $this->setObjectLines($S->objects, true);
-        $newObs            = array();
+        $newOs             = array();
         
         for($i = 0 ; $i < count($O) ; $i ++){
         
@@ -552,7 +551,6 @@ class nuSECTION{
         $rows               = array();
 
         if($O->objectType == 'field'){
-            
             $text           = $this->nuGetFieldValue($O);
             
             $lineNoNR       = str_replace ("\n\r", "\r", $text);
@@ -663,7 +661,7 @@ class nuSECTION{
     private function nuGetFieldValue($O){
 
         $type               = '';
-        
+        $value              = '';
         if(strtoupper(substr($O->fieldName,0,4)) == 'SUM('){
             $type           = 's';
             $field          = substr($O->fieldName,4, -1);
@@ -672,14 +670,16 @@ class nuSECTION{
             $type           = 'p';
             $fields         = explode(',', substr($O->fieldName, 8, -1));
         }
-        
         if($type == ''){                                                                //-- normal value
-            $value          = mb_convert_encoding($this->ROW[$O->fieldName], "WINDOWS-1252", "UTF-8");
+            if(array_key_exists($O->fieldName, $this->ROW)) {
+                $value          = mb_convert_encoding($this->ROW[$O->fieldName], "WINDOWS-1252", "UTF-8");
+            }
         }else{                                                                          //-- summed value
             $groups         = array();
             $where          = '';
             
             if($type == 'p'){
+                
                 $count      = 'SUM(nu_sum_'.trim($fields[0]).') AS the_sum_a, SUM(nu_sum_'.trim($fields[1]).') AS the_sum_b';
             }else{
                 $count      = 'SUM(nu_sum_'.trim($field).') AS the_sum_a';
@@ -966,15 +966,14 @@ function nuAddCriteriaValues($hashData){
 
     foreach($hashData AS $key => $value){
     
-        if(!in_array($key, $c)){
-        
+        if(!in_array($key, $c) and !is_array($value)){
             $v   = addslashes($value);
             $l   = min(strlen($v), 200);
             if($l > 0){
                 $a[] = " ADD `$key` VARCHAR($l) DEFAULT '$v' ";
             }
             $c[] = strtolower($key);
-
+        
         }
         
     }
@@ -997,7 +996,10 @@ function nuIsRecord($i){
 
     $t = nuRunQuery("SELECT zzzsys_file_id FROM zzzsys_file WHERE sfi_code = ? ", array($i));
     $r = db_fetch_object($t);
-    return $r->zzzsys_file_id != '';
+    
+    
+    if($r=='') return false;
+    else return $r->zzzsys_file_id != '';
     
 }
 

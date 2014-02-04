@@ -114,7 +114,7 @@ function nuFormatter(){
 	this.dd['30']  = '30';
 	this.dd['31']  = '31';
 
-		this.formatField = function(f,v,returnSQLFormated){
+	this.formatField = function(f,v,returnSQLFormated){
 
 		if(v == ''){return v;}
 		if(f == ''){return v;}
@@ -221,7 +221,7 @@ function nuFormatter(){
 				}
 			}
 		}
-	}
+	};
 }
 
 
@@ -326,7 +326,7 @@ function nuBuilderSession(){
 			}
 
 		}
-	}
+	};
 
 
 	this.getWindowID = function(){        //-- gets ID and increments by 1

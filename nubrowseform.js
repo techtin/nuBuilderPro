@@ -56,36 +56,42 @@ function nuHighlightSearch(o){
 
 	var filterStrings     = [];
     var columns           = o.searchColumns.split(',');
-    columns.unshift(0);
+    columns.unshift(0);                                                               //-- initial build form won't have column 0 reference in it
     nuFORM.search_columns = o.searchColumns;
     $.each(o.filterStrings, function(i, el){                                          //-- remove duplicates
 		if($.inArray(el, filterStrings) === -1) filterStrings.push(el);
 	});
+    
+    var uniqueColumns = [];                                                            //-- 10:05 24/01/2014 BugFix - Prevents columns from being handled twice leading to broken HTML code
+    for(var COL = 0 ; COL < columns.length ; COL++){
+        if(uniqueColumns.indexOf(columns[COL]) == -1 && columns[COL] != "") {
+            uniqueColumns.push(columns[COL]);
+        }
+    }
 	
 	filterStrings.sort(function(a,b) {return (a.length > b.length) ? 1 : 0; });	  //-- search small strings first
 	
-	for(var COL = 0 ; COL < columns.length ; COL++){
+	for(var COL = 0 ; COL < uniqueColumns.length ; COL++){
+        $("[id$='col_" + uniqueColumns[COL] + "']").each(function(index) {
+            var h = $(this).html();
+            h = String(h).replaceAll('&nbsp;','', true);
+            for(var STR = 0 ; STR < filterStrings.length ; STR++){
+                h = String(h).replaceAll(filterStrings[STR],'`````'+filterStrings[STR]+'````', true);
+            }
+            h = String(h).replaceAll('`````', '<span class="nuBrowseSearch">', true);
+            h = String(h).replaceAll('````', '</span>', true);
 
-        if(nuIsSearchable(columns, columns[COL])){
-        
-            $("[id$='col_" + columns[COL] + "']").each(function(index) {
-            
-                var h = $(this).html();
-                for(var STR = 0 ; STR < filterStrings.length ; STR++){
-                    h = String(h).replaceAll('&nbsp;','', true);
-                    h = String(h).replaceAll(filterStrings[STR],'`````'+filterStrings[STR]+'````', true);
-                }
-
-                h = String(h).replaceAll('`````', '<span class="nuBrowseSearch">', true);
-                h = String(h).replaceAll('````', "</span>", true);
-                
-                $(this).html('&nbsp;&nbsp;'+h+'&nbsp;&nbsp;');
-         
-            });
-        
-        }
+            $(this).html(h);
+        });
 	}
+	for(var COL = 0 ; COL < nuBrowseColumns() ; COL++){
+            $("[id$='col_" + COL + "']").each(function(index) {
+                var h = $(this).html();
+                h = String(h).replaceAll('&nbsp;','', true);
+                $(this).html('&nbsp;&nbsp;'+h+'&nbsp;&nbsp;');
+            });
 
+	}
 }
 
 function nuIsSearchable(columns, thisColumn){
@@ -97,7 +103,6 @@ function nuIsSearchable(columns, thisColumn){
         }
         
     }
-    
     return false;
     
 }
@@ -466,7 +471,7 @@ function addBrowseRows(o){
     }
 	$('#nuHolder').css('height', (20+Number(top))+'px');
 
-	var pages = Math.ceil(o.rowCount /o.display.rows)
+	var pages = Math.ceil(o.rowCount /o.display.rows);
 	nuPagingStatus('nuStatusHolder',2,l,nuFORM.page_number, pages);
 	$('#paging_nuStatusHolder').addClass('nuStatusHolder nuUnselectedTab nuGradient');
 	$('#paging_nuStatusHolder').css('border-style','none');

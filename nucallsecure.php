@@ -9,7 +9,7 @@
 	$GLOBALS['ERRORS']            = array();
 
 	$hashData                     = nuHashData();
-	$code                         = $_POST['nuWindow']['phpCode'];
+	$code                         = $_GET['c'];
 	
 	$sql                          = "SELECT * FROM  zzzsys_php WHERE slp_code = ?";
 	$t                            = nuRunQuery($sql, array($code));

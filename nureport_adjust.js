@@ -33,39 +33,39 @@ function nuAdjustObjects(t){
         nuAlignLeft();
     }
 
-    if(id == 'nu_adjust_1'){                //-- Align To Right
+    else if(id == 'nu_adjust_1'){                //-- Align To Right
         nuAlignRight();
     }
 
-    if(id == 'nu_adjust_2'){                //-- Align To Top
+    else if(id == 'nu_adjust_2'){                //-- Align To Top
         nuAlignTop();
     }
 
-    if(id == 'nu_adjust_3'){                //-- Align To Bottom
+    else if(id == 'nu_adjust_3'){                //-- Align To Bottom
         nuAlignBottom();
     }
 
-    if(id == 'nu_adjust_4'){                //-- Resize To Narrowest
+    else if(id == 'nu_adjust_4'){                //-- Resize To Narrowest
         nuNarrowest();
     }
 
-    if(id == 'nu_adjust_5'){                //-- Resize To Widest
+    else if(id == 'nu_adjust_5'){                //-- Resize To Widest
         nuWidest();
     }
 
-    if(id == 'nu_adjust_6'){                //-- Resize To Shortest
+    else if(id == 'nu_adjust_6'){                //-- Resize To Shortest
         nuShortest();
     }
 
-    if(id == 'nu_adjust_7'){                //-- Resize To Tallest
+    else if(id == 'nu_adjust_7'){                //-- Resize To Tallest
         nuTallest();
     }
 
-    if(id == 'nu_adjust_8'){                //-- Even Space Horizontally
+    else if(id == 'nu_adjust_8'){                //-- Even Space Horizontally
         nuEvenHorizontal();
     }
 
-    if(id == 'nu_adjust_9'){                //-- Even Space Vertically
+    else if(id == 'nu_adjust_9'){                //-- Even Space Vertically
         nuEvenVertical();
     }
 
@@ -271,8 +271,8 @@ function nuAlignTop(){
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
-                    t   = parseInt(REPORT.groups[g].sections[s].objects[o].top);
-                    v   = Math.min(v, t);
+                    t  = parseInt(REPORT.groups[g].sections[s].objects[o].top);
+                    v  = Math.min(v, t);
                 }
             }
         }
@@ -281,10 +281,10 @@ function nuAlignTop(){
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
-                    id  = REPORT.groups[g].sections[s].objects[o].id;
-                    m   = parseInt(REPORT.groups[g].sections[s].margins);
-                    st  = parseInt(REPORT.groups[g].sections[s].top);
-                    b   = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth);
+                    id = REPORT.groups[g].sections[s].objects[o].id;
+                    m  = parseInt(REPORT.groups[g].sections[s].margins);
+                    st = parseInt(REPORT.groups[g].sections[s].top);
+                    b  = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth);
                     REPORT.groups[g].sections[s].objects[o].top = v - b;
                     $('#' + id).css('top', v + st + m);
                 }
@@ -310,10 +310,10 @@ function nuAlignBottom(){
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
-                    t   = parseInt(REPORT.groups[g].sections[s].objects[o].top);
-                    h   = parseInt(REPORT.groups[g].sections[s].objects[o].height);
-                    b   = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth) * 2;
-                    v   = Math.max(v, t + h + b);
+                    t = parseInt(REPORT.groups[g].sections[s].objects[o].top);
+                    h = parseInt(REPORT.groups[g].sections[s].objects[o].height);
+                    b = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth) * 2;
+                    v = Math.max(v, t + h + b);
                 }
             }
         }
@@ -322,12 +322,12 @@ function nuAlignBottom(){
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
-                    id  = REPORT.groups[g].sections[s].objects[o].id;
-                    m   = parseInt(REPORT.groups[g].sections[s].margins);
-                    st  = parseInt(REPORT.groups[g].sections[s].top);
-                    t   = parseInt(REPORT.groups[g].sections[s].objects[o].top);
-                    h   = parseInt(REPORT.groups[g].sections[s].objects[o].height);
-                    b   = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth) * 2;
+                    id = REPORT.groups[g].sections[s].objects[o].id;
+                    m  = parseInt(REPORT.groups[g].sections[s].margins);
+                    st = parseInt(REPORT.groups[g].sections[s].top);
+                    t  = parseInt(REPORT.groups[g].sections[s].objects[o].top);
+                    h  = parseInt(REPORT.groups[g].sections[s].objects[o].height);
+                    b  = parseInt(REPORT.groups[g].sections[s].objects[o].borderWidth) * 2;
                     REPORT.groups[g].sections[s].objects[o].top = v - h - b;
                     $('#' + id).css('top', v  - h + st + m);
                 }
@@ -340,12 +340,12 @@ function nuAlignBottom(){
 
 function nuEvenHorizontal(){
     // Adjust the horizontal space between objects evenly and keep the most left and the most right one unchanged.
-    lmin = 0;
-    lmax = 0;
-    onum = 0;
-    idmin = "";
-    idmax = "";
-    space = 0;
+    lmin          = 0;
+    lmax          = 0;
+    onum          = 0;
+    idmin         = "";
+    idmax         = "";
+    space         = 0;
     var width_sum = 0;
     // Calculate the space
     for(var  g = 0 ; g < REPORT.groups.length ; g ++){    
@@ -353,21 +353,21 @@ function nuEvenHorizontal(){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
                     id = REPORT.groups[g].sections[s].objects[o].id;
-                    l = parseInt($('#' + id).css('left'));
+                    l  = parseInt($('#' + id).css('left'));
                     onum++;
                     width_sum += parseInt($('#' + id).css('width'));
                     if (onum == 1) {
-                        lmin = l;
-                        lmax = l;
+                        lmin  = l;
+                        lmax  = l;
                         idmin = id;
                         idmax = id;
                     } else {
                         if (l<lmin){
-                            lmin = l;
+                            lmin  = l;
                             idmin = id;
                         }
                         if (l > lmax) {
-                            lmax = l;
+                            lmax  = l;
                             idmax = id;
                         }
                     }
@@ -387,13 +387,13 @@ function nuEvenHorizontal(){
     // Adjust the value of left property.
     onum = 0;
     var prev_id = idmin;
-    var prev_l = lmin;
-    var prev_w = 0;
+    var prev_l  = lmin;
+    var prev_w  = 0;
     for(var  g = 0 ; g < REPORT.groups.length ; g ++){
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
-                    id = REPORT.groups[g].sections[s].objects[o].id;
+                    id     = REPORT.groups[g].sections[s].objects[o].id;
                     prev_l = parseInt($('#' + prev_id).css('left'));
                     prev_w = parseInt($('#' + prev_id).css('width'));
                     if (id != idmin && id != idmax) {
@@ -413,9 +413,9 @@ function nuEvenVertical(){
     for(var  g = 0 ; g < REPORT.groups.length ; g ++){    
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             // calculate the space
-            tmin = 0;
-            tmax = 0;
-            onum = 0;
+            tmin  = 0;
+            tmax  = 0;
+            onum  = 0;
             idmin = "";
             idmax = "";
             space = 0;
@@ -423,20 +423,20 @@ function nuEvenVertical(){
             for(var  o = 0 ; o < REPORT.groups[g].sections[s].objects.length ; o ++){
                 if(REPORT.groups[g].sections[s].objects[o].selected == 1){
                     id = REPORT.groups[g].sections[s].objects[o].id;
-                    t =  REPORT.groups[g].sections[s].objects[o].top;
+                    t  =  REPORT.groups[g].sections[s].objects[o].top;
                     onum++;
                     if (onum == 1) {
-                        tmin = t;
-                        tmax = t;
+                        tmin  = t;
+                        tmax  = t;
                         idmin = id;
                         idmax = id;
                     } else {
                         if (t<tmin){
-                            tmin = t;
+                            tmin  = t;
                             idmin = id;
                         }
                         if (t > tmax) {
-                            tmax = t;
+                            tmax  = t;
                             idmax = id;
                         }
                     }

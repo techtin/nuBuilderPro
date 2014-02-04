@@ -34,7 +34,7 @@ $scr           = "
 
 function nuloadstats(){
 
-	parent.nuFORM.FILES = '$JSON';
+	parent.nuSetHash('FILES' , '$JSON');
 	parent.nuSetEdited();
 	
 }

@@ -11,6 +11,7 @@ if ( isset($_GET['p']) ) {
 
 	if ( $num == 1 ) {
 		$obj = db_fetch_object($rs);
+        
 		eval($obj->eval); 
 	} else {
 		echo "Request is not allowed";

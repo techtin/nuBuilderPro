@@ -100,25 +100,25 @@ function nuCreateInputs() {
 
     var top = 20;
     var ind = 0;
-    nuDialogInput('Object Name',       'property_'+ind, top, 200);
+    nuDialogInput('Object Name',        'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
-    nuDialogSelect('Object Type',      'property_'+ind, top, 200, ty);
+    nuDialogSelect('Object Type',       'property_'+ind, top, 200, ty);
     top = top + 25;
     ind ++;
-    nuDialogInput('Top',               'property_'+ind, top, 200);
+    nuDialogInput('Top',                'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
-    nuDialogInput('Left',              'property_'+ind, top, 200);
+    nuDialogInput('Left',               'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
-    nuDialogInput('Height',            'property_'+ind, top, 200);
+    nuDialogInput('Height',             'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
-    nuDialogInput('Width',             'property_'+ind, top, 200);
+    nuDialogInput('Width',              'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
-    nuDialogInput('Background Color',  'property_'+ind, top, 200);
+    nuDialogInput('Background Color',   'property_'+ind, top, 200);
     top = top + 25;
     ind ++;
     nuDialogInput('Border Color',       'property_'+ind, top, 200);
@@ -166,10 +166,14 @@ function nuHideProperties(){
     
     for (var i = 0; i < 20 ; i ++ ) {
         
-        $('#title_property_' + i).css('top',to);
-        $('#title_property_' + i).css('visibility','visible');
-        $('#property_' + i).css('top',to);
-        $('#property_' + i).css('visibility','visible');
+        $('#title_property_' + i).css({
+            'top'        : to,
+            'visibility' : 'visible'
+        });
+        $('#property_' + i).css({
+            'top'        : to,
+            'visibility' : 'visible'
+        });
         to = to + 25;
 
     }
@@ -209,10 +213,10 @@ function nuReopenObjectProperties(){
 
 function nuSetObjectProperties(id){
 
-    var index    = Number(id.substr(9));
-    var prop     = window.OBJ[index].split('|')[0];
-    var style    = window.OBJ[index].split('|')[1];
-    var value    = $('#' + id).val();
+    var index = Number(id.substr(9));
+    var prop  = window.OBJ[index].split('|')[0];
+    var style = window.OBJ[index].split('|')[1];
+    var value = $('#' + id).val();
 
     if(style == 'z-index') {
         if (value >= 1000 || value < 100) {
@@ -247,10 +251,10 @@ function nuSetObjectProperties(id){
 
         for(var i = 0 ; i < $('.nuSelected').length ; i++){
         
-            var oid             = $('.nuSelected')[i].id;
-            var O               = nuGetObjectFamilyTree(oid);   // -- returns [group, section, object]
-            var sTop            = REPORT.groups[O[0]].sections[O[1]].top;
-            var sMargins        = REPORT.groups[O[0]].sections[O[1]].margins;
+            var oid      = $('.nuSelected')[i].id;
+            var O        = nuGetObjectFamilyTree(oid);   // -- returns [group, section, object]
+            var sTop     = REPORT.groups[O[0]].sections[O[1]].top;
+            var sMargins = REPORT.groups[O[0]].sections[O[1]].margins;
 
             $('#' + oid).css('top', Number(sTop) + Number(sMargins) +  Number(value));
             
@@ -284,8 +288,9 @@ function nuSetObjectProperties(id){
 //========================================(y axis related)
     if(style == 'border-width' || style == 'height' || style == 'top'){
 
-        if (style == 'height')
-        $('.nuSelected').css(style, value);
+        if (style == 'height') {
+            $('.nuSelected').css(style, value);
+        }
         nuReadjustSections();
         nuMoveAllObjects();
         return;
@@ -302,12 +307,15 @@ function nuSetObjectProperties(id){
     }
 
     if (style == 'font-weight') {
-        if (value == 'B')
+        if (value == 'B') {
             $('.nuSelected').css(style, 'bold').css('font-style','normal');
-        else if (value == 'I')
+        }
+        else if (value == 'I') {
             $('.nuSelected').css(style, 'normal').css('font-style','italic');
-        else
+        }
+        else {
             $('.nuSelected').css(style, 'normal').css('font-style','normal');
+        }
         return;
     }
 
@@ -332,20 +340,26 @@ function nuCheckSideMargins(style){
         
             nuSetObjectValue(id, 'left', 0);
             nuSetObjectValue(id, 'width', REPORT.width - w);
-            $('#' + id).css('left', 0);
-            $('#' + id).css('width', nuChangeWidth(REPORT.width) - w);
+            $('#' + id).css({
+                'left'  : 0,
+                'width' : nuChangeWidth(REPORT.width) - w
+            });
             
         } else if(l + b + w > nuChangeWidth(REPORT.width) + 30){                           //-- too far right
             l = parseInt(REPORT.width) + 30 - b - w;
             l = (l >= 0) ? l : 30;
             nuSetObjectValue(id, 'left', l );
-            $('#' + id).css('left', l);
-            $('#' + id).css('width', w);
+            $('#' + id).css({
+                'left'  : l,
+                'width' : w
+            });
             
         } else {
-            $('#' + id).css('left', l + 30);
-            $('#' + id).css('width', w);
-            $('#' + id).css('border-width', b/2);
+            $('#' + id).css({
+            'left'         : l + 30,
+            'width'        : w,
+            'border-width' : b/2
+        });
 
         }
     }
@@ -373,8 +387,8 @@ function nuCheckSideMargins(style){
                             if(ALL[i].split(sep).length == 1){
                                 ALL[i] = ALL[i].split(sep)[0] + sep + REPORT.groups[g].sections[s].objects[o][ALL[i]];   //-- set first value
                             }else{
-                                var p = ALL[i].split(sep)[0];
-                                var v = ALL[i].split(sep)[1];
+                                var p  = ALL[i].split(sep)[0];
+                                var v  = ALL[i].split(sep)[1];
                                 
                                 if(REPORT.groups[g].sections[s].objects[o][p] != v){
                                     v = '';                                                                     //-- set value as blank

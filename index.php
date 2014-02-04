@@ -26,10 +26,19 @@ jsinclude('nubrowseform.js');
 jsinclude('nubrowseform.js');
 
 print $GLOBALS['nuSetup']->set_css;  //-- html header
+$i = "";
+$h = "";
+$t = "";
 
-$i  = $_GET['i'];
-$h  = $_SESSION['home'];
-$t  = $_SESSION['title'];
+if( array_key_exists('i', $_GET) ) {
+    $i  = $_GET['i'];
+}
+if( array_key_exists('home', $_SESSION) ) {
+    $h  = $_SESSION['home'];
+}
+if( array_key_exists('title', $_SESSION) ) {
+    $t  = $_SESSION['title'];
+}
 $l  = nuGetLanguage();
 $k1 = $GLOBALS['nuSetup']->set_inkfilepicker_key;
 
@@ -73,13 +82,31 @@ $(document).ready(function() {
 
 	var i            = nuGetID();
 
-        window.nuSession = new nuBuilderSession();
+	window.nuSession = new nuBuilderSession();
+
 	if(i === ''){                                                            //-- Main Desktop
 		toggleModalMode();	
 	}else{                                                                  //-- iFrame or new window
 		var pSession  = nuGetParentSession();
 		nuSession.setSessionID(pSession.nuSessionID);
 		var w         = document.defaultView.parent.nuSession.getWindowInfo(i,pSession);
+		
+//-- added by sc 2014-01-24
+
+		var alreadyDefined   = Array();
+
+		for (var key in w){
+			alreadyDefined.push(key);
+		}
+		
+		for (var key in document.defaultView.parent.nuFORM){
+			if(alreadyDefined.indexOf(key) == -1){
+				w[key] = document.defaultView.parent.nuFORM[key];           //-- add values from parent values (so they can be used as hash variables)
+			}
+		}
+		
+//-- end added by sc			
+			
 		nuBuildForm(w);                                                     //-- Edit or Browse
                 
 	}

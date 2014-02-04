@@ -136,7 +136,7 @@ function nuObjectSize(o,e,i,xAndY){
             'height'    : '0px',
             'width'     : '0px',
             'visibility': 'hidden'
-        })
+        });
 		e.setAttribute('tabindex',          '10000');
 	}
 
@@ -886,7 +886,6 @@ function nuRecordObjects(formType, formTop){
 		
 		if(o[i].row_type == 'b'){    //-- grid like subform
 				width   = nuGetGridWidth(o,i,sfObjects)+60;
-		}else{
 		}
 		
 		if(o[i].width == '0'){
@@ -1256,6 +1255,10 @@ function nuGetData(pAction){
 	var record      = {};
 	var fields      = [];
 	var field       = {};
+	
+	if(arguments.length != 1){
+		var pAction = '';
+	}
 
 	for(var i = 0 ; i < nuSession.subformName.length ; i++){                                                        //-- loop through form and subforms
 	
@@ -1279,7 +1282,7 @@ function nuGetData(pAction){
 				var row    = ("000" + String(R)).slice (-4);
 			}
 
-			for(var C = 1 ; C < cols.length ; C++){                                                         //-- loop through fields
+			for(var C = 1 ; C < cols.length ; C++){                                                     //-- loop through fields
 			
 				var id                    = name + row + cols[C].field;
 				field                     = {};
@@ -1289,42 +1292,45 @@ function nuGetData(pAction){
 				
 				if($('#'+id).attr('data-saveable')=='1'){                                               //-- is this saveable data
 				
-					if(cols[C].type == 'listbox'){                                                  //-- if listbox then create a string
+					if(cols[C].type == 'listbox'){                                                      //-- if listbox then create a string
 						if(v == null){
-							v = '';
+							v             = '';
 						}else{
-							v = v.join(nuSession.nuBuilderSeparator);
+							v             = v.join(nuSession.nuBuilderSeparator);
 						}
-                        match     = v;
+                        match             = v;
                                                 
 					}else{
-						v         =  formatter.formatField($('#' + id).attr('data-nuformat') ,v,true);  //-- format value for sql string
+						v                 =  formatter.formatField($('#' + id).attr('data-nuformat') ,v,true);  //-- format value for sql string
 					}
-//console.log(id, nuSaveRowValue(name, row), '=', match);
 
 					if(nuCheckStartValue(id) != match || nuFORM.cloned == '1'){
-                        save          = 1;
+                        save              = 1;
 					} 
                                         
-                    field             = {field : cols[C].field, value : v, save : save};
+                    field                 = {field : cols[C].field, value : v, save : save};
+
+					if(pAction == 'create hash variables'){
+						nuSetHash(cols[C].field, v)
+					}
                     
                     fields.push(field);
 				}
 			}
 
 			if($('#'+name+row+'_nuPrimaryKey').length == 0){
-				var PK        = $('#nuFormPrimaryKey').val();
+				var PK                    = $('#nuFormPrimaryKey').val();
 			}else{
-				var PK        = $('#'+name+row+'_nuPrimaryKey').val();
+				var PK                    = $('#'+name+row+'_nuPrimaryKey').val();
 			}
 
-			if(arguments.length == 1){  //-- delete all records
-				var DR        = 'yes';
+			if(pAction == 'delete all'){  //-- delete all records
+				var DR                    = 'yes';
 			}else{
-				var DR        = $('#'+name+row+'_nuDelete').is(':checked') ? 'yes' : 'no';
+				var DR                    = $('#'+name+row+'_nuDelete').is(':checked') ? 'yes' : 'no';
 			}
                         
-			record                = {primary_key : PK, delete_record : DR, fields : fields};
+			record                        = {primary_key : PK, delete_record : DR, fields : fields};
 			records.push(record);
 		}
 

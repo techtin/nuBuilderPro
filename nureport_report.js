@@ -1,14 +1,14 @@
 
 function nuPaper(p){
 
-    if(p == 'A4P'){return '297,210';}
-    if(p == 'A5P'){return '210,148';}
+    if(p == 'A4P')    {return '297,210';}
+    if(p == 'A5P')    {return '210,148';}
     if(p == 'LetterP'){return '279.4,215.9';}
-    if(p == 'LegalP'){return '355.6,215.9';}
-    if(p == 'A4L'){return '210,297';}
-    if(p == 'A5L'){return '148,210';}
+    if(p == 'LegalP') {return '355.6,215.9';}
+    if(p == 'A4L')    {return '210,297';}
+    if(p == 'A5L')    {return '148,210';}
     if(p == 'LetterL'){return '215.9,279.4';}
-    if(p == 'LegalL'){return '215.9,355.6';}
+    if(p == 'LegalL') {return '215.9,355.6';}
     return '0,0';
 }
 
@@ -58,7 +58,7 @@ function nuReportDialog(){
         REPORT.height      = $('#nuPageHeight').val();
         REPORT.paper       = $('#nuPageType').val();
         REPORT.orientation = $('#nuPageOrientation').val();
-        nuChangeWidth(REPORT.width)
+        nuChangeWidth(REPORT.width);
         nuSaveReport();
         return true;
 

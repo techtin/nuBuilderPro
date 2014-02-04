@@ -1,6 +1,6 @@
 function nuOBJECTCopy(i,s){
 
-        this.id                = i;
+        this.id              = i;
 
         this.group           = s.group;                         //-- Group it belongs to.
         this.section         = s.section;                         //-- Header or Footer.
@@ -51,23 +51,23 @@ function nuCloneObjects(paste){
     for(var  g = 0 ; g < REPORT.groups.length ; g ++){    //-- unselect all Objects
         for(var  s = 0 ; s < REPORT.groups[g].sections.length ; s ++){
             for(var  ob = 0 ; ob < REPORT.groups[g].sections[s].objects.length ; ob ++){
-                if (paste) tocopy = REPORT.groups[g].sections[s].objects[ob].tocopy
+                if (paste) tocopy = REPORT.groups[g].sections[s].objects[ob].tocopy;
                 else tocopy = REPORT.groups[g].sections[s].objects[ob].selected;
                 if(tocopy == 1){
                 
-                    var st            = parseInt(REPORT.groups[g].sections[s].top);
-                    var m             = parseInt(REPORT.groups[g].sections[s].margins);
+                    var st     = parseInt(REPORT.groups[g].sections[s].top);
+                    var m      = parseInt(REPORT.groups[g].sections[s].margins);
 
-                    var i             = nuNextID();
-                    var o             = new nuCopyObject(REPORT.groups[g].sections[s].objects[ob]);
-                    o.id              = 'object' + i;
-                    o.left            = REPORT.groups[g].sections[s].objects[ob].left + 3;
-                    o.zIndex          = REPORT.groups[g].sections[s].objects[ob].zIndex + 1;
-                    o.minRows         = REPORT.groups[g].sections[s].objects[ob].minRows;
-                    o.maxRows         = REPORT.groups[g].sections[s].objects[ob].maxRows;
-                    o.selected        = 0;
-                    o.toselect        = 1;
-                    o.name            = o.id;
+                    var i      = nuNextID();
+                    var o      = new nuCopyObject(REPORT.groups[g].sections[s].objects[ob]);
+                    o.id       = 'object' + i;
+                    o.left     = REPORT.groups[g].sections[s].objects[ob].left + 3;
+                    o.zIndex   = REPORT.groups[g].sections[s].objects[ob].zIndex + 1;
+                    o.minRows  = REPORT.groups[g].sections[s].objects[ob].minRows;
+                    o.maxRows  = REPORT.groups[g].sections[s].objects[ob].maxRows;
+                    o.selected = 0;
+                    o.toselect = 1;
+                    o.name     = o.id;
 
                     window.REPORT.groups[g].sections[s].objects.push(o);
 
@@ -79,24 +79,24 @@ function nuCloneObjects(paste){
                     d.setAttribute('onmousemove', 'nuMouseMove(event)');
 
                     $('#nuSectionIndex20').after(d);
-                    $('#' + d.id).css( 'cursor',  'cell');
-                    $('#' + d.id).css( 'overflow',  'hidden');
-                    $('#' + d.id).addClass( 'nuReportObject');
-                    $('#' + d.id).css( 'position', 'absolute');
-
-                    $('#' + d.id).css( 'z-index', o.zIndex);
-                    $('#' + d.id).css( 'height', o.height);
-                    $('#' + d.id).css( 'left',  o.left + 30);
-                    $('#' + d.id).css( 'top',   o.top + st + m);
-                    $('#' + d.id).css( 'width', o.width);
-                    $('#' + d.id).css( 'border-style',  'solid');
-                    $('#' + d.id).css( 'border-width',  o.borderWidth);
-                    $('#' + d.id).css( 'font-family',  o.fontFamily);
-                    $('#' + d.id).css( 'font-size',  o.fontSize + 'px');
-
-                    $('#' + d.id).css( 'color',  o.fontColor);
-                    $('#' + d.id).css( 'background-color',  o.backgroundColor);
-                    $('#' + d.id).css( 'text-align',  o.textAlign);
+                    $('#' + d.id).css({
+                        'cursor'           : 'cell',
+                        'overflow'         : 'hidden',
+                        'position'         : 'absolute',
+                        'z-index'          : o.zIndex,
+                        'height'           : o.height,
+                        'left'             : o.left + 30,
+                        'top'              : o.top + st + m,
+                        'width'            : o.width,
+                        'border-style'     : 'solid',
+                        'border-width'     : o.borderWidth,
+                        'font-family'      : o.fontFamily,
+                        'font-size'        : o.fontSize + 'px',
+                        'color'            : o.fontColor,
+                        'background-color' : o.backgroundColor,
+                        'text-align'       : o.textAlign,
+                    })
+                    .addClass( 'nuReportObject');
 
                     switch(o.fontWeight) {
                         case "I":
