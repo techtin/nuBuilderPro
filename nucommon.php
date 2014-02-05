@@ -1533,8 +1533,8 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 	if (!empty($setup->set_smtp_host)) 		    { $SMTPhost = trim($setup->set_smtp_host);}                            else{$errorText .= "SMTP Host not set.\n";}
 	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}                    else{$errorText .= "SMTP From Address not set.\n";}
 	if (!empty($setup->set_smtp_port)) 		    { $SMTPport = intval($setup->set_smtp_port);}                          else{$errorText .= "SMTP PORT not set.\n";}
-    if ($r->sus_name == '') 		            { $errorText .= "User Reply-To-Name not set.\n";}
-    if ($r->sus_email == '')                    { $errorText .= "User Reply-Email not set.\n";}
+    if ($r->sus_name == '') 		            { $errorText .= "User Reply-To-Name not set in settings.\n";}
+    if ($r->sus_email == '')                    { $errorText .= "User Reply-Email not set in settings.\n";}
 	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else{$SMTPauth = false;}
 	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	                   else{$SMTPname = "nuBuilder";}
 
@@ -1543,47 +1543,54 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 		nuDisplayError("Unable to send SMTP Email, the following error(s) occured:\n" . $errorText);
 
 		return;
+        
 	}
 
-    $s                                           = "SELECT * FROM  zzzsys_report WHERE sre_code = '$pPDForPHP'";
-    $t                                           = nuRunQuery($s);
-    $r                                           = db_fetch_object($t);
- 
-    if($r != '') {
+
+
+
+
+
+    if($hashData['nu_pdf_code'] != '') {
+    
         nuV('code', $pPDForPHP);
         nuV('call_type', 'printpdf');
         nuV('filename', $hashData['nu_email_file_name']);
-		
-        $hashData['parent_record_id']            = $pPDForPHP;
+
+        $hashData['parent_record_id']            = $hashData['nu_pdf_code'];
         $tmp_nu_file                             = nuPDForPHPParameters($hashData);
 		$finfo                                   = finfo_open(FILEINFO_MIME_TYPE);                     //-- check to see if the file being sent is a PDF file
 		
-		if(finfo_file($finfo, $tmp_nu_file) != 'application/pdf') {
+        if(finfo_file($finfo, $tmp_nu_file) != 'application/pdf') {
 		
 			nuDisplayError(file_get_contents($tmp_nu_file, true));
 			finfo_close($finfo);
-			
+
 			return;
 			
 		}
-		
-    } else {
+
+    } else if($hashData['nu_php_code'] !=  '') {                                                          //-- Run PHP Code
+    
         $s                                       = "SELECT slp_php FROM  zzzsys_php WHERE slp_code = '$pPDForPHP'";
         $t                                       = nuRunQuery($s);
         $r                                       = db_fetch_object($t);
-        if($r != '') {                                                                                      //-- run some php
-            $php                                 = nuReplaceHashes($r->slp_php, $hashData);
-            eval($php);
-            
-            return;
 
-        }
+        $php                                     = nuReplaceHashes($r->slp_php, $hashData);
+        eval($php);
+        return;
+            
+
+
+
     }
-    if($pPDForPHP != '') {                                                                                  //-- no file to attach, send normal email
+
+    if($hashData['nu_pdf_code'] !=  '') {                                                              //-- File to attach, send with file
         $filelist[$hashData['nu_email_file_name']]  = $tmp_nu_file;
 
     }
-	
+
+
 	try{
 
 		$mail                        = new PHPMailer();

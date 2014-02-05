@@ -296,6 +296,10 @@ function nuGetIframeID(){
 
 }
 
+function nuDenied(){
+
+}
+
 function nuOpenObjectForm(pThis){
 
 	if(!nuIsGA()){return;}
@@ -1484,9 +1488,13 @@ function nuInsideSubform(p) {
 	}
 }
 
-function nuEmailPDF(pPDF, pPHP, pEmailTo, pSubject, pMessage, pFileName) {
-    nuEmail(pPDF, pPHP, pEmailTo, pSubject, pMessage, pFileName);
+
+function nuEmailPDF(pCode, pEmailTo, pAction, pSubject, pMessage, pCallType, pFileName) {
+    if (typeof pAction == 'undefined' || pAction == ''){nuEmail(pCode, '', pEmailTo, pSubject, pMessage, pFileName);}  //-- If pAction is defined, PHP Code
+    else {nuEmail('', pCode, pEmailTo, pSubject, pMessage, pFileName);}
 }
+   
+
 
 function nuEmail(pPDF, pPHP, pEmailTo, pSubject, pMessage, pFileName) {
 
@@ -1494,16 +1502,16 @@ function nuEmail(pPDF, pPHP, pEmailTo, pSubject, pMessage, pFileName) {
 	if (typeof pEmailTo  == 'undefined'){var pEmailTo  = '';}
 	if (typeof pSubject  == 'undefined'){var pSubject  = '';}
 	if (typeof pMessage  == 'undefined'){var pMessage  = '';}
-	if (typeof pFileName == 'undefined'){var pFileName = '';}
+	if (typeof pFileName == 'undefined'){var pFileName = 'Report.pdf';} //-- Default name for Reports
 
-	nuSetHash('nu_pdf_code', pPDF);                                    //-- set up some hash variables
+	nuSetHash('nu_pdf_code', pPDF);                                     //-- set up some hash variables
 	nuSetHash('nu_php_code', pPHP);
 	nuSetHash('nu_email_to', pEmailTo);
 	nuSetHash('nu_email_subject', pSubject);
 	nuSetHash('nu_email_message', pMessage);
 	nuSetHash('nu_email_file_name', pFileName);
 
-	nuGetData('create hash variables');                                //-- set currrent Form's values as hash variables so they can be referenced as if they were on the email Form.
+	nuGetData('create hash variables');                                 //-- set currrent Form's values as hash variables so they can be referenced as if they were on the email Form.
 	
 	nuOpenFormInFrame('nuemail','-1');
 
