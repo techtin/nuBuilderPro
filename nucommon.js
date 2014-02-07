@@ -1510,6 +1510,7 @@ function nuEmail(pPDF, pPHP, pEmailTo, pSubject, pMessage, pFileName) {
 	nuSetHash('nu_email_subject', pSubject);
 	nuSetHash('nu_email_message', pMessage);
 	nuSetHash('nu_email_file_name', pFileName);
+	nuSetHash('nu_previous_record_id', nuFORM.record_id);
 
 	nuGetData('create hash variables');                                 //-- set currrent Form's values as hash variables so they can be referenced as if they were on the email Form.
 	
