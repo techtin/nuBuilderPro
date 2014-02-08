@@ -414,19 +414,23 @@ function nuHashData(){
 
 	$v                             = nuV();
 	
+//nuDebug('V : ' . print_r($v,1));	
+
     foreach($v as $key => $value){                        //-- add nuV() to form_data
     
 		$used                      = false;
+		
+		if(isset($_POST['nuWindow']['form_data'])){
+			for($i = 0 ; $i < count($_POST['nuWindow']['form_data']['data'][0]['records'][0]['fields']) ; $i++){               //-- reapply hash variables from calling edit page (incase over written by $_POST['nuWindow'])
 
-		for($i = 0 ; $i < count($_POST['nuWindow']['form_data']['data'][0]['records'][0]['fields']) ; $i++){               //-- reapply hash variables from calling edit page (incase over written by $_POST['nuWindow'])
-
-			if($_POST['nuWindow']['form_data']['data'][0]['records'][0]['fields'][$i]['field'] == $key){
-			
-				$used              = true;
-				break;
+				if($_POST['nuWindow']['form_data']['data'][0]['records'][0]['fields'][$i]['field'] == $key){
+				
+					$used              = true;
+					break;
+					
+				}
 				
 			}
-			
 		}
 
 		if(!$used){
@@ -443,6 +447,8 @@ function nuHashData(){
 	
 	$setup                         = $GLOBALS['nuSetup'];                                                                          //-- Read SMTP AUTH Settings from zzsys_setup table
 	
+	$h['nu_denied']                = $setup->set_denied;                      //-- hide ids like .. eg. nu%
+
 	$h['nu_smtp_username']         = $setup->set_smtp_username;
 	$h['nu_smtp_password']         = $setup->set_smtp_password;
 	$h['nu_smtp_host']             = $setup->set_smtp_host;

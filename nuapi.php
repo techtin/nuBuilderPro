@@ -1151,8 +1151,19 @@ function nuGetAutocompleteData($hashData) {
 
     $searchIn     = $code;
 
-    $s            = "SELECT $code, $desc FROM $f->sfo_table WHERE $searchIn like '%$searchFor%' or $desc like '%$searchFor%'";
+	
+    $SQL            = new nuSqlString($f->sfo_sql);
+	
+	if($SQL->where == ''){
+		$SQL->where = "WHERE";
+	}else{
+		$SQL->where = "$SQL->where AND";
+	}
+//nuDebug(print_r($hashData,1));
+	$s            = "SELECT $code, $desc $SQL->from $SQL->where ($searchIn like '%$searchFor%' or $desc like '%$searchFor%')";
+//  $s            = "SELECT $code, $desc FROM $f->sfo_table WHERE $searchIn like '%$searchFor%' or $desc like '%$searchFor%'";
     $s            = nuReplaceHashes($s, $hashData);
+nuDebug($s);	
     $T            = nuRunQuery($s);
     if (nuErrorFound()) {
         return;
@@ -1214,46 +1225,57 @@ function nuGetLookupData($hashData) {
 	eval($o->sob_lookup_php);                                                                       //-- define any php functions that may be used
 	
     while ($r = db_fetch_object($t)) {
-        $su = $su . ', ' . nuGetFieldFuctionValue($r->zzzsys_slo_field_function_name, $o);
+	
+        $su         = $su . ', ' . nuGetFieldFuctionValue($r->zzzsys_slo_field_function_name, $o);
         array_push($ON, $r->zzzsys_slo_object_name);
-    }
-    if (nuV('call_type') == 'lookupid') {
-        $searchIn = $id;
-    } else {
-        $searchIn = $code;
+		
     }
 	
-//  $s           = "SELECT $id, $code, $desc $su FROM $f->sfo_table WHERE $searchIn = '$searchFor'";
-    $SQL         = new nuSqlString($f->sfo_sql);
-    $s           = "SELECT $id, $code, $desc $su $SQL->from WHERE $searchIn = '$searchFor'";
-    $s           = nuReplaceHashes($s, $hashData);
-    $T           = nuRunQuery($s);
+    if (nuV('call_type') == 'lookupid') {
+        $searchIn   = $id;
+    } else {
+        $searchIn   = $code;
+    }
+	
+    $SQL            = new nuSqlString($f->sfo_sql);
+	
+	if($SQL->where == ''){
+		$SQL->where = "WHERE";
+	}else{
+		$SQL->where = "$SQL->where AND";
+	}
+
+    $s              = "SELECT $id, $code, $desc $su $SQL->from $SQL->where ($searchIn = '$searchFor')";
+//    $s            = "SELECT $id, $code, $desc $su $SQL->from WHERE $searchIn = '$searchFor'";
+    $s              = nuReplaceHashes($s, $hashData);
+    $T              = nuRunQuery($s);
     if (nuErrorFound()) {
         return;
     }
-    $rows        = $T->rowCount();
+    $rows           = $T->rowCount();
 
     if ($rows == 1) {
-        $r    = db_fetch_row($T);
+        $r          = db_fetch_row($T);
     } elseif ($rows == 0) {
-        $r[0] = '';
-        $r[1] = '';
-        $r[2] = '';
+        $r[0]       = '';
+        $r[1]       = '';
+        $r[2]       = '';
     } else {
-        $r[0] = 'many records';
-        $r[1] = 'many records';
-        $r[2] = 'many records';
+        $r[0]       = 'many records';
+        $r[1]       = 'many records';
+        $r[2]       = 'many records';
     }
-    $lf = array();
+	
+    $lf             = array();
 	
 	if($rows == 0) {
 		for($i = 0; $i < count($ON); $i++) {
-			$lf[$ON[$i]] = '';
+			$lf[$ON[$i]]      = '';
 		}
-	} else {
+	}else{
 		for ($i = 3; $i < count($r); $i++) {
-            $objName      = $ON[$i - 3];
-			$lf[$objName] = nuFormatValue($r[$i], nuGetFormatNumber(nuV('parent_form_id'), $objName));
+            $objName          = $ON[$i - 3];
+			$lf[$objName]     = nuFormatValue($r[$i], nuGetFormatNumber(nuV('parent_form_id'), $objName));
 		}
 	}
 
@@ -2346,23 +2368,27 @@ function nuGetObjectiFrame($o,$hashData) {
 
 function nuBaseObject($o, $recordID, $hashData) {
 
-    $nuObject        = new stdClass;
+    $nuObject                = new stdClass;
 
     if ($o == '') {
         return $nuObject;
-    }                        //-- use to create a Primary Key
+    }
 
+	if($o->sob_all_title===NULL){                                             //-- Stop titles displaying NULL - added by OldShatterhand77 2014-02-08
+		$nuObject->title     = '';
+	}else{
+		$nuObject->title     = $o->sob_all_title;
+	}
+	
     $nuObject->o_id          = $o->zzzsys_object_id;
     $nuObject->r_id          = $recordID;
     $nuObject->f_id          = $o->sob_zzzsys_form_id;
     $nuObject->type          = $o->sob_all_type;
     $nuObject->field         = $o->sob_all_name;
-//  $nuObject->class         = $o->sob_all_class;
     $nuObject->column        = $o->sob_all_column_number;
     $nuObject->order         = $o->sob_all_order_number;
     $nuObject->tab           = $o->sob_all_tab_number;
     $nuObject->tab_title     = $o->sob_all_tab_title;
-    $nuObject->title         = $o->sob_all_title;
     $nuObject->top           = $o->sob_all_top;
     $nuObject->left          = $o->sob_all_left;
     $nuObject->height        = $o->sob_all_height;

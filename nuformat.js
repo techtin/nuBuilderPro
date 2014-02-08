@@ -445,9 +445,9 @@ function nuBuilderSession(){
 		$('#' + e.id).css( 'position', 'absolute');
 		$('#' + e.id).html(this.subformRowHTML[i]);
 
-                $('#' + e.id + ' .ui-autocomplete-input').each(function(i){
-                    nuAutocomplete(this);
-                })
+			$('#' + e.id + ' .ui-autocomplete-input').each(function(i){
+				nuAutocomplete(this);
+			})
 
 		$('#'+now+'_nuDelete').attr('checked','checked');
 	}

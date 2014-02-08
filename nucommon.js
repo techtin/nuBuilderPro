@@ -304,6 +304,12 @@ function nuOpenObjectForm(pThis){
 
 	if(!nuIsGA()){return;}
 
+	if(window.nu_denied != ''){                           //-- stop access to system tables
+		if(nuFORM.form_id.substring(0,2) == 'nu'){
+			return;
+		}
+	}
+
 	var id                  = $('#'+pThis.id).attr('data-id');
 	if(window.nuShiftKey){
 		nuMoveObject(pThis.id.substr(6), 10, 0);	
@@ -319,6 +325,12 @@ function nuOpenFormForm(pThis){
 
     if(!nuIsGA()){return;}
         
+	if(window.nu_denied != ''){                           //-- stop access to system tables
+		if(nuFORM.form_id.substring(0,2) == 'nu'){
+			return;
+		}
+	}
+
 	var id              = $('#'+pThis.id).attr('data-id');
 
 	if(window.nuControlKey){                              //-- held down manually
@@ -333,6 +345,7 @@ function nuOpenFormForm(pThis){
 }
 
 function nuOpenForm(parentFormID, parentRecordID, formID, recordID, formTitle, filter){
+
     var w              = new nuWindow();
 	w.form_id          = formID;
 	w.parent_form_id   = parentFormID;
@@ -1146,6 +1159,25 @@ function nuLookupID(pThis){  //-- get lookup from id
 	w.prefix         = $('#'+pThis.id).attr('data-prefix');
 	w.object_id      = $('#'+pThis.id).attr('data-nuobject');
 	w.form_id        = $('#'+pThis.id).attr('data-form');
+	
+//-- added by sc 2014-02-08
+
+	nuGetData('create hash variables');                                 //-- set currrent Form's values as hash variables (nuFORM properties)
+	
+	var alreadyDefined   = Array();
+
+	for (var key in w){
+		alreadyDefined.push(key);
+	}
+	
+	for (var key in nuFORM){
+		if(alreadyDefined.indexOf(key) == -1){
+			w[key] = nuFORM[key];                                   //-- add values from parent values (so they can be used as hash variables)
+		}
+	}
+		
+//-- end added by sc			
+			
 	var o            = $('#'+pThis.id).attr('data-nuobject');
 	var oprefix      = $('#'+pThis.id).attr('data-prefix');
 	var request      = $.ajax({
@@ -1184,7 +1216,24 @@ function nuLookupCode(pThis){  //-- get lookup from code
 	w.object_id      = $('#'+pThis.id).attr('data-nuobject');
 	w.form_id        = $('#'+pThis.id).attr('data-form');
 
-    
+//-- added by sc 2014-02-08
+
+	nuGetData('create hash variables');                                 //-- set currrent Form's values as hash variables (nuFORM properties)
+
+	var alreadyDefined   = Array();
+
+	for (var key in w){
+		alreadyDefined.push(key);
+	}
+	
+	for (var key in nuFORM){
+		if(alreadyDefined.indexOf(key) == -1){
+			w[key] = nuFORM[key];                                   //-- add values from parent values (so they can be used as hash variables)
+		}
+	}
+		
+//-- end added by sc			
+			
     var prev = pThis._prevValue;    
     
 	var request  = $.ajax({
@@ -1218,9 +1267,9 @@ function nuLookupCode(pThis){  //-- get lookup from code
 
 }
 
+
 function nuAutocomplete(e) {
 
-        
         var w        = new nuWindow();
         w.call_type  = 'autocomplete';
         w.title      = '';
@@ -1278,6 +1327,10 @@ function nuAutocomplete(e) {
 
      
 }
+
+
+
+
 
 function nuLogin(){
 	var w              = new nuWindow();
@@ -1390,8 +1443,19 @@ function nuMoveObject(id, top, left){
 
 
 function nuIsGA(){
+
+	if(window.nu_denied != ''){
+	
+		if(nuFORM.form_id.substring(0,2) == 'nu'){
+			return false;                                    //-- stop access to system tables
+		}else{
+			return window.nu_user_name == 'globeadmin';
+		}
+		
+	}else{
+		return window.nu_user_name == 'globeadmin';
+	}
     
-    return window.nu_user_name == 'globeadmin';
 
 }
     
