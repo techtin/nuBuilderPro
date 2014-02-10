@@ -42,14 +42,15 @@ if( array_key_exists('title', $_SESSION) ) {
 $l  = nuGetLanguage();
 
 $k1 = $GLOBALS['nuSetup']->set_inkfilepicker_key;
+
 $de = $GLOBALS['nuSetup']->set_denied;
-$de = $de == '' ? "[]" : $de;
+
 
 print "
 
 <script>
 
-window.nuDenied = $de;
+window.nu_denied = '$de';
 
 filepicker.setKey('$k1');
 
