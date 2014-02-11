@@ -296,16 +296,12 @@ function nuGetIframeID(){
 
 }
 
-function nuDenied(){
-
-}
-
 function nuOpenObjectForm(pThis){
 
 	if(!nuIsGA()){return;}
 
-	if(window.nu_denied != ''){                           //-- stop access to system tables
-		if(nuFORM.form_id.substring(0,2) == 'nu'){
+	if(window.nuDenied != ''){                           //-- stop access to system tables
+		if(nuIsSystem()){
 			return;
 		}
 	}
@@ -325,8 +321,8 @@ function nuOpenFormForm(pThis){
 
     if(!nuIsGA()){return;}
         
-	if(window.nu_denied != ''){                           //-- stop access to system tables
-		if(nuFORM.form_id.substring(0,2) == 'nu'){
+	if(window.nuDenied != ''){                           //-- stop access to system tables
+		if(nuIsSystem() ||  nuFORM.form_id == 'nuhome'){ //-- nuIsSystem() allows for 'nuhome' but it shouldn't be here
 			return;
 		}
 	}
@@ -1270,23 +1266,41 @@ function nuLookupCode(pThis){  //-- get lookup from code
 
 function nuAutocomplete(e) {
 
-        var w        = new nuWindow();
-        w.call_type  = 'autocomplete';
-        w.title      = '';
-        w.tip        = '';
-        w.lookup_id  = $(e).attr('data-id');
-        w.prefix     = $(e).attr('data-prefix');
-        w.object_id  = $(e).attr('data-nuobject');
-		w.form_id	 = $(e).attr('data-form');
-
         $(e).autocomplete({
             minLength: 2,
             autoFocus: false,
             delay: 300,
 
             source: function( request, response ) {
-                w.record_id = request.term;
 
+				//-- added by sc 2014-02-10
+
+				var w        = new nuWindow();
+				w.call_type  = 'autocomplete';
+				w.title      = '';
+				w.tip        = '';
+				w.lookup_id  = $(e).attr('data-id');
+				w.prefix     = $(e).attr('data-prefix');
+				w.object_id  = $(e).attr('data-nuobject');
+				w.form_id	 = $(e).attr('data-form');
+
+				nuGetData('create hash variables');                                 //-- set currrent Form's values as hash variables (nuFORM properties)
+
+				var alreadyDefined   = Array();
+
+				for (var key in w){
+					alreadyDefined.push(key);
+				}
+
+				for (var key in nuFORM){
+					if(alreadyDefined.indexOf(key) == -1){
+						w[key] = nuFORM[key];                                   //-- add values from parent values (so they can be used as hash variables)
+					}
+				}
+						
+				//-- end added by sc			
+							
+                w.record_id = request.term;
                  $.ajax({
                     url      : "nuapi.php",
                     type     : "POST",
@@ -1303,14 +1317,14 @@ function nuAutocomplete(e) {
 
             },
             select: function( event, ui ) {
+			
                 event.preventDefault();
                 if( ui.item !== null ) {
                     $(this).val(ui.item.value);
 
                 }
                 nuLookupCode(this);
-                //$(this).val(ui.item.value.split("-")[0])
-                //return false;
+				
             },
             change: function( event, ui ) {     
 
@@ -1444,9 +1458,9 @@ function nuMoveObject(id, top, left){
 
 function nuIsGA(){
 
-	if(window.nu_denied != ''){
+	if(window.nuDenied != ''){
 	
-		if(nuFORM.form_id.substring(0,2) == 'nu'){
+		if(nuIsSystem()){
 			return false;                                    //-- stop access to system tables
 		}else{
 			return window.nu_user_name == 'globeadmin';
@@ -1460,6 +1474,13 @@ function nuIsGA(){
 }
     
 
+function nuIsSystem(){
+
+	return nuFORM.form_id.substring(0,2) == 'nu' && nuFORM.form_id != 'nuhome';
+	
+}	
+	
+	
 function nuIsMoveable(){
     
     return window.nuMoveable;
@@ -1555,7 +1576,7 @@ function nuInsideSubform(p) {
 
 function nuEmailPDF(pCode, pEmailTo, pAction, pSubject, pMessage, pCallType, pFileName) {
     if (typeof pAction == 'undefined' || pAction == ''){nuEmail(pCode, '', pEmailTo, pSubject, pMessage, pFileName);}  //-- If pAction is defined, PHP Code
-    else {nuEmail('', pCode, pEmailTo, pSubject, pMessage, pFileName);}
+    else {nuEmail('', pAction, pEmailTo, pSubject, pMessage, pFileName);}
 }
    
 

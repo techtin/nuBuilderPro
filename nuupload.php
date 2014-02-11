@@ -2,13 +2,13 @@
 
 require_once('nucommon.php'); 
 
-$uploaddir      = 'tmp/';
+$uploaddir      = sys_get_temp_dir();
 $dq             = '"';
 $J              = array();
-
+nuDebug(print_r($_FILES ,1));
 foreach ($_FILES as $key){                          //-- loop through uploaded files
 
-	$uploadfile = $uploaddir . basename($key['name']);
+	$uploadfile = $uploaddir .'/'. basename($key['name']);
 
 	if(move_uploaded_file($key['tmp_name'], $uploadfile)){
 	   $status = "File uploaded ready for saving..\n";

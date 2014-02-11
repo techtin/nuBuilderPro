@@ -189,40 +189,43 @@ function addBrowseTitles(o){
             });
 		}
 		
-		var e = document.createElement('input');                 //-- Search Toggle
-		e.setAttribute('id', 'nusearch_'+cID);
-		e.setAttribute('type', 'checkbox');
-                
-		$('#title_'+cID).append(e);
+		if(t != ''){                                                 //-- has a title
+		
+			var e = document.createElement('input');                 //-- Search Toggle
+			e.setAttribute('id', 'nusearch_'+cID);
+			e.setAttribute('type', 'checkbox');
+					
+			$('#title_'+cID).append(e);
 
-        if(nuIsSearchable(columns, cID)){
-            $('#' + e.id).attr('checked','checked');
-        }
-                
-		$('#' + e.id).addClass('nuSearchColumn')
-		.css( 'margin' , '3px 0px 0px 0px')
-        .dblclick(
-                function (){
-                    nuCheckAllBoxes(this);
-                }
-        );
-        
-		var e = document.createElement('br');
-		$('#title_'+cID).append(e);
-		var e = document.createElement('span');                  //-- Search Toggle
-		e.setAttribute('id', 'nusort_'+i);
-		e.setAttribute('onclick', 'nuSortBrowse('+(i+1)+')');
-		$('#title_'+cID).append(e);
-		$('#' + e.id).html(' '+t+' ')
-		.hover(
-				function (){
-						$('#' + this.id).css('color', 'red');
-				}, 
-				function (){
-						$('#' + this.id).css('color', '');
-				}
-		);
-        
+			if(nuIsSearchable(columns, cID)){
+				$('#' + e.id).attr('checked','checked');
+			}
+					
+			$('#' + e.id).addClass('nuSearchColumn')
+			.css( 'margin' , '3px 0px 0px 0px')
+			.dblclick(
+					function (){
+						nuCheckAllBoxes(this);
+					}
+			);
+			
+			var e = document.createElement('br');
+			$('#title_'+cID).append(e);
+			var e = document.createElement('span');                  //-- Search Toggle
+			e.setAttribute('id', 'nusort_'+i);
+			e.setAttribute('onclick', 'nuSortBrowse('+(i+1)+')');
+			$('#title_'+cID).append(e);
+			$('#' + e.id).html(' '+t+' ')
+			.hover(
+					function (){
+							$('#' + this.id).css('color', 'red');
+					}, 
+					function (){
+							$('#' + this.id).css('color', '');
+					}
+			);
+			
+		}
         
         
 		

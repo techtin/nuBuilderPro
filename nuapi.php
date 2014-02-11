@@ -1159,11 +1159,9 @@ function nuGetAutocompleteData($hashData) {
 	}else{
 		$SQL->where = "$SQL->where AND";
 	}
-//nuDebug(print_r($hashData,1));
 	$s            = "SELECT $code, $desc $SQL->from $SQL->where ($searchIn like '%$searchFor%' or $desc like '%$searchFor%')";
 //  $s            = "SELECT $code, $desc FROM $f->sfo_table WHERE $searchIn like '%$searchFor%' or $desc like '%$searchFor%'";
     $s            = nuReplaceHashes($s, $hashData);
-nuDebug($s);	
     $T            = nuRunQuery($s);
     if (nuErrorFound()) {
         return;
@@ -1362,6 +1360,35 @@ function nuGetEditForm($hashData) {
     $data            = nuGetObjectsForOneRecord('form', $formID, nuV('record_id'), $hashData);
     $buttons         = nuGetEditButtons($formID, $hashData);
     $J['buttons']    = $buttons;
+
+	if(count($data['objects']) == 1){                                           //-- fake an Object
+	
+		$nuObject                = new stdClass;
+
+		$nuObject->title         = '';
+		$nuObject->o_id          = 'nu_fake';
+		$nuObject->r_id          = '';
+		$nuObject->f_id          = $formID;
+		$nuObject->type          = 'words';
+		$nuObject->field         = 'nu_fake_id';
+		$nuObject->column        = '1';
+		$nuObject->order         = '1';
+		$nuObject->tab           = '1';
+		$nuObject->tab_title     = 'No Objects';
+		$nuObject->top           = '';
+		$nuObject->left          = '';
+		$nuObject->height        = '0';
+		$nuObject->no_blanks     = '0';
+		$nuObject->read_only     = '0';
+		$nuObject->no_duplicates = '0';
+		$nuObject->align         = 'l';
+		$nuObject->display       = '1';
+		$nuObject->events        = '[]';
+		$nuObject->width         = '1';
+
+		$data['objects'][]       = $nuObject;
+	}
+		
     $J['objects']    = $data['objects'];
     $J['records']    = $data['records'];
     $J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
@@ -1478,19 +1505,19 @@ $m
 
 function nuGetBrowseForm($hashData) {
     
-    $formID            = nuV('form_id');
-    $pageNo            = nuV('page_number');
-    $J['session']      = nuV('session_id');
-    $J['breadcrumb']   = nuV('breadcrumb');
-    $J['call_type']    = nuV('call_type');
-    $J['edit_browse']  = nuV('edit_browse');
-    $J['form_id']      = nuV('form_id');
-    $J['nu_user_name'] = nuV('nu_user_name');
-    $t                 = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
+    $formID                = nuV('form_id');
+    $pageNo                = nuV('page_number');
+    $J['session']          = nuV('session_id');
+    $J['breadcrumb']       = nuV('breadcrumb');
+    $J['call_type']        = nuV('call_type');
+    $J['edit_browse']      = nuV('edit_browse');
+    $J['form_id']          = nuV('form_id');
+    $J['nu_user_name']     = nuV('nu_user_name');
+    $t                     = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
     if (nuErrorFound()) {
         return;
     }
-    $r                 = db_fetch_object($t);
+    $r                     = db_fetch_object($t);
 
     if ($r->sfo_redirect_form_id == '') {
         $J['open_form_id'] = nuV('form_id');
@@ -1498,33 +1525,57 @@ function nuGetBrowseForm($hashData) {
         $J['open_form_id'] = $r->sfo_redirect_form_id;
     }
 
-    $J['search']          = nuV('search');
-    $J['filter']          = nuV('filter');
-    $J['form_title']      = nuF('sfo_title');
-    $J['set_title']       = nuV('set_title');
-    $js                   = nuF('sfo_custom_code_run_javascript');
-	$J['form_javascript'] = nuReplaceHashes($js, $hashData);
+    $J['search']           = nuV('search');
+    $J['filter']           = nuV('filter');
+    $J['form_title']       = nuF('sfo_title');
+    $J['set_title']        = nuV('set_title');
+    $js                    = nuF('sfo_custom_code_run_javascript');
+	$J['form_javascript']  = nuReplaceHashes($js, $hashData);
     
     if($GLOBALS['EXTRAJS'] != ''){
         $J['form_javascript'] = $J['form_javascript'] . "\n\n\n//-- Custom Javascript Added via the PHP function : nuAddJavascript()\n\n\n" . $GLOBALS['EXTRAJS'];
     }
 
-    $beforeBrowse       = nuReplaceHashes(nuF('sfo_custom_code_run_before_browse'), $hashData);
+    $beforeBrowse          = nuReplaceHashes(nuF('sfo_custom_code_run_before_browse'), $hashData);
     eval($beforeBrowse);
 
-    $data               = nuGetBrowseRecords($formID, $pageNo, $hashData);
-    $buttons            = nuGetBrowseButtons($formID, $hashData);
-    $J['buttons']       = $buttons;
-    $J['objects']       = $data['objects'];
-    $J['openform']      = $data['openform'];
-    $J['parentform']    = $data['parentform'];
-    $J['parentrecord']  = $data['parentrecord'];
-    $J['records']       = $data['records'];
-    $J['display']       = $data['display'];
-    $J['rowCount']      = $data['rowCount'];
-    $J['searchColumns'] = $data['searchColumns'];
-    $J['filterStrings'] = $data['filterStrings'];
-    $J['formats']       = json_encode(nuTextFormats());
+    $data                  = nuGetBrowseRecords($formID, $pageNo, $hashData);
+    $buttons               = nuGetBrowseButtons($formID, $hashData);
+    $J['buttons']          = $buttons;
+	$w                     = 0;
+	
+	for($i = 1 ; $i < count($data['objects']) ; $i++){
+		$w                 = $w + $data['objects'][$i]->width;
+	}
+	if($w == 0){                                             //-- show no records if no columns
+		    $J['records']  = array();
+	}else{
+		    $J['records']  = $data['records'];
+	}
+
+	if($w < 300){                                           //-- minimum length for a Browse Form
+	
+		$nuObject          = new stdClass;
+
+		$nuObject->title   = '';
+		$nuObject->value   = '';
+		$nuObject->align   = '';
+		$nuObject->format  = '';
+		$nuObject->width   = 300 - $w ;
+		$nuObject->search  = '';
+
+		$data['objects'][] = $nuObject;
+	}
+		
+    $J['objects']          = $data['objects'];
+    $J['openform']         = $data['openform'];
+    $J['parentform']       = $data['parentform'];
+    $J['parentrecord']     = $data['parentrecord'];
+    $J['display']          = $data['display'];
+    $J['rowCount']         = $data['rowCount'];
+    $J['searchColumns']    = $data['searchColumns'];
+    $J['filterStrings']    = $data['filterStrings'];
+    $J['formats']          = json_encode(nuTextFormats());
 
     return json_encode($J);
 }
@@ -1718,7 +1769,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     $FORM_TO_OPEN     = array();
     $PARENT_RECORD_ID = array();
     $searchFields     = array();
-    $searchColumns    = explode(',', nuV('search_columns'));             //-- create an array of searchable columns
+    $searchColumns    = explode(',', nuV('search_columns'));                     //-- create an array of searchable columns
     $columnCount      = 1;
     while ($R = db_fetch_object($T)) {                                           //-- create columns
         $nuObject         = new stdClass;
@@ -1732,11 +1783,11 @@ function nuGetBrowseRecords($f, $p, $hashData) {
         $OBJ[]            = $nuObject;
 
         if (count($searchColumns) == 1) {
-            nuV('search_columns', nuV('search_columns') . ",$columnCount");    //--  create a comma delimited string of searchable columns
+            nuV('search_columns', nuV('search_columns') . ",$columnCount");      //--  create a comma delimited string of searchable columns
             $searchFields[] = $R->sbr_display;
         } else {
             if (in_array($columnCount -1, $searchColumns)) {
-                $searchFields[] = $R->sbr_display;                           //-- searchable column
+                $searchFields[] = $R->sbr_display;                               //-- searchable column
             }
         }
 
@@ -1744,7 +1795,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     }
 
     if (nuV('edit_browse') == 'true') {
-        $hashData = array_merge($hashData, nuGetCurrentData());            //-- use values on current page for hash data
+        $hashData = array_merge($hashData, nuGetCurrentData());                  //-- use values on current page for hash data
     }
 
     $hashedSQL = $r->sfo_sql;
@@ -1765,6 +1816,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
         }
         $width = $width + $OBJ[$i]->width;
     }
+nuDebug(nuV('filter'));
 
     if (nuV('search') != '' or nuV('filter') != '') {
         if ($SQL->getWhere() == '') {
@@ -1782,6 +1834,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     $start        = $nuBrowse->rows * ($p - 1);
     $row          = 0;
     $formattedSQL = nuReplaceHashes($SQL->SQL, $hashData);
+nuDebug($formattedSQL);	
     $t            = nuRunQuery($formattedSQL);
     
     if (nuErrorFound()) {
@@ -2203,7 +2256,7 @@ function nuGetObjectButton($o, $recordID, $hashData) {
 
     $nuObject                 = nuBaseObject($o, $recordID, $hashData);
     $nuObject->form_id        = $o->sob_button_zzzsys_form_id;
-    $nuObject->filter         = $o->sob_button_browse_filter;
+	$nuObject->filter         = $o->sob_button_browse_filter;
     $s                        = "SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ";
     $t                        = nuRunQuery($s, array($o->sob_button_zzzsys_form_id));
     

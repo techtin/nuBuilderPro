@@ -338,8 +338,8 @@ function nuSessionArray($i){
 		$A['nu_access_level']     = 'globeadmin';
 		$A['nu_user_name']        = 'globeadmin';
 		$A['nu_index_id']         = 'nuindex';
-		$A['nu_smtp_to_address']  = '';
-		$A['nu_smtp_to_name']     = '';
+		$A['nu_smtp_to_address']  = 'noreply@nubuilder.com';
+		$A['nu_smtp_to_name']     = 'Globeadmin';
         nuV('nu_access_level_id', 'globeadmin');
 	}else{
 		$r                        = db_fetch_object($t);
@@ -413,8 +413,6 @@ function nuHashData(){
 	}
 
 	$v                             = nuV();
-	
-//nuDebug('V : ' . print_r($v,1));	
 
     foreach($v as $key => $value){                        //-- add nuV() to form_data
     
@@ -460,7 +458,7 @@ function nuHashData(){
     $recordData                    = nuRecordArray($h);                       //-- record data
     $sessionData                   = nuSessionArray(nuV('session_id'));       //-- user and access info
 
-    foreach($_POST['nuWindow'] as $key => $value){                        //-- add current hash variables
+    foreach($_POST['nuWindow'] as $key => $value){                            //-- add current hash variables
     
         $h[$key]                   = $value;
         
@@ -1023,7 +1021,13 @@ function nuV($pElement = NULL, $pValue = NULL){
         if($pElement == NULL){
             return $variables;
         }else if(gettype($variables) == "array" && array_key_exists($pElement, $variables)){
-            return $variables[$pElement];
+		
+            if($variables[$pElement] != 'null') {
+                return $variables[$pElement];
+            } else {
+                return '';
+            }
+			
         }else{
             return NULL;
         }
@@ -1383,114 +1387,6 @@ function nuReportAccess($i){
 
 
 
-function nuEmailPDF($p) {
-
-	$to                             = '';
-	$toname                         = '';
-	$replyto                        = '';
-	$replytoname                    = '';
-	$content                        = 'nuBuilder Email';
-	$html                           = false;
-	$subject                        = '';
-	$wordWrap                       = 120;
-	$filelist                       = array();
-
-	foreach($p as $key => $value) {                                //-- rest any passed values
-		${$key}                     = $value;
-	}
-	
-	require_once("phpmailer/class.phpmailer.php");
-
-	$errorText                      = "";
-   	$setup                          = $GLOBALS['nuSetup'];         //-- Read SMTP AUTH Settings from zzsys_setup table	
-	
-	if (!empty($setup->set_smtp_username)) 		{ $SMTPuser = trim($setup->set_smtp_username);}                        else{$errorText .= "SMTP Username not set.\n";}
-	if (!empty($setup->set_smtp_password)) 		{ $SMTPpass = trim($setup->set_smtp_password);}                        else{$errorText .= "SMTP Password not set.\n";}
-	if (!empty($setup->set_smtp_host)) 		    { $SMTPhost = trim($setup->set_smtp_host);}                            else{$errorText .= "SMTP Host not set.\n";}
-	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}                    else{$errorText .= "SMTP From Address not set.\n";}
-	if (!empty($setup->set_smtp_port)) 		    { $SMTPport = intval($setup->set_smtp_port);}                          else{$errorText .= "SMTP PORT not set.\n";}
-	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else{$SMTPauth = false;}
-	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	                   else{$SMTPname = "nuBuilder";}
-		nuDebug(print_r($p,1));
-	if ($errorText != '') {
-		$result[0]                  = false;
-		$result[1]                  = "Unable to send SMTP Email, the following error(s) occured:\n" . $errorText;
-		
-		foreach($filelist as $filename=>$filesource) {
-			@unlink($filesource);
-		}
-		
-		return $result;
-	}
-	
-	try{
-
-		$mail                        = new PHPMailer();
-		$mail->IsSMTP();
-		$mail->Host                  = $SMTPhost;
-		$mail->Port                  = $SMTPport;
-		$mail->SMTPSecure            = $SMTPauth ? 'ssl' : '';
-		$mail->SMTPAuth              = $SMTPauth;
-
-		if ($SMTPauth) {
-			$mail->Username          = $SMTPuser;
-			$mail->Password          = $SMTPpass;
-		}
-
-		if ($receipt) { 
-			$mail->ConfirmReadingTo  = $replyto; 
-		}
-
-		if (empty($replyto)) {
-			$mail->AddReplyTo($SMTPfrom,'');
-			$mail->FromName          = $SMTPname;
-		} else {
-			$mail->AddReplyTo($replyto, $replytoname);
-			$mail->FromName          = $replytoname;
-		}
-		$mail->From                  = $SMTPfrom;
-	
-		$tonameArray                 = explode(',',$toname);
-		$toArray                     = explode(',',$to);
-	
-		for ($i = 0; $i < count($toArray); $i++){
-			if ($toArray[$i]) {
-				if (isset($tonameArray[$i])) { 
-					$thisToName      = $tonameArray[$i]; 
-				} else { 
-					$thisToName      = "";
-				}
-				$mail->AddAddress($toArray[$i], $thisToName);
-			}
-		}
-	
-		$mail->WordWrap              = $wordWrap;
-		$mail->IsHTML($html);
-
-		foreach($filelist as $filename=>$filesource) {
-			$mail->AddAttachment($filesource,$filename);
-		}
-		
-		$mail->Subject               = $subject;
-		$mail->Body                  = $content;
-		$result[0]                   = $mail->Send();
-		$result[1]                   = "Message sent successfully";
-
-	}catch(phpmailerException $e) {
-		$result[0]                   = false;
-		$result[1]                   = $e->errorMessage();                                    //-- Pretty error messages from PHPMailer
-	}catch(Exception $e){
-		$result[0]                   = false;
-		$result[1]                   = $e->errorMessage();                                    //-- Boring error messages from anything else!
-	}
-
-	foreach($filelist as $filename=>$filesource) {
-		@unlink($filesource);
-	}
-	
-	return $result;
-}
-
 function nuEmailValidateAddress($email) {
 
    $isValid             = true;
@@ -1536,31 +1432,13 @@ function nuEmailValidateAddress($email) {
 }
 
 
+function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 
-function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
-    $sesh                                        = $hashData['session_id'];
-    $s                                           = "SELECT * FROM zzzsys_session INNER JOIN zzzsys_user ON sss_zzzsys_user_id = zzzsys_user_id WHERE zzzsys_session_id = '$sesh'";
-    $t                                           = nuRunQuery($s);
-    $r                                           = db_fetch_object($t);
-    
-    if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
-        nuDisplayError("To Email validation failed");
-        return;
-    }
-	    
-
-	$toname                                      = '';
-
-
-
+    $toname                                      = '';
 	$html                                        = false;
-
 	$wordWrap                                    = 120;
-	$filelist                                    = array();
-	
-	require_once("phpmailer/class.phpmailer.php");
-
-	$errorText                                   = "";
+    
+    $errorText                                   = "";
    	$setup                                       = $GLOBALS['nuSetup'];                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
 	
 	if (!empty($setup->set_smtp_username)) 		{ $SMTPuser = trim($setup->set_smtp_username);}                        else{$errorText .= "SMTP Username not set.\n";}
@@ -1568,23 +1446,105 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 	if (!empty($setup->set_smtp_host)) 		    { $SMTPhost = trim($setup->set_smtp_host);}                            else{$errorText .= "SMTP Host not set.\n";}
 	if (!empty($setup->set_smtp_from_address)) 	{ $SMTPfrom = trim($setup->set_smtp_from_address);}                    else{$errorText .= "SMTP From Address not set.\n";}
 	if (!empty($setup->set_smtp_port)) 		    { $SMTPport = intval($setup->set_smtp_port);}                          else{$errorText .= "SMTP PORT not set.\n";}
-    if ($r->sus_name == '') 		            { $errorText .= "User Reply-To-Name not set in settings.\n";}
-    if ($r->sus_email == '')                    { $errorText .= "User Reply-Email not set in settings.\n";}
 	if (!empty($setup->set_smtp_use_ssl)) 		{ $SMTPauth = (intval($setup->set_smtp_use_ssl) == 1) ? true : false;} else{$SMTPauth = false;}
 	if (!empty($setup->set_smtp_from_name)) 	{ $SMTPname = trim($setup->set_smtp_from_name);}	                   else{$SMTPname = "nuBuilder";}
 
 	if ($errorText != '') {
 
 		nuDisplayError("Unable to send SMTP Email, the following error(s) occured:\n" . $errorText);
-
 		return;
         
 	}
+    
+	require_once("phpmailer/class.phpmailer.php");
 
+	try{
 
+		$mail                        = new PHPMailer();
+		$mail->IsSMTP();
+		$mail->Host                  = $SMTPhost;
+		$mail->Port                  = $SMTPport;
+		$mail->SMTPSecure            = $SMTPauth ? 'ssl' : '';
+		$mail->SMTPAuth              = $SMTPauth;
 
+		if ($SMTPauth) {
+			$mail->Username          = $SMTPuser;
+			$mail->Password          = $SMTPpass;
+		}
 
+		if ($receipt) { 
+			$mail->ConfirmReadingTo  = $from; 
+		}
 
+		if (empty($from)) {
+			$mail->AddReplyTo($from,'');
+			$mail->FromName          = $fromname;
+		} else {
+			$mail->AddReplyTo($SMTPfrom, $SMTPname);
+			$mail->FromName          = $SMTPname;
+		}
+		$mail->From                  = $from;
+	
+		$tonameArray                 = explode(',',$toname);
+		$toArray                     = explode(',',$to);
+	
+		for ($i = 0; $i < count($toArray); $i++){
+			if ($toArray[$i]) {
+				if (isset($tonameArray[$i])) { 
+					$thisToName      = $tonameArray[$i]; 
+				} else { 
+					$thisToName      = "";
+				}
+				$mail->AddAddress($toArray[$i], $thisToName);
+			}
+		}
+	
+		$mail->WordWrap              = $wordWrap;
+		$mail->IsHTML($html);
+
+		foreach($filelist as $filename=>$filesource) {
+			$mail->AddAttachment($filesource,$filename);
+		}
+		
+		$mail->Subject               = $subject;
+		$mail->Body                  = $content;
+
+		$result[0]                   = $mail->Send();
+		$result[1]                   = "Message sent successfully";
+
+	}catch(phpmailerException $e) {
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Pretty error messages from PHPMailer
+	}catch(Exception $e){
+		$result[0]                   = false;
+		$result[1]                   = $e->errorMessage();                                    //-- Boring error messages from anything else!
+	}
+
+	foreach($filelist as $filename=>$filesource) {
+		@unlink($filesource);
+	}
+    return result;
+}
+
+function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
+    
+    if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
+        nuDisplayError("To Email validation failed");
+        return;
+    }
+
+	$filelist                                    = array();
+	$replyname                                   = '#replytoname#';
+    $replyto                                     = '#replyto#';
+    $errorText = '';
+    if ($replyname == '') 		            { $errorText .= "User Reply-To-Name not set in settings.\n";}
+    if ($replyto == '')                     { $errorText .= "User Reply-Email not set in settings.\n";}
+	if ($errorText != '') {
+
+		nuDisplayError("Unable to send SMTP Email, the following error(s) occured:\n" . $errorText);
+		return;
+        
+	}
 
     if($hashData['nu_pdf_code'] != '') {
     
@@ -1614,85 +1574,15 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
         $php                                     = nuReplaceHashes($r->slp_php, $hashData);
         eval($php);
         return;
-            
-
-
-
+        
     }
 
     if($hashData['nu_pdf_code'] !=  '') {                                                              //-- File to attach, send with file
         $filelist[$hashData['nu_email_file_name']]  = $tmp_nu_file;
-
     }
-
-
-	try{
-
-		$mail                        = new PHPMailer();
-		$mail->IsSMTP();
-		$mail->Host                  = $SMTPhost;
-		$mail->Port                  = $SMTPport;
-		$mail->SMTPSecure            = $SMTPauth ? 'ssl' : '';
-		$mail->SMTPAuth              = $SMTPauth;
-
-		if ($SMTPauth) {
-			$mail->Username          = $SMTPuser;
-			$mail->Password          = $SMTPpass;
-		}
-
-		if ($receipt) { 
-			$mail->ConfirmReadingTo  = $r->sus_email; 
-		}
-
-		if (empty($r->sus_email)) {
-			$mail->AddReplyTo($SMTPfrom,'');
-			$mail->FromName          = $SMTPname;
-		} else {
-			$mail->AddReplyTo($r->sus_email, $r->sus_name);
-			$mail->FromName          = $r->sus_name;
-		}
-		$mail->From                  = $SMTPfrom;
-	
-		$tonameArray                 = explode(',',$toname);
-		$toArray                     = explode(',',$pEmailTo);
-	
-		for ($i = 0; $i < count($toArray); $i++){
-			if ($toArray[$i]) {
-				if (isset($tonameArray[$i])) { 
-					$thisToName      = $tonameArray[$i]; 
-				} else { 
-					$thisToName      = "";
-				}
-				$mail->AddAddress($toArray[$i], $thisToName);
-			}
-		}
-	
-		$mail->WordWrap              = $wordWrap;
-		$mail->IsHTML($html);
-
-		foreach($filelist as $filename=>$filesource) {
-			$mail->AddAttachment($filesource,$filename);
-		}
-		
-		$mail->Subject               = $pSubject;
-		$mail->Body                  = $pMessage;
-
-		$result[0]                   = $mail->Send();
-		$result[1]                   = "Message sent successfully";
-
-	}catch(phpmailerException $e) {
-		$result[0]                   = false;
-		$result[1]                   = $e->errorMessage();                                    //-- Pretty error messages from PHPMailer
-	}catch(Exception $e){
-		$result[0]                   = false;
-		$result[1]                   = $e->errorMessage();                                    //-- Boring error messages from anything else!
-	}
-
-	foreach($filelist as $filename=>$filesource) {
-		@unlink($filesource);
-	}
-	
-	return $result;
+    
+	$setup = $GLOBALS['nuSetup'];                                                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
+	return nuSendEmail($pEmailTo, trim($setup->set_smtp_from_address), trim($setup->set_smtp_from_name), $pMessage, $pSubject, $filelist);
 	
 }
 
