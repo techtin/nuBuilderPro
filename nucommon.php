@@ -1327,7 +1327,7 @@ function nuNextNumber($t){
     $s     = "INSERT INTO `$t` SET `$l[1]` = ? ";                       //-- insert to create next number
     $i     = nuRunQuery($s, array($u), true);
     
-    $s     = "SELECT `$l[0]` FROM `$t` WHERE `$l[1]` = ? ";             //-- get next number
+    $s     = "SELECT `$l[0]` FROM `$t` WHERE `$l[1]` = ? ";              //-- get next number
     $t     = nuRunQuery($s, array($u));
     $r     = db_fetch_row($t);
     
@@ -1350,17 +1350,27 @@ function nuPHPAccess($i){
 
 	if($a == 'globeadmin'){return true;}
 
-	$s = "SELECT count(*) FROM zzzsys_access_level_php
-		   INNER JOIN zzzsys_access_level ON slp_zzzsys_access_level_id = zzzsys_access_level_id
-		   WHERE slp_zzzsys_php_id = ?
-		   AND sal_code = ?
+	$s = "SELECT count(*) FROM zzzsys_php
+		   WHERE zzzsys_php_id = ?
+		   AND slp_nonsecure = '1'
 		  ";	
 		  
+	$t = nuRunQuery($s, array($i));
+
+	$r = db_fetch_row($t);
+
+	if($r[0] != 0){return true;}                    //-- Non Secure
+	
+	$s = "SELECT count(*) FROM zzzsys_access_level_php
+		   INNER JOIN zzzsys_access_level ON slp_zzzsys_access_level_id = zzzsys_access_level_id
+		   WHERE (slp_zzzsys_php_id = ?
+		   AND sal_code = ?)
+		  ";	
 	$t = nuRunQuery($s, array($i, $a));
 
 	$r = db_fetch_row($t);
 
-	return $r[0] != 0;        //-- php allowed
+	return $r[0] != 0;                              //-- php allowed
 
 }
 
@@ -1432,8 +1442,9 @@ function nuEmailValidateAddress($email) {
 }
 
 
-function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 
+function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
+nuDebug(111);
     $toname                                      = '';
 	$html                                        = false;
 	$wordWrap                                    = 120;
@@ -1455,7 +1466,7 @@ function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 		return;
         
 	}
-    
+    nuDebug(222);
 	require_once("phpmailer/class.phpmailer.php");
 
 	try{
@@ -1476,15 +1487,11 @@ function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 			$mail->ConfirmReadingTo  = $from; 
 		}
 
-		if (empty($from)) {
-			$mail->AddReplyTo($from,'');
-			$mail->FromName          = $fromname;
-		} else {
-			$mail->AddReplyTo($SMTPfrom, $SMTPname);
-			$mail->FromName          = $SMTPname;
-		}
+
+        $mail->AddReplyTo($from,$fromname);
+        $mail->FromName = $fromname;
+
 		$mail->From                  = $from;
-	
 		$tonameArray                 = explode(',',$toname);
 		$toArray                     = explode(',',$to);
 	
@@ -1498,7 +1505,7 @@ function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 				$mail->AddAddress($toArray[$i], $thisToName);
 			}
 		}
-	
+	nuDebug(333);
 		$mail->WordWrap              = $wordWrap;
 		$mail->IsHTML($html);
 
@@ -1523,11 +1530,24 @@ function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 	foreach($filelist as $filename=>$filesource) {
 		@unlink($filesource);
 	}
+nuDebug(444);	
     return result;
 }
 
 function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
     
+    $session = $hashData['session_id'];
+    $sql     = "SELECT * FROM  zzzsys_session INNER JOIN zzzsys_user ON sss_zzzsys_user_id = zzzsys_user_id WHERE zzzsys_session_id = '$session'";
+    $t       = nuRunQuery($sql);
+    $r       = db_fetch_object($t);
+    if($r != null) {
+        $fromname = $r->sus_name;
+        $fromaddress = $r->sus_email;
+    } else {
+    	$setup = $GLOBALS['nuSetup'];                                                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
+        $fromname = trim($setup->set_smtp_from_name);
+        $fromaddress = trim($setup->set_smtp_from_address);
+    }
     if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
         nuDisplayError("To Email validation failed");
         return;
@@ -1581,8 +1601,7 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
         $filelist[$hashData['nu_email_file_name']]  = $tmp_nu_file;
     }
     
-	$setup = $GLOBALS['nuSetup'];                                                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
-	return nuSendEmail($pEmailTo, trim($setup->set_smtp_from_address), trim($setup->set_smtp_from_name), $pMessage, $pSubject, $filelist);
+	return nuSendEmail($pEmailTo, $fromaddress, $fromname, $pMessage, $pSubject, $filelist);
 	
 }
 
