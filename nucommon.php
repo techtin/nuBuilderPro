@@ -536,10 +536,10 @@ function nuRecordArray($hashData){
 function nuReplaceHashes($str, $arr){
 
 	while(list($key, $value) = each($arr)){
-        $newValue = str_replace("'","\'",$value);
+//        $newValue = str_replace("'","\'",$value);
 //		if(!is_array($value) and $value != '' and $str != '' and $key != ''){
 		if(!is_array($value) and $str != '' and $key != ''){
-			$str = str_replace('#'.$key.'#', $newValue, $str);
+			$str = str_replace('#'.$key.'#', mysql_real_escape_string($value), $str);
 		}
 	}
 
@@ -1444,7 +1444,7 @@ function nuEmailValidateAddress($email) {
 
 
 function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
-nuDebug(111);
+
     $toname                                      = '';
 	$html                                        = false;
 	$wordWrap                                    = 120;
@@ -1466,7 +1466,7 @@ nuDebug(111);
 		return;
         
 	}
-    nuDebug(222);
+	
 	require_once("phpmailer/class.phpmailer.php");
 
 	try{
@@ -1505,7 +1505,7 @@ nuDebug(111);
 				$mail->AddAddress($toArray[$i], $thisToName);
 			}
 		}
-	nuDebug(333);
+
 		$mail->WordWrap              = $wordWrap;
 		$mail->IsHTML($html);
 
@@ -1530,22 +1530,26 @@ nuDebug(111);
 	foreach($filelist as $filename=>$filesource) {
 		@unlink($filesource);
 	}
-nuDebug(444);	
+
     return result;
 }
 
 function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
     
-    $session = $hashData['session_id'];
-    $sql     = "SELECT * FROM  zzzsys_session INNER JOIN zzzsys_user ON sss_zzzsys_user_id = zzzsys_user_id WHERE zzzsys_session_id = '$session'";
-    $t       = nuRunQuery($sql);
-    $r       = db_fetch_object($t);
+    if($hashData == '') {
+        $hashData = nuHashData();
+    }
+
+    $session         = $hashData['session_id'];
+    $sql             = "SELECT * FROM  zzzsys_session INNER JOIN zzzsys_user ON sss_zzzsys_user_id = zzzsys_user_id WHERE zzzsys_session_id = '$session'";
+    $t               = nuRunQuery($sql);
+    $r               = db_fetch_object($t);
     if($r != null) {
-        $fromname = $r->sus_name;
+        $fromname    = $r->sus_name;
         $fromaddress = $r->sus_email;
     } else {
-    	$setup = $GLOBALS['nuSetup'];                                                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
-        $fromname = trim($setup->set_smtp_from_name);
+    	$setup       = $GLOBALS['nuSetup'];                                                           //-- Read SMTP AUTH Settings from zzsys_setup table	
+        $fromname    = trim($setup->set_smtp_from_name);
         $fromaddress = trim($setup->set_smtp_from_address);
     }
     if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
@@ -1554,17 +1558,6 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
     }
 
 	$filelist                                    = array();
-	$replyname                                   = '#replytoname#';
-    $replyto                                     = '#replyto#';
-    $errorText = '';
-    if ($replyname == '') 		            { $errorText .= "User Reply-To-Name not set in settings.\n";}
-    if ($replyto == '')                     { $errorText .= "User Reply-Email not set in settings.\n";}
-	if ($errorText != '') {
-
-		nuDisplayError("Unable to send SMTP Email, the following error(s) occured:\n" . $errorText);
-		return;
-        
-	}
 
     if($hashData['nu_pdf_code'] != '') {
     

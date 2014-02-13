@@ -1189,12 +1189,16 @@ function nuLookupID(pThis){  //-- get lookup from id
 			$('#'+obj.prefix+'description'+obj.lookup_id).val(obj.description)
 
 			$.each( obj.lookup_other_fields, function(i, n){
-				$('#'+ obj.prefix + i).val(n)
-			});
+                    //-- begin added by br 12/02/2014: checks the type of the object and if it is a textbox remove all new line characters
+                    if( $('#'+obj.prefix + i).attr('data-nuobject-type') == 'text' ) {
+                        n = n.replace(/\n/g,' ');
+                    }
+                    //-- end added by br
+                    $('#'+ obj.prefix + i).val(n);
+            });
 			
             eval(obj.javascript);
-	});
-
+        });
 }
 
 
@@ -1247,6 +1251,11 @@ function nuLookupCode(pThis){  //-- get lookup from code
 				$('#'+obj.prefix+'code'       +obj.lookup_id).val(obj.code)
 				$('#'+obj.prefix+'description'+obj.lookup_id).val(obj.description)
                                 $.each( obj.lookup_other_fields, function(i, n){
+                                    //-- begin added by br 12/02/2014: checks the type of the object and if it is a textbox remove all new line characters
+                                    if( $('#'+obj.prefix + i).attr('data-nuobject-type') == 'text' ) {
+                                        n = n.replace(/\n/g,' ');
+                                    }
+                                    //--end added by br
                                     $('#'+ obj.prefix + i).val(n)
                                 });
                 if( prev !== pThis.value) {     //--Ben: added to prevent javascript running multiple times over the same value.
