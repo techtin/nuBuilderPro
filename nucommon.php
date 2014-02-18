@@ -1194,8 +1194,10 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
 function nuGetLanguage(){
 
+
+   	$setup     = $GLOBALS['nuSetup'];                                      //-- Read SMTP AUTH Settings from zzsys_setup table	
     $j         = "function nuTranslate(p){\n\n";
-    $t         = nuRunQuery("SELECT * FROM zzzsys_translate WHERE trl_language = ? ", array(nuV('set_language')));
+    $t         = nuRunQuery("SELECT * FROM zzzsys_translate WHERE trl_language = ? ", array($setup->set_language));
     
     while($r   = db_fetch_object($t)){
         $j    .= "   if(p == '" . str_replace("'", "\'", $r->trl_english) . "'){return '" . str_replace("'", "\'", $r->trl_translation) . "';}\n";
