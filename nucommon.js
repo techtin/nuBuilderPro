@@ -1681,3 +1681,11 @@ function nuTimeStamp(value){
 	}
 
 }
+
+
+function nuObjectColors(o){
+
+    return 'nu_' + o;
+    
+}
+

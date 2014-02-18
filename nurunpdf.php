@@ -50,6 +50,9 @@ nuRunQuery("ALTER TABLE $TABLE_ID ADD `nu__id` INT NOT NULL AUTO_INCREMENT PRIMA
 nuBuildReport($PDF, $REPORT, $TABLE_ID);
 $hashData['nu_pages']        = nuGetTotalPages();
 nuReplaceLabelHashVariables($REPORT, $hashData);
+
+//nuDebug(print_r($GLOBALS['nu_report'],1));
+
 nuPrintReport($PDF, $REPORT, $GLOBALS['nu_report'], $JSON);
 
 nuRunQuery("DROP TABLE IF EXISTS $TABLE_ID");
@@ -313,6 +316,26 @@ class nuSECTION{
         
     }
     
+	
+	private function nuGetFormatting($O){
+	
+		$f                     = array();
+		$f['B']                = '';
+		$f['F']                = '';
+		$f['S']                = '';
+		$v                     = $this->ROW[$O->fieldName];
+	
+		while(substr($v,0,1) == '#' and substr($v,2,1) == '#' and substr($v,9,1) == '|'){       //-- conditional formatting used
+			$f[strtoupper(substr($v,1,1))] = substr($v,3,6);                                    //-- set background color, font color or font style
+			$v                 = substr($v,10);                                                 //-- chop format off
+		}
+		
+		$f['V']                = $v;                                                            //-- all formatting removed
+		
+		return $f;
+	}
+	
+	
     private function setObjectLines($O, $stopGrow = false){
 
         for($i = 0 ; $i < count($O) ; $i++){
@@ -320,6 +343,20 @@ class nuSECTION{
             $O[$i]->path                        = '';
             
             if($O[$i]->objectType == 'field' or $O[$i]->objectType == 'label'){
+
+				if($O[$i]->objectType == 'field'  and substr($this->ROW[$O[$i]->fieldName],0,1) == '#' and substr($this->ROW[$O[$i]->fieldName],2,1) == '#' and substr($this->ROW[$O[$i]->fieldName],9,1) == '|'){       //-- conditional formatting used
+				
+					$format                     = $this->nuGetFormatting($O[$i]);
+					
+					if($format['B'] != ''){
+						$O[$i]->B               = '#' . $format['B'];
+					}
+					if($format['F'] != ''){
+						$O[$i]->F               = '#' . $format['F'];
+					}
+					
+				}
+			
             
                 $O[$i]->LINES                   = $this->getObjectRows($O[$i], $stopGrow);
                 
@@ -404,6 +441,10 @@ class nuSECTION{
                 
                 $fit                          = floor($availableHeight / $this->O[$i]->height);            //-- rows that will fit this page
                 $o                            = pdfObject($this->O[$i]->id, $this->O[$i]->top);            //-- create Object
+				
+				if(isset($this->O[$i]->B)){$o->B = $this->O[$i]->B;$this->O[$i]->B = null;}
+				if(isset($this->O[$i]->F)){$o->F = $this->O[$i]->F;$this->O[$i]->F = null;}
+				
                 $fittingLines                 = array_splice($this->O[$i]->LINES, 0, $fit);                //-- get rows
                 $o->lines                     = $fittingLines;                                             //-- add rows
                 $o->path                      = $this->O[$i]->path;                                        //-- add path
@@ -488,6 +529,10 @@ class nuSECTION{
         for($i = 0 ; $i < count($O) ; $i ++){
         
             $newO          = pdfObject($O[$i]->id, $O[$i]->top);                 //-- create Object
+			
+			if(isset($this->O[$i]->B)){$o->B = $this->O[$i]->B;$this->O[$i]->B = null;}
+			if(isset($this->O[$i]->F)){$o->F = $this->O[$i]->F;$this->O[$i]->F = null;}
+				
             $newO->lines   = $O[$i]->LINES;
             $newOs[]       = $newO;
             
@@ -551,6 +596,7 @@ class nuSECTION{
         $rows               = array();
 
         if($O->objectType == 'field'){
+		
             $text           = $this->nuGetFieldValue($O);
             
             $lineNoNR       = str_replace ("\n\r", "\r", $text);
@@ -662,17 +708,20 @@ class nuSECTION{
 
         $type               = '';
         $value              = '';
+
         if(strtoupper(substr($O->fieldName,0,4)) == 'SUM('){
             $type           = 's';
             $field          = substr($O->fieldName,4, -1);
         }
-        if(strtoupper(substr($O->fieldName,0,8)) == 'PERCENT('){
+        if(strtoupper(substr($O->fieldName,0,8)) == 'AVERAGE('){
             $type           = 'p';
             $fields         = explode(',', substr($O->fieldName, 8, -1));
         }
         if($type == ''){                                                                //-- normal value
             if(array_key_exists($O->fieldName, $this->ROW)) {
-                $value          = mb_convert_encoding($this->ROW[$O->fieldName], "WINDOWS-1252", "UTF-8");
+				$v          = $this->nuGetFormatting($O);
+                $value      = mb_convert_encoding($v['V'], "WINDOWS-1252", "UTF-8");
+//                $value          = mb_convert_encoding($this->ROW[$O->fieldName], "WINDOWS-1252", "UTF-8");
             }
         }else{                                                                          //-- summed value
             $groups         = array();
@@ -703,7 +752,8 @@ class nuSECTION{
                 
                 if($type == 'p'){
                     
-                    $value  = ($r[0] / $r[1]) * 100;
+//                    $value  = ($r[0] / $r[1]) * 100;
+                    $value  = ($r[0] / $r[1]);
                     
                 }else{
                     
@@ -837,6 +887,10 @@ function nuPrintField($PDF, $S, $contents, $O, $LAY){
     $textAlign         = strtoupper($PROP->textAlign[0]);
     $left              = $PROP->left;
     $top               = $S->sectionTop + $contents->top;
+	
+	if(isset($contents->B)){$backgroundColor = $contents->B;}
+	if(isset($contents->F)){$fontColor       = $contents->F;}
+
     
     $PDF->SetFont($fontFamily, $fontWeight, $fontSize, '', false);
     $PDF->SetLineWidth($borderWidth / 5);
@@ -844,13 +898,15 @@ function nuPrintField($PDF, $S, $contents, $O, $LAY){
     $drawcolor         = hex2rgb($borderColor);
     $backcolor         = hex2rgb($backgroundColor);
     $textcolor         = hex2rgb($fontColor);
-    
+
     $PDF->SetDrawColor($drawcolor[0], $drawcolor[1], $drawcolor[2]);
-    $PDF->SetFillColor($backcolor[0], $backcolor[1], $backcolor[2]);
     $PDF->SetTextColor($textcolor[0], $textcolor[1], $textcolor[2]);
     $PDF->SetXY($left, $top);
+    $PDF->SetFillColor(255, 255, 255);
+    $PDF->SetFillColor($backcolor[0], $backcolor[1], $backcolor[2]);
     
     $PDF->MultiCell($width, $height, implode("\n", $contents->lines), $borderWidth == 0 ? 0 : 1, $textAlign, true);
+	
 }
 
 function nuPrintImage($PDF, $S, $contents, $O){
@@ -925,7 +981,7 @@ function nuMakeSummaryTable($REPORT, $TABLE_ID){
                     if(strtoupper(substr($obj->fieldName,0,4)) == 'SUM('){
                         $sum[substr($obj->fieldName,4, -1)]  = substr($obj->fieldName,4, -1);
                     }
-                    if(strtoupper(substr($obj->fieldName,0,8)) == 'PERCENT('){
+                    if(strtoupper(substr($obj->fieldName,0,8)) == 'AVERAGE('){
                         $ex                                   = explode(',',substr($obj->fieldName, 8, -1));
                         $sum[trim($ex[0])]  = trim($ex[0]);
                         $sum[trim($ex[1])]  = trim($ex[1]);

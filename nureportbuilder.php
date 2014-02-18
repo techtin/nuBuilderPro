@@ -250,11 +250,11 @@ print $script;
 
     }
 
-    function nuOBJECT(i,o){
+    function nuOBJECT(i,o,z){
 
         this.id                = i;
         
-        if(arguments.length == 1){                               //-- create a new Object
+        if(arguments.length == 1 || arguments.length == 3){                               //-- create a new Object
                 
             $('#nuSectionIndex10').css('visibility', 'visible');
             
@@ -274,13 +274,13 @@ print $script;
             this.borderWidth     = 0;
             this.fieldName       = '';
             this.fontColor       = 'black';
-            this.fontFamily      = 'helvetica';
+            this.fontFamily      = 'Arial';
             this.fontSize        = 14;
             this.fontWeight      = '';
             this.format          = '';
             this.textAlign       = 'left';
             this.image           = '';
-            this.zIndex          = 100;
+            this.zIndex          = z;
             this.minRows         = 0;
             this.maxRows         = 0;
             this.selected        = 0;

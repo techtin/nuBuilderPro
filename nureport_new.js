@@ -22,7 +22,19 @@
             var i = nuNextID();
 
             d.setAttribute('id', 'object' + i);
- 
+            
+            var z = 99;
+            for(var v = 0; v< REPORT.groups.length; v++) {                           //-- find highest z-index
+                for(var x = 0; x< REPORT.groups[v].sections.length;x++) {
+                    for(var y = 0; y< REPORT.groups[v].sections[x].objects.length;y++) {
+                        if(REPORT.groups[v].sections[x].objects[y].zIndex > z) {
+                            z = REPORT.groups[v].sections[x].objects[y].zIndex;
+                        }
+                    }
+                }
+            }
+            z++;
+            
             $('#nuSectionIndex20').after(d);
             $('#' + d.id).css({
                 'position'         : 'absolute',
@@ -30,10 +42,10 @@
                 'left'             : '100px',
                 'top'              : '50px',
                 'width'            : '100px',
-                'z-index'          : '100',
+                'z-index'          : z,
                 'border-style'     : 'solid',
                 'border-width'     : '0px',
-                'font-family'      : 'helvetica',
+                'font-family'      : 'Arial',
                 'font-size'        : '14px',
                 'font-weight'      : 'normal',
                 'color'            : 'black',
@@ -44,7 +56,7 @@
             })
             .addClass( 'nuReportObject');
 
-            var o     = new nuOBJECT('object' + i);
+            var o     = new nuOBJECT('object' + i, '', z);
             
         }else{                                                                  //-- load Object
 

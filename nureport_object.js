@@ -9,6 +9,7 @@ function nuObjectDialog(){
         var pid = $("[id^='property_']")[n].id;
         document.getElementById(pid).setAttribute('onfocus', 'window.nuSaveObject=this.id');
         document.getElementById(pid).setAttribute('onChange', 'nuSetOnBlur("'+pid+'")');
+        document.getElementById(pid).setAttribute('onKeyDown', 'focusField(event, "'+pid+'")');
     });
 
     $('#property_1').change(function() {
@@ -24,6 +25,22 @@ function nuObjectDialog(){
 
     nuHideProperties();
 }    
+
+function focusField(e, pid) {
+    if(e.keyCode == 9) {
+        if(e.shiftKey) {
+            var nextId = parseInt(pid.split("_")[1])-1;
+            if(nextId < 0) nextId = 19;
+        } else {
+            var nextId = parseInt(pid.split("_")[1])+1;
+            if(nextId > 19) nextId = 0;
+        }
+        setTimeout(function(){$("#property_" + nextId).select();},0);
+    }
+    else if(e.keyCode == 13) {
+        setTimeout(function(){$("#"+pid).select();},0);
+    }
+}
 
 function nuSetOnBlur(pid){
     

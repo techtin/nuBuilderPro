@@ -536,10 +536,11 @@ function nuRecordArray($hashData){
 function nuReplaceHashes($str, $arr){
 
 	while(list($key, $value) = each($arr)){
-//        $newValue = str_replace("'","\'",$value);
-//		if(!is_array($value) and $value != '' and $str != '' and $key != ''){
+	
+        $newValue = addslashes($value);
+		
 		if(!is_array($value) and $str != '' and $key != ''){
-			$str = str_replace('#'.$key.'#', mysql_real_escape_string($value), $str);
+			$str = str_replace('#'.$key.'#', $newValue, $str);
 		}
 	}
 

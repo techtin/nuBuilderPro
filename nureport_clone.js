@@ -1,4 +1,16 @@
 function nuOBJECTCopy(i,s){
+        var z = 99;
+        for(var v = 0; v< REPORT.groups.length; v++) {                           //-- find highest z-index
+            for(var x = 0; x< REPORT.groups[v].sections.length;x++) {
+                for(var y = 0; y< REPORT.groups[v].sections[x].objects.length;y++) {
+                    if(REPORT.groups[v].sections[x].objects[y].zIndex > z) {
+                        z = REPORT.groups[v].sections[x].objects[y].zIndex;
+                    }
+                }
+            }
+        }
+        z++;
+        
 
         this.id              = i;
 
@@ -20,7 +32,7 @@ function nuOBJECTCopy(i,s){
         this.format          = s.format;
         this.textAlign       = s.textAlign;
         this.phpCall         = s.phpCall;
-        this.zIndex          = s.zIndex + 1;
+        this.zIndex          = z;
         this.minRows         = s.minRows;
         this.maxRows         = s.maxRows;
         this.selected        = 0;
@@ -62,7 +74,18 @@ function nuCloneObjects(paste){
                     var o      = new nuCopyObject(REPORT.groups[g].sections[s].objects[ob]);
                     o.id       = 'object' + i;
                     o.left     = REPORT.groups[g].sections[s].objects[ob].left + 3;
-                    o.zIndex   = REPORT.groups[g].sections[s].objects[ob].zIndex + 1;
+                    var z = 99;
+                    for(var v = 0; v< REPORT.groups.length; v++) {                           //-- find highest z-index
+                        for(var x = 0; x< REPORT.groups[v].sections.length;x++) {
+                            for(var y = 0; y< REPORT.groups[v].sections[x].objects.length;y++) {
+                                if(REPORT.groups[v].sections[x].objects[y].zIndex > z) {
+                                    z = REPORT.groups[v].sections[x].objects[y].zIndex;
+                                }
+                            }
+                        }
+                    }
+                    z++;
+                    o.zIndex   = z;
                     o.minRows  = REPORT.groups[g].sections[s].objects[ob].minRows;
                     o.maxRows  = REPORT.groups[g].sections[s].objects[ob].maxRows;
                     o.selected = 0;
