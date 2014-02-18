@@ -845,6 +845,9 @@ function nuSaveForm(sync,operation){                                            
 			if(window.opener!=null){
 				window.opener.window.nuGoToForm()
 			}
+
+            nuFORM.cloned = 0;
+			
 	})
 	.fail(function(xhr, err) {
 	   	alert(nuTranslate(nuFormatAjaxErrorMessage(xhr,err)));
