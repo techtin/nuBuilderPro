@@ -1553,7 +1553,7 @@ function nuGetBrowseForm($hashData) {
 		    $J['records']  = $data['records'];
 	}
 
-	if($w < 300){                                           //-- minimum length for a Browse Form
+	if($w < 350){                                           //-- minimum length for a Browse Form
 	
 		$nuObject          = new stdClass;
 
@@ -1561,7 +1561,7 @@ function nuGetBrowseForm($hashData) {
 		$nuObject->value   = '';
 		$nuObject->align   = '';
 		$nuObject->format  = '';
-		$nuObject->width   = 300 - $w ;
+		$nuObject->width   = 350 - $w ;
 		$nuObject->search  = '';
 
 		$data['objects'][] = $nuObject;

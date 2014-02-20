@@ -23,7 +23,6 @@ jsinclude('nuformat.js');
 jsinclude('nucommon.js');
 jsinclude('nueditform.js');
 jsinclude('nubrowseform.js');
-jsinclude('nubrowseform.js');
 
 print $GLOBALS['nuSetup']->set_css;  //-- html header
 $i = "";
@@ -50,7 +49,7 @@ print "
 
 <script>
 
-window.nu_denied = '$de';
+window.nuDenied = '$de';
 
 filepicker.setKey('$k1');
 

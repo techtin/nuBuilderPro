@@ -1692,3 +1692,34 @@ function nuObjectColors(o){
     
 }
 
+
+function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name' becomes 'Street Name' if other strings in l start with cus)
+
+	var t = Array();
+
+	for(var i = 0 ; i < l.length ; i ++){
+	
+		if(f != l[i] && f.split('_').length > 1 && f.split('_')[0] == l[i].split('_')[0]){
+		
+			for(var s = 1 ; s < f.split('_').length ; s ++){
+			
+				t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
+				
+			}
+			
+			return t.join(' ');
+			
+		}
+		
+	}
+
+	for(var s = 0 ; s < f.split('_').length ; s ++){
+	
+		t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
+		
+	}
+	
+	return t.join(' ');
+		
+	
+}

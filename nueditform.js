@@ -702,6 +702,7 @@ function nuRecordObjects(formType, formTop){
 		if(o[i].is_date && o[i].read_only != '1'){
 			$( "#"+e.id).datepicker({ dateFormat: nuFormats[o[i].format].jquery });
 		}
+		
 		if(o[i].text_type != ''){
 			e.setAttribute('type', o[i].text_type);
 		}
@@ -711,12 +712,17 @@ function nuRecordObjects(formType, formTop){
 		}
 
 		if (o[i].f_id == 'nuform' && o[i].field == 'sfo_table' || o[i].f_id == 'nuobject' && (o[i].field == 'sob_subform_table' || o[i].field == 'sob_subform_foreign_key' )) {
+		
 			var currentOnChange = e.getAttribute('onchange');
 			e.setAttribute('onchange', currentOnChange+';nuSetEdited();nuBuilderFormat(this);nuBuildDefaultSql(this);');
+			
 		} else {
+		
 			var currentOnChange = e.getAttribute('onchange');
 			e.setAttribute('onchange', currentOnChange+';nuSetEdited();nuBuilderFormat(this)');
+			
 		}
+		
 	}
 
 
