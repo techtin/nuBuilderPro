@@ -1816,7 +1816,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
         }
         $width = $width + $OBJ[$i]->width;
     }
-nuDebug(nuV('filter'));
+
 
     if (nuV('search') != '' or nuV('filter') != '') {
         if ($SQL->getWhere() == '') {
@@ -1834,7 +1834,7 @@ nuDebug(nuV('filter'));
     $start        = $nuBrowse->rows * ($p - 1);
     $row          = 0;
     $formattedSQL = nuReplaceHashes($SQL->SQL, $hashData);
-nuDebug($formattedSQL);	
+
     $t            = nuRunQuery($formattedSQL);
     
     if (nuErrorFound()) {
@@ -1970,9 +1970,10 @@ function nuBrowseWhereClause($searchFields, $searchString, $returnArray = false)
             $highlight[]  = substr($SEARCHES[$i], 1, -1);
         } else {
             $task[]       = 'exclude';
-            $search       = str_replace('-' . $SEARCHES[$i], ' ', $search);                   //-- remove phrase
+            $searchString       = str_replace('-' . $SEARCHES[$i], ' ', $searchString);                   //-- remove phrase
         }
         $SEARCHES[$i] = ' "%' . substr($SEARCHES[$i], 1, -1) . '%" ';
+        
     }
 
     $wordSearches = explode(' ', $searchString);

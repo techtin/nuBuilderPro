@@ -537,11 +537,11 @@ function nuReplaceHashes($str, $arr){
 
 	while(list($key, $value) = each($arr)){
 	
-        $newValue = addslashes($value);
-		
 		if(!is_array($value) and $str != '' and $key != ''){
+			$newValue = addslashes($value);
 			$str = str_replace('#'.$key.'#', $newValue, $str);
 		}
+		
 	}
 
     $GLOBALS['latest_hashData'] = $arr;
