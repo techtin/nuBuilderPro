@@ -67,6 +67,16 @@ function nuGetTitle(){
 	return '$t';
 }
 
+function closeEditorWarning(e){
+
+	if(nuFORM.edited == '1'){
+		return 'Leave This Form Without Saving?';
+	}
+    return 'Doing this will return you to the login screen.';
+}
+
+window.onbeforeunload = closeEditorWarning;
+
 </script>
 
 ";
