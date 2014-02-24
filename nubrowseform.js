@@ -470,7 +470,10 @@ function addBrowseRows(o){
 	if (window.top === window.self) {
         if(nuGetID() == ''){
             $('#nuStatusHolder').html('&nbsp;<a style="text-decoration:none;padding:3px 0px 0px 0px" href="'+nuGetHome()+'">'+nuTranslate('Logout')+'</a>');
-        }
+			window.onbeforeunload = nuHomeWarning;
+		}else{
+			window.onbeforeunload = null;
+		}
     }
 	$('#nuHolder').css('height', (20+Number(top))+'px');
 
@@ -483,19 +486,18 @@ function addBrowseRows(o){
 }
 
 
-function nuBrowseHighlight(pthis,direction){
+function nuBrowseHighlight(pthis,direction){	                                       //-- shaneg changed nuSearch to nuBrowseRowSelected
 	
-	// shaneg changed nuSearch to nuBrowseRowSelected
 	if(direction == 'in'){
-                $('div[id^="'+pthis.id.substr(0,8)+'"]').addClass('nuBrowseRowSelected');
-        }else{
-                $('div[id^="'+pthis.id.substr(0,8)+'"]').removeClass('nuBrowseRowSelected');
-        }
+		$('div[id^="'+pthis.id.substr(0,8)+'"]').addClass('nuBrowseRowSelected');
+	}else{
+		$('div[id^="'+pthis.id.substr(0,8)+'"]').removeClass('nuBrowseRowSelected');
+	}
 	
 
 }
 
-function nuLookupClick(pthis){                                      //-- calls the change() event on the parent Form's lookup object
+function nuLookupClick(pthis){                                                         //-- calls the change() event on the parent Form's lookup object
 
 	var i         = nuGetID();
 	var pSession  = nuGetParentSession();

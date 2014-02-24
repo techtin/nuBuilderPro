@@ -923,20 +923,23 @@ function nuRunPHP(pCode, id){
 		url      : "nuapi.php",
 		type     : "POST",
 		data     : {nuWindow : P},
-                async    : false,
-                success  : function(data) {
-                    var obj          = $.parseJSON(data.DATA);
-                    var phpUrl       = 'nurunphp.php?i='+obj.id;
-                    
-                    if(obj.iframe == 0){
-                        window.open(phpUrl);
-                    }else{
-                        setTimeout( function() { $('#'+id).attr('src',phpUrl); },0);
-						
-                    }
-                    
-                },
+        async    : false,
+        success  : function(data) {
+				
+				var obj          = $.parseJSON(data.DATA);
+				var phpUrl       = 'nurunphp.php?i='+obj.id;
+				
+				if(obj.iframe == 0){
+					window.open(phpUrl);
+				}else{
+					setTimeout( function() { $('#'+id).attr('src',phpUrl); },0);
+					
+				}
+				
+			},
+			
 		dataType : "json"
+		
 		}).done(function(data){
 
 			if(nuErrorMessage(data.ERRORS)){return;}

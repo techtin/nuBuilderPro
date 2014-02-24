@@ -67,15 +67,23 @@ function nuGetTitle(){
 	return '$t';
 }
 
-function closeEditorWarning(e){
+function nuHomeWarning(){
 
 	if(nuFORM.edited == '1'){
-		return 'Leave This Form Without Saving?';
+		return 'Leave This Form Without Saving? Doing this will return you to the login screen.';
 	}
     return 'Doing this will return you to the login screen.';
 }
 
-window.onbeforeunload = closeEditorWarning;
+function nuWindowWarning(){
+
+	if(nuFORM.edited == '1'){
+		return 'Leave This Form Without Saving?';
+	}
+    return null;
+}
+
+window.onbeforeunload = nuHomeWarning;
 
 </script>
 

@@ -40,6 +40,9 @@ function nuBuildEditForm(o){
 	$('#nuStatusHolder').css( 'font-size', '12px');
     if(nuGetID() == ''){
         $('#nuStatusHolder').html('&nbsp;<a style="text-decoration:none;padding:3px 0px 0px 0px" href="'+nuGetHome()+'">'+nuTranslate('Logout')+'</a>');
+		window.onbeforeunload = nuHomeWarning;
+	}else{
+		window.onbeforeunload = nuWindowWarning;
     }
     $('#nuStatusHolder').css( 'padding', '4px 0px 0px 0px');
 
