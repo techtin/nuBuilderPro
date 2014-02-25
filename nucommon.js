@@ -1257,6 +1257,10 @@ function nuLookupCode(pThis){  //-- get lookup from code
 				$('#'+obj.prefix+'code'       +obj.lookup_id).val(obj.code)
 				$('#'+obj.prefix+'description'+obj.lookup_id).val(obj.description)
                                 $.each( obj.lookup_other_fields, function(i, n){
+								
+									if(n === null){//-- added by sc 25/02/2014
+										n = '';
+									}
                                     //-- begin added by br 12/02/2014: checks the type of the object and if it is a textbox remove all new line characters
                                     if( $('#'+obj.prefix + i).attr('data-nuobject-type') == 'text' ) {
                                         n = n.replace(/\n/g,' ');
@@ -1724,5 +1728,20 @@ function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name'
 	
 	return t.join(' ');
 		
-	
 }
+/*
+function nuPollingCall(){
+
+   $.ajax({
+		url: "...",
+		timeout: <prettylong>,
+		success: function(){
+		//process your data
+    },
+		complete: function(){
+		nuPollingCall();
+     }
+   });
+}
+
+*/
