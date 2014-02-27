@@ -354,6 +354,13 @@ function nuBuilderSession(){
 
 	}
 
+
+	this.reloadBreadCrumb = function(pindex){  //-- Reload Bread Crumb
+
+		return this.breadCrumb[pindex];
+
+	}
+
 	this.setSessionID = function(ID){  //-- Set Session ID
 
 		this.nuSessionID         = ID;

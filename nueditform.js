@@ -14,6 +14,7 @@ function nuBuildEditForm(o){
 	var formObjects     = o.objects;
 	var formRecords     = Array();
 	formRecords[0]      = o.records;
+	nuFORM.last_edit    = o.edited;
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
 	nuBuildHolder('nuActionButtonHolder', 'nuActionButtonHolder', 'nuHolder');
@@ -27,6 +28,7 @@ function nuBuildEditForm(o){
 	window.nuVALUES     = Array();
     window.nuTab        = 5;
 	window.hashData     = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
+	window.nuPoll       = true;
 	nuFORM.form_width   = o.form_width;
 	nuFORM.form_height  = o.form_height;
 	nuDisplayEditForm(formObjects,formRecords);
@@ -45,11 +47,21 @@ function nuBuildEditForm(o){
 		window.onbeforeunload = nuWindowWarning;
     }
     $('#nuStatusHolder').css( 'padding', '4px 0px 0px 0px');
+	
+	nuPollingForUpdateCall();
 
+	var h     =  '<span>' + o.nu_user_name + "</span><span style='font-weight:bold'> :: </span><span> " + nuTranslate('Powered By') + ' nuBuilder&nbsp;&nbsp;</span>';
 
-	e = document.createElement('div');              //-- create a nuBuilder Advert
+	if(nuIsGA()){
+		h    += '<img id="nuMoveable"    src="numove_black.png"    style="width:15px;height:15px;" onclick="nuPoweredBy(this);" title="Drag Objects">&nbsp;&nbsp;';
+	}
+	
+	if(nuFORM.record_id != '-1'){
+		h    += '<img id="nuRefreshLogo" src="nurefresh_black.png" style="width:15px;height:15px;" onclick="nuReloadForm(' + (window.nuSession.breadCrumb.length - 1) + ')"  title="Refresh Form" >';
+	}
+	
+	e         = document.createElement('div');              //-- create a nuBuilder Advert
 	e.setAttribute('id', 'poweredBy');
-	e.setAttribute('onclick', 'nuPoweredBy(this)');
 	$($('#nuStatusHolder')).append(e);
 	$('#' + e.id).css({
         'width'     : '400px',
@@ -58,8 +70,8 @@ function nuBuildEditForm(o){
         'left'      : (o.form_width - 405) +'px',
         'position'  : 'absolute'  
     })
-    .html( o.nu_user_name + "<span style='font-weight:bold'> :: </span> "+nuTranslate('Powered By')+' nuBuilder');
-        
+    .html(h);
+	
 	$('#nuTabArea').css('width', o.form_width);
 	$('#nuShadeHolder').css('height', o.form_height);
 	$('#nuShadeHolder').css('width', o.form_width);
@@ -89,15 +101,15 @@ function nuBuildEditForm(o){
 }
 
 function nuPoweredBy(t){
-    
+
     if(!nuIsGA()){return;}
     
     if(window.nuMoveable){
         window.nuMoveable = false;
-        $('#'+t.id).css('color', 'black');
+        $('#'+t.id).attr('src', 'numove_black.png');
     }else{
         window.nuMoveable = true;
-        $('#'+t.id).css('color', 'red');
+        $('#'+t.id).attr('src', 'numove_red.png');
     }
 }
 

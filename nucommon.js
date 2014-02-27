@@ -653,6 +653,25 @@ function nuGoToForm(i, ask){
 }
 
 
+function nuReloadForm(i, ask){
+
+	nuFORM.call_type    = 'geteditform';
+	
+    if(nuFORM.edited == '1'){
+        
+		if(!confirm("Leave This Form Without Saving?")){
+			return;
+		}
+        
+    }
+
+    var b         = window.nuSession.reloadBreadCrumb(i);
+    
+    nuBuildForm(b);
+	
+}
+
+
 
 function nuErrorMessage(e, remove){
 
@@ -787,6 +806,7 @@ function nuSaveForm(sync,operation){                                            
 		}
 	}
 
+	window.nuPoll = false;                         //-- stop polling
 	nuFORM.form_data    = nuGetData();
 	var isLookup = true;
 	if(typeof(window.nuSession.breadCrumb[0].lookup) == 'undefined') {
@@ -1439,7 +1459,8 @@ function nuMoveObject(id, top, left){
     $('#' + t.id).append($('#tr_'+id));
 
     if(nuIsGA()){
-        $('#title_' + id).hover(
+
+		$('#title_' + id).hover(
                 function (){
                         if(nuIsMoveable()){
                             $('#' + this.id).css('color', 'red');
@@ -1729,19 +1750,33 @@ function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name'
 	return t.join(' ');
 		
 }
-/*
-function nuPollingCall(){
 
-   $.ajax({
-		url: "...",
-		timeout: <prettylong>,
-		success: function(){
-		//process your data
-    },
-		complete: function(){
-		nuPollingCall();
-     }
-   });
+function nuPollingForUpdateCall(){
+
+	if(window.nuPoll != true){return;}
+
+	setInterval(function(){var b=0;},10000);
+	var w            = new nuCopyJSObject(nuFORM);
+	w.call_type      = 'check_edit';
+
+	var request      = $.ajax({
+	
+		url      : "nuapi.php",
+		type     : "POST",
+		data     : {nuWindow : w},
+		timeout  : 10000,
+		dataType : "json",
+		}).done(function(data){
+			var obj  = $.parseJSON(data.DATA);
+
+			if(obj.user == ''){
+				nuPollingForUpdateCall();
+			}else{
+				$('#nuRefreshLogo').attr('src' , 'nurefresh_red.png');
+				$('#nuRefreshLogo').attr('title' , 'Changed by ' + obj.user);
+			}
+
+	});
+
 }
 
-*/
