@@ -898,7 +898,7 @@ function nuRecordObjects(formType, formTop){
 			$('#' + parent).append(e);
 			$('#' + e.id).css( 'text-align',     'right')
 			$('#' + e.id).css( 'vertical-align', 'top')
-			$('#' + e.id).html('<div id="title_'+field+'" data-id="'+o[i].o_id+'" ondblclick="nuOpenObjectForm(this)">'+title+'&nbsp;</div>')
+			$('#' + e.id).html('<div id="title_'+field+'" data-id="'+o[i].o_id+'" onclick="nuGiveFocus(this)" ondblclick="nuOpenObjectForm(this)">'+title+'&nbsp;</div>')
 
 
 			e = document.createElement('td');              //-- create a new td
@@ -1461,4 +1461,12 @@ function eraseCookie(name) {
     createCookie(name,"",-1);
 }
 
+function nuGiveFocus(pThis){                                             //-- highligh Object when clicking on its Title
 
+	if($('#' + pThis.id.substr(6)).css('visibility') == 'hidden'){          //-- lookup
+		$('#code' + pThis.id.substr(6)).focus();
+	}else{
+		$('#' + pThis.id.substr(6)).focus();
+	}
+
+}
