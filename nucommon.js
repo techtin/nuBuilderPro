@@ -1,3 +1,4 @@
+window.loading = false;
 
 
 
@@ -1084,16 +1085,13 @@ function nuValidatePHP(code){
 }
 
 
-
-var loading=false;
-
 function nuBuildForm(w){
 
 	window.nuFORM = w;
     
 	if(w.call_type == 'geteditform' || w.call_type == 'cloneform'){      //-- get information and then build edit form
-        if(loading == false) {
-            loading = true;
+        if(window.loading == false) {
+            window.loading = true;
             var request = $.ajax({
                 url      : "nuapi.php",
                 type     : "POST",
@@ -1101,7 +1099,7 @@ function nuBuildForm(w){
                 dataType : "json",
                 async    : false
                 }).done(function(data){
-                    loading = false;
+                    window.loading = false;
                     if(nuErrorMessage(data.ERRORS, false)){nuRemoveModal();return;}
 
                     var obj          = $.parseJSON(data.DATA);
@@ -1121,15 +1119,15 @@ function nuBuildForm(w){
             
         w.search_columns = nuBuildSearchColumnString();                     //-- list of searchable Columns
         
-        if(loading == false) {
-            loading = true;
+        if(window.loading == false) {
+            window.loading = true;
             var request = $.ajax({
                 url      : "nuapi.php",
                 type     : "POST",
                 data     : {nuWindow : w},
                 dataType : "json"
                 }).done(function(data){
-                    loading = false;
+                    window.loading = false;
                     if(nuErrorMessage(data.ERRORS, false)){return;}
 
                     var obj          = $.parseJSON(data.DATA);
