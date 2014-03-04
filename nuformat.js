@@ -214,11 +214,17 @@ function nuFormatter(){
 			if(isNaN(v)){ 
 				return '';
 			}else{
+			
 				if(arguments.length == 3){
 					return v;                      //-- Return valid SQL Number Format
 				}else{
-//					return Number(formattedNumber).toFixed(nuFormats[f].format);        //-- Return Custom Format
-					return formattedNumber;                                             //-- fixed 2014-03-04 by Fike
+				
+					if(nuFormats[f].format == '0'){
+						return formattedNumber.split(nuFormats[f].decimal)[0];          //-- fixed 2014-03-04 by SC
+					}else{
+						return formattedNumber;                                         
+					}
+					
 				}
 			}
 		}
