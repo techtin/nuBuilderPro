@@ -1,4 +1,5 @@
-<?php require_once('nucommon.php'); 
+<?php 
+	require_once('nucommon.php'); 
 
 	if (isset($_GET['p'])){
 
@@ -15,7 +16,9 @@
 			eval($e); 
 			
 		} else {
+		
 			echo "Request is not allowed";
+			
 		}
 
 	} else {
