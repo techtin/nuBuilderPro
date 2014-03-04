@@ -26,13 +26,23 @@ if (nuV('call_type') == 'login') {
     
 } else {
 
-    $message = nuValidateUser(nuV('session_id'), $hashData);                 //-- VALIDATE USER
+    $message          = nuValidateUser(nuV('session_id'), $hashData);                 //-- VALIDATE USER
 
     if ($message != '') {
         $response['ERRORS'][] = $message;
         print json_encode($response);
         return;
     }
+}
+
+//==============================================================================
+//               CHECK ACCESS FOR RUNPHP OR PRINTPDF
+//==============================================================================
+if (nuV('call_type') == 'check_edit') {
+
+    $J['user']        = nuCheckEdit();
+    $response['DATA'] = json_encode($J);
+
 }
 
 //==============================================================================
@@ -1391,6 +1401,7 @@ function nuGetEditForm($hashData) {
 		
     $J['objects']    = $data['objects'];
     $J['records']    = $data['records'];
+    $J['edited']     = $data['edited'];
     $J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
     $J['formats']    = json_encode(nuTextFormats());
     $J['set_title']  = nuV('set_title');
@@ -2041,7 +2052,9 @@ function nuGetObjectsForOneRecord($parent, $parentID, $recordID, $hashData) {
         ";
         $hashData['SUBFORM_RECORD_ID'] = $recordID;
     }
+	
     $t               = nuRunQuery($s);
+	
     if (nuErrorFound()) {
         return;
     }
@@ -2049,6 +2062,9 @@ function nuGetObjectsForOneRecord($parent, $parentID, $recordID, $hashData) {
     $recordArray     = nuGetRecord($f, $recordID);
 
     $stamp[]         = array('viewed', $f->parent_table, $f->parent_primary_key, $recordID);      //-- record view
+
+	$last_edited     = nuLastEdited($f->parent_table, $f->parent_primary_key, $recordID);         //-- last edited
+
     nuLogStamp($stamp);
 
     $t = nuRunQuery("
@@ -2124,6 +2140,8 @@ function nuGetObjectsForOneRecord($parent, $parentID, $recordID, $hashData) {
     }
     $J['objects'] = $OBJ;
     $J['records'] = $REC;
+    $J['edited']  = $last_edited[0];
+	
     return $J;
 }
 
@@ -2722,6 +2740,47 @@ function nuSubformArray($sf, $all = true){
 	}
 	
 	return $a;
+}
+
+function nuCheckEdit(){
+
+	$t = nuRunQuery("SELECT sfo_table, sfo_primary_key FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
+	$r = db_fetch_object($t);
+	
+	if($r->sfo_table == '#TABLE_ID#'){return '';}
+
+	$c = nuLastEdited($r->sfo_table, $r->sfo_primary_key, nuV('record_id'));
+
+	if(nuV('last_edit') == $c[0]){return '';}
+	
+	return $c[1];
+
+}
+
+function nuLastEdited($f, $p, $r){
+
+	$t = nuRunQuery("SELECT * FROM $f WHERE $p = ? ", array($r));
+	$r = db_fetch_array($t);
+	
+	$a = $r[$f . '_log_changed_at'];
+	$b = $r[$f . '_log_changed_by'];
+	
+	$n = nuGetUserName($b);
+	
+	return array($a, $n);
+	
+}
+
+function nuGetUserName($id){
+
+	if($id == 'globeadmin'){return $id;}
+	
+	$t = nuRunQuery("SELECT sus_login_name FROM zzzsys_user WHERE zzzsys_user_id = ? ", array($id));
+	
+	$r = db_fetch_row($t);
+	
+	return $r[0];
+
 }
 
 ?>
