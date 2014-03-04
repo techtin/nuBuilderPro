@@ -3,7 +3,7 @@
 	if (isset($_GET['p'])){
 
 		$values  = array($_GET['p']);
-		$sql     = "SELECT slp_php FROM zzzsys_php WHERE slp_code = 1 AND slp_nonsecure = '1' ";
+		$sql     = "SELECT slp_php FROM zzzsys_php WHERE slp_code = ? AND slp_nonsecure = '1' ";
 		$rs      = nuRunQuery($sql, $values);
 		$num     = db_num_rows($rs);
 
