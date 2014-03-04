@@ -1,25 +1,26 @@
-<?php require_once('nucommon.php'); ?>
-<?php
+<?php require_once('nucommon.php'); 
 
-if ( isset($_GET['p']) ) {
+	if (isset($_GET['p'])){
 
-	$values = array($_GET['p']);
-        $sql   = "SELECT slp_php AS eval FROM zzzsys_php WHERE slp_code = ? AND slp_nonsecure = '1' ";
+		$values  = array($_GET['p']);
+		$sql     = "SELECT slp_php FROM zzzsys_php WHERE slp_code = 1 AND slp_nonsecure = '1' ";
+		$rs      = nuRunQuery($sql, $values);
+		$num     = db_num_rows($rs);
 
-	$rs  = nuRunQuery($sql, $values);
-	$num = db_num_rows($rs);
+		if ($num == 1) {
+		
+			$r   = db_fetch_object($rs);
+			$e   = 	nuReplaceHashes($r->slp_php, $_GET);
 
-	if ( $num == 1 ) {
-		$obj = db_fetch_object($rs);
-        
-		eval($obj->eval); 
+			eval($e); 
+			
+		} else {
+			echo "Request is not allowed";
+		}
+
 	} else {
-		echo "Request is not allowed";
-	}
 
-} else {
-
-	echo "Request format is invalid";
-}	
-
+		echo "Request format is invalid";
+		
+	}	
 ?>

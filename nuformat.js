@@ -217,7 +217,8 @@ function nuFormatter(){
 				if(arguments.length == 3){
 					return v;                      //-- Return valid SQL Number Format
 				}else{
-					return Number(formattedNumber).toFixed(nuFormats[f].format);        //-- Return Custom Format
+//					return Number(formattedNumber).toFixed(nuFormats[f].format);        //-- Return Custom Format
+					return formattedNumber;                                             //-- fixed 2014-03-04 by Fike
 				}
 			}
 		}
