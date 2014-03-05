@@ -321,10 +321,18 @@ function nuSubformColumnTitles(o,i,e,objects){
                 })
 			}
 			
-			left = left + width;
+			left       = left + width;
 
 		}
 	}
+
+
+	if(left > o[i].width){
+		var delete_left = (left + 1) + 'px';
+	}else{
+		var delete_left = (o[i].width - 60) + 'px';
+	}
+
 	
 	c = document.createElement('div');              //-- create a new subform column div
 	c.setAttribute('id', 'title_delete'+o[i].field);
@@ -333,7 +341,7 @@ function nuSubformColumnTitles(o,i,e,objects){
         'width'                       : '40px',
         'height'                      : (o[i].title_height) +'px',
         'top'                         : '0px',
-        'left'                        : (o[i].width-60)+'px',
+        'left'                        : delete_left,
         'position'                    : 'absolute',
         'border-color'                : 'grey',
         'border-width'                : '1px',
@@ -345,6 +353,7 @@ function nuSubformColumnTitles(o,i,e,objects){
 	.addClass('nuUnselectedTab nuGradient')
 	.html('Delete');
 
+	return left;  //-- total width
 }
 
   
@@ -985,34 +994,35 @@ function nuRecordObjects(formType, formTop){
 		width      = parseInt(o[i].width);
 		height     = parseInt(o[i].height);
 		$('#' + e.id).css({ 
-            'width'                        :  (width-30)  +'px',
-             'height'                      : height +'px',
+            'width'                        : (width  - 10) + 'px',
+             'height'                      : (height - 15) + 'px',
              'top'                         : '20px',
              'left'                        : '0px',
              'position'                    : 'absolute',
              'background-color'            : '#E0E0E0',
              '-moz-border-top-left-radius' : '5px',
              'border-top-left-radius'      : '5px',
-            'box-shadow'                   : '15px 5px 5px #888888'
+            'box-shadow'                   : '5px 5px 5px #888888',
+            'overflow'                     : 'auto'
         });
-		parent  = e.id;
+		parent     = e.id;
 		
-		nuSubformColumnTitles(o,i,e,sfObjects);
-		e = document.createElement('div');              //-- create a new object holding div
+		var left   = nuSubformColumnTitles(o,i,e,sfObjects);
+		e          = document.createElement('div');              //-- create a new object holding div
 		e.setAttribute('id', 'objects_'+o[i].field);
 		$('#' + parent).append(e);
 		width      = parseInt(o[i].width);
 		height     = parseInt(o[i].height);
 		$('#' + e.id).css({
-            'width'    : (o[i].width-20)+'px',
-            'height'   : (height-(o[i].title_height)) +'px',
+            'width'    : (left + 45) +'px',
+            'height'   : (height-(o[i].title_height)-35) +'px',
             'top'      : (Number(o[i].title_height)+2)+'px',
             'left'     : '0px',
             'position' : 'absolute',
             'overflow' : 'scroll'
         });
 
-		parent  = e.id;
+		parent     = e.id;
 		var row_height  = nuGetGridRowHeight(o,i,sfObjects);
 		var row_top     = 0;
 		nuDisplayEditForm(sfObjects,sfRecords,parent,i,o);		
@@ -1267,7 +1277,11 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
                 }
                 $('#' + parentOfTable).append(cb);
                 $('#' + cb.id).css( 'top', '5px');
-                $('#' + cb.id).css( 'left', (formWidth-55)+'px');
+				if(form.left > (formWidth)){
+					$('#' + cb.id).css( 'left', (form.left + 15) + 'px');
+				}else{
+					$('#' + cb.id).css( 'left', (formWidth - 55) + 'px');
+				}
                 $('#' + cb.id).css( 'position', 'absolute');
             }
 			top              = Number(top) + Number(formHeight);
