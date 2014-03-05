@@ -1778,3 +1778,8 @@ function nuPollingForUpdateCall(){
 
 }
 
+function nuFile(c){
+
+	return 'nufileget.php?' + c + '&t=' + new Date().getTime();
+
+}
