@@ -988,11 +988,11 @@ function nuLogin($u, $p) {
     $s = "
         SELECT *
         FROM zzzsys_user 
-        WHERE (sus_login_name = ? AND sus_login_password = md5(CONCAT('$u', '$p'))) 
+        WHERE (sus_login_name = ? AND sus_login_password = md5(CONCAT(?, ?))) 
                                   AND zzzsys_user_id != 'globeadmin'
     ";
 	
-    $t = nuRunQuery($s, array($u));
+    $t = nuRunQuery($s, array($u, $u, $p));
     if (nuErrorFound()) {
         return;
     }
@@ -1254,7 +1254,6 @@ function nuGetLookupData($hashData) {
 	}
 
     $s              = "SELECT $id, $code, $desc $su $SQL->from $SQL->where ($searchIn = '$searchFor')";
-//    $s            = "SELECT $id, $code, $desc $su $SQL->from WHERE $searchIn = '$searchFor'";
     $s              = nuReplaceHashes($s, $hashData);
     $T              = nuRunQuery($s);
     if (nuErrorFound()) {
@@ -1313,13 +1312,15 @@ function nuGetFieldFuctionValue($f, $o){
             $fpo = strrpos($o->sob_lookup_php, trim(substr($f,0,$pos)));
             
             if ($fpos === false) {                                            //-- should be an sql function
+			
                 return $f;
+				
             }else{                                                            //-- a valid php function defined in sob_lookup_php
-//              $o->sob_lookup_php = str_replace('#RECORD_ID#', nuV('record_id'), $o->sob_lookup_php);
-//				eval($o->sob_lookup_php);
+			
                 $eval = '$nuvar = '. $f . ';';
                 eval($eval);
                 return "'" . str_replace("'", "\\'", $nuvar) . "'";
+				
             }
         }
     
@@ -2371,6 +2372,7 @@ function nuGetObjectDropdown($recordArray, $o, $recordID, $hashData) {
             $nuObject->value = $recordArray[$o->sob_all_name];
         }
     }
+
     $nuObject->list = nuEncodeList(nuReplaceHashes($o->sob_dropdown_sql, $hashData));
 
     return $nuObject;

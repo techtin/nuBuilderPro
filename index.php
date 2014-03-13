@@ -28,6 +28,8 @@ print $GLOBALS['nuSetup']->set_css;  //-- html header
 $i = "";
 $h = "";
 $t = "";
+$u = $_GET['u'];
+$p = $_GET['p'];
 
 if( array_key_exists('i', $_GET) ) {
     $i  = $_GET['i'];
@@ -40,7 +42,7 @@ if( array_key_exists('title', $_SESSION) ) {
 }
 $l  = nuGetLanguage();
 
-$k1 = $GLOBALS['nuSetup']->set_inkfilepicker_key;
+//$k1 = $GLOBALS['nuSetup']->set_inkfilepicker_key;
 
 $de = $GLOBALS['nuSetup']->set_denied;
 
@@ -49,9 +51,11 @@ print "
 
 <script>
 
-window.nuDenied = '$de';
+window.nuDenied   = '$de';
+window.nuUsername = '$u';
+window.nuPassword = '$p';
 
-filepicker.setKey('$k1');
+//filepicker.setKey('$k1');
 
 $l
     
@@ -108,7 +112,13 @@ $(document).ready(function() {
 	window.nuSession = new nuBuilderSession();
 
 	if(i === ''){                                                            //-- Main Desktop
-		toggleModalMode();	
+	
+		if(window.nuUsername == '' && window.nuPassword == ''){
+			toggleModalMode();
+		}else{
+			nuLogin(window.nuUsername, window.nuPassword);
+		}
+		
 	}else{                                                                  //-- iFrame or new window
 		var pSession  = nuGetParentSession();
 		nuSession.setSessionID(pSession.nuSessionID);

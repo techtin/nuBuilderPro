@@ -1383,7 +1383,8 @@ function nuAutocomplete(e) {
 
 
 
-function nuLogin(){
+function nuLogin(u, p){
+
 	var w              = new nuWindow();
 	w.form_id          = 'nuindex';
 	w.call_type        = 'login';
@@ -1391,8 +1392,20 @@ function nuLogin(){
 	w.title            = nuTranslate('Home');
 	w.tip              = nuTranslate('Desktop');
 	window.nuFORM      = w;
-	w.username         = $('#u').val();
-	w.password         = $('#p').val();
+	
+	if(arguments.length == 0){
+	
+		w.username     = $('#u').val();
+		w.password     = $('#p').val();
+		$("#modal_div").remove();
+		
+	}else{
+	
+		w.username     = u;
+		w.password     = p;
+		
+	}
+
 
 	var request = $.ajax({
 		url: "nuapi.php",
@@ -1407,7 +1420,11 @@ function nuLogin(){
 			}else{
 				window.nuFORM.form_id = data.DATA['index_id'];
 				nuSession.setBreadCrumb(window.nuFORM);
-				toggleModalMode();
+				
+				if(arguments.length == 0){
+					toggleModalMode();
+				}
+				
 				window.nuSession.setSessionID(data.DATA['session_id']);
 				w.call_type           = 'geteditform';
                                 w.session_id          = data.DATA['session_id'];
