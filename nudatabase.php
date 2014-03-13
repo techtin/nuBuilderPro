@@ -118,27 +118,35 @@ function db_is_auto_id($t, $p){
 
 }
 
-
 function db_fetch_array($o){
-	return $o->fetch(PDO::FETCH_BOTH);
+
+	if (is_object($o)) {
+		return $o->fetch(PDO::FETCH_BOTH);
+	} else {
+		return array();
+	}
+
 }
 
 function db_fetch_object($o){
-	return $o->fetch(PDO::FETCH_OBJ);
+
+	if (is_object($o)) {
+		return $o->fetch(PDO::FETCH_OBJ);
+	} else {
+		$o  = new stdClass;
+		return $o;
+	}
+
 }
 	
 function db_fetch_row($o){
-	return $o->fetch(PDO::FETCH_NUM);
-}
 
-function db_field_array($o){
-	
-	$r       = db_fetch_object($o);
-	$a       = array();
-	
-	foreach ($r as $key => $value){
-		$a[] = $key;
+	if (is_object($o)) {
+		return $o->fetch(PDO::FETCH_NUM);
+	} else {
+		return array();
 	}
+
 }
 
 

@@ -1398,6 +1398,8 @@ function nuLogin(u, p){
 		w.username     = $('#u').val();
 		w.password     = $('#p').val();
 		$("#modal_div").remove();
+		$("#userpass").remove();
+		$("#userpass1").remove();
 		
 	}else{
 	
