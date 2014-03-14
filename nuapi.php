@@ -1,4 +1,4 @@
-<?php require_once('nucommon.php'); 
+<?php
 
 header("Content-Type: application/json");
 header("Cache-Control: no-cache, must-revalidate");

@@ -1772,7 +1772,6 @@ function nuPollingForUpdateCall(){
 
 	if(window.nuPoll != true){return;}
 
-	setInterval(function(){var b=0;},10000);
 	var w            = new nuCopyJSObject(nuFORM);
 	w.call_type      = 'check_edit';
 
@@ -1787,7 +1786,7 @@ function nuPollingForUpdateCall(){
 			var obj  = $.parseJSON(data.DATA);
 
 			if(obj.user == ''){
-				nuPollingForUpdateCall();
+				setTimeout(function(){nuPollingForUpdateCall()},10000);
 			}else{
 				$('#nuRefreshLogo').attr('src' , 'nurefresh_red.png');
 				$('#nuRefreshLogo').attr('title' , 'Changed by ' + obj.user);
@@ -1802,3 +1801,4 @@ function nuFile(c){
 	return 'nufileget.php?' + c + '&t=' + new Date().getTime();
 
 }
+
