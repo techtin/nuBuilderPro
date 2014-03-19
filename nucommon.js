@@ -1417,6 +1417,7 @@ function nuLogin(u, p){
 		}).done(function(data){
 			if(data.DATA['session_id'] == 'Login Failed'){
 				alert('Your username or password was incorrect');
+				toggleModalMode();
 				$('#p').val('');
 				$('#p').focus();
 			}else{
