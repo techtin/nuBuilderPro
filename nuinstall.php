@@ -64,7 +64,5 @@
 			$template->showContent();	
 		}
 
-	} else {
-		echo "Password fail";
 	}
 ?>
