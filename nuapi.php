@@ -1221,6 +1221,7 @@ function nuGetLookupData($hashData) {
     $bb           = nuReplaceHashes($f->sfo_custom_code_run_before_browse, $hashData);
     eval($bb);
 
+	
     $s            = "SELECT * FROM zzzsys_lookup WHERE slo_zzzsys_object_id = '$objectID'";
     $t            = nuRunQuery($s);
     if (nuErrorFound()) {
@@ -1228,6 +1229,7 @@ function nuGetLookupData($hashData) {
     }
     $ON           = array();                                                                        //-- Object Name
     $su           = "";
+
 	
 	$o->sob_lookup_php = str_replace('#RECORD_ID#', nuV('record_id'), $o->sob_lookup_php);
 	eval($o->sob_lookup_php);                                                                       //-- define any php functions that may be used
@@ -1254,6 +1256,7 @@ function nuGetLookupData($hashData) {
 	}
 
     $s              = "SELECT $id, $code, $desc $su $SQL->from $SQL->where ($searchIn = '$searchFor')";
+nuDebug($s);		
     $s              = nuReplaceHashes($s, $hashData);
     $T              = nuRunQuery($s);
     if (nuErrorFound()) {
@@ -1306,20 +1309,20 @@ function nuGetFieldFuctionValue($f, $o){
         if ($pos === false) {                                                 //-- not a function - has no beginning bracket
         
             return "'error!'";
-            
-        }else{
 
-            $fpo = strrpos($o->sob_lookup_php, trim(substr($f,0,$pos)));
-            
-            if ($fpos === false) {                                            //-- should be an sql function
+		}else{
+
+            $fpos = strrpos($o->sob_lookup_php, trim(substr($f,0,$pos)));
 			
-                return $f;
+            if ($fpos === false) {                                            //-- should be an sql function
+
+				return $f;
 				
             }else{                                                            //-- a valid php function defined in sob_lookup_php
 			
                 $eval = '$nuvar = '. $f . ';';
                 eval($eval);
-                return "'" . str_replace("'", "\\'", $nuvar) . "'";
+				return "'" . str_replace("'", "\\'", $nuvar) . "'";
 				
             }
         }
