@@ -28,7 +28,6 @@ function nuBuildEditForm(o){
 	window.nuVALUES     = Array();
     window.nuTab        = 5;
 	window.hashData     = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
-	window.nuPoll       = true;
 	nuFORM.form_width   = o.form_width;
 	nuFORM.form_height  = o.form_height;
 	nuDisplayEditForm(formObjects,formRecords);
@@ -48,8 +47,6 @@ function nuBuildEditForm(o){
     }
     $('#nuStatusHolder').css( 'padding', '4px 0px 0px 0px');
 	
-	nuPollingForUpdateCall();
-
 	var h     =  '<span>' + o.nu_user_name + "</span><span style='font-weight:bold'> :: </span><span> " + nuTranslate('Powered By') + ' nuBuilder&nbsp;&nbsp;</span>';
 
 	if(nuIsGA()){
@@ -57,7 +54,7 @@ function nuBuildEditForm(o){
 	}
 	
 	if(nuFORM.record_id != '-1'){
-		h    += '<img id="nuRefreshLogo" src="nurefresh_black.png" style="width:15px;height:15px;" onclick="nuReloadForm(' + (window.nuSession.breadCrumb.length - 1) + ')"  title="Refresh Form" >';
+		h    += '<img id="nuRefreshLogo" src="nurefresh_black.png" style="width:15px;height:15px;" onclick="nuReloadForm()"  title="Refresh Form" >';
 	}
 	
 	e         = document.createElement('div');              //-- create a nuBuilder Advert

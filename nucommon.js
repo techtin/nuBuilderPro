@@ -654,7 +654,7 @@ function nuGoToForm(i, ask){
 }
 
 
-function nuReloadForm(i, ask){
+function nuReloadForm(){
 
 	nuFORM.call_type    = 'geteditform';
 	
@@ -666,7 +666,7 @@ function nuReloadForm(i, ask){
         
     }
 
-    var b         = window.nuSession.reloadBreadCrumb(i);
+    var b         = window.nuSession.reloadBreadCrumb((window.nuSession.breadCrumb.length - 1));
     
     nuBuildForm(b);
 	
@@ -785,38 +785,63 @@ function nuNewForm(sync,operation){                                             
 
 
 
-function nuSaveForm(sync,operation){                                                         //-- save data from form and rebuild form
 
-	if(typeof(sync) === "undefined") {
-		sync = true;
-	}
-	
-	if(typeof(operation) === "undefined") {
-		operation = 0;
-	}
+function nuSaveForm(sync,operation){
 
-	if(nuFORM.call_type == 'cloneform'){                                   //-- data comes from a cloned form
-	   nuFORM.cloned    = '1'; 
-	}
-        
-	nuFORM.call_type    = 'saveform';
-
-    if(typeof nuOnSave == 'function') {
-		if(!nuOnSave()){
+    if(typeof nuOnSave   == 'function') {                                  //-- check if this custom function has been created
+		if(!nuOnSave()){                                                   //-- run it if it has
 			return;
 		}
 	}
 
-	window.nuPoll = false;                         //-- stop polling
-	nuFORM.form_data    = nuGetData();
-	var isLookup = true;
+	if(typeof(sync)      === "undefined") {sync           = true;}
+	if(typeof(operation) === "undefined") {operation      = 0;}
+
+	var w                = new nuCopyJSObject(nuFORM);
+	w.call_type          = 'check_edit';
+
+	var request          = $.ajax({
+	
+		url      : "nuapi.php",
+		type     : "POST",
+		data     : {nuWindow : w},
+		dataType : "json",
+		}).done(function(data){
+
+			var obj      = $.parseJSON(data.DATA);
+
+			if(obj.user != ''){
+
+				if (confirm('Changed by ' + obj.user + ' do you wish to over write their changes?')) {
+					nuCompleteSavingForm(sync,operation);
+				}
+
+			}else{
+				nuCompleteSavingForm(sync,operation);
+			}
+
+	});
+
+}
+
+
+
+
+function nuCompleteSavingForm(sync,operation){                             //-- save data from form and rebuild form
+
+	if(nuFORM.call_type  == 'cloneform')  { nuFORM.cloned = '1';}          //-- data comes from a cloned form
+        
+	nuFORM.call_type     = 'saveform';
+	nuFORM.form_data     = nuGetData();
+	var isLookup         = true;
+	
 	if(typeof(window.nuSession.breadCrumb[0].lookup) == 'undefined') {
-		isLookup = false;
+		isLookup         = false;
 	}
 		
 	nuSavingProgressMessage();
 	
-	var request = $.ajax({
+	var request         = $.ajax({
 		url      : "nuapi.php",
 		type     : "POST",
 		data     : {nuWindow : nuFORM},
@@ -828,7 +853,7 @@ function nuSaveForm(sync,operation){                                            
 				return;
 			}
 
-			var obj          = $.parseJSON(data.DATA);
+			var obj     = $.parseJSON(data.DATA);
 			
 			if(isLookup) {
 				var w = window.nuSession.breadCrumb[0];
@@ -1767,34 +1792,6 @@ function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name'
 	
 	return t.join(' ');
 		
-}
-
-function nuPollingForUpdateCall(){
-
-	if(window.nuPoll != true){return;}
-
-	var w            = new nuCopyJSObject(nuFORM);
-	w.call_type      = 'check_edit';
-
-	var request      = $.ajax({
-	
-		url      : "nuapi.php",
-		type     : "POST",
-		data     : {nuWindow : w},
-		timeout  : 10000,
-		dataType : "json",
-		}).done(function(data){
-			var obj  = $.parseJSON(data.DATA);
-
-			if(obj.user == ''){
-				setTimeout(function(){nuPollingForUpdateCall()},10000);
-			}else{
-				$('#nuRefreshLogo').attr('src' , 'nurefresh_red.png');
-				$('#nuRefreshLogo').attr('title' , 'Changed by ' + obj.user);
-			}
-
-	});
-
 }
 
 function nuFile(c){

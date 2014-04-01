@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="jquery/jquery-ui.css" />
 <script src="jquery/jquery-1.8.3.js" type='text/javascript'></script>
 <script src="jquery/jquery-ui.js" type='text/javascript'></script>
-<script src="//api.filepicker.io/v1/filepicker.js" type="text/javascript"></script>
 
 <?php
 require_once('config.php');
