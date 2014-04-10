@@ -648,6 +648,7 @@ function nuRecordObjects(formType, formTop){
 		var d          = document.createElement('input');       //-- create a new lookup description object
 
 		this.nuObjectWrapper(o,i,p);
+		c.setAttribute('data-adjustable',      'true');
 		nuSetLookupAttributes(e,c,img,d,o,i,this.prefix, this.rowPK);
 
 		$('#'+'td_right_'+e.id).append(c,img,d,e);
@@ -840,6 +841,7 @@ function nuRecordObjects(formType, formTop){
 
 		$('#'+'td_right_'+e.id).append(e);
 		nuObjectSize(o,e,i,false)
+		$('#' + e.id).css('text-align', nuFormatAlign(o[i].align));
 		$('#' + e.id).html(html);
 
 	}
@@ -855,6 +857,7 @@ function nuRecordObjects(formType, formTop){
 		e.setAttribute('data-nuobject-type',   o[i].type);
 		e.setAttribute('data-prefix',          this.prefix);
 		e.setAttribute('data-row',             this.row);
+		e.setAttribute('data-adjustable',      'true');
         
         if(this.prefix == '')  {
             e.setAttribute('tabindex', window.nuTab);
