@@ -768,7 +768,9 @@ function nuRecordObjects(formType, formTop){
 		var e         = document.createElement('div');                               //-- create Browse holder
 		var title      = 25;
 		e.setAttribute('id',   'nu_holder_'+this.prefix+o[i].field);
-		e.setAttribute('data-id'    , o[i].field);
+		e.setAttribute('data-id'       , o[i].field);
+		e.setAttribute('data-nuobject' , o[i].o_id);
+
 		$('#'+ p).append(e);
 		
         $('#' + e.id).css({ 
