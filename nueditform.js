@@ -190,7 +190,7 @@ function nuSetLookupAttributes(e,c,img,d,o,i,prefix, rowPK){
 	e.setAttribute('data-nuformat',  '');
 	e.setAttribute('data-nuobject',        o[i].o_id);
 	c.setAttribute('data-nuobject',        o[i].o_id);
-	e.setAttribute('data-nuobject-type',   o[i].type);
+	c.setAttribute('data-nuobject-type',   o[i].type);
 	e.setAttribute('onchange',            'nuSetEdited();nuLookupID(this)');
 	c.setAttribute('onchange',            'nuSetEdited();nuLookupCode(this);');
 
@@ -380,6 +380,13 @@ function nuSelectTab(tab, form_height, form_width){
 	$('#nu_tab_area'+tab).css('width', form_width);
 	$('#nu_tab_area'+tab).css('visibility','visible');
 	$('#tab'+tab).css('border-bottom-color',$('#tab'+tab).css('background-color'));
+	
+	if($('#nuObjectList').length == 1){
+			nuAddSelectableObjects();
+	
+	}
+	
+
 	
 }
   

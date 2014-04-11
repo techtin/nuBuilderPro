@@ -757,21 +757,23 @@ function nuNewForm(sync,operation){                                             
 				nuRemoveModal();
 				
 			} else {
-				nuFORM.clone     = '0';
-				nuFORM.edited    = '0';
+				nuFORM.clone            = '0';
+				nuFORM.edited           = '0';
 				
 				if(operation == 0) {
-					nuFORM.record_id = obj.record_id;
-					
-					window.nuFormats = $.parseJSON(obj.formats);
-					window.formatter = new nuFormatter();
+				
+					nuFORM.record_id    = obj.record_id;
+					window.nuFormats    = $.parseJSON(obj.formats);
+					window.formatter    = new nuFormatter();
 
 					nuBuildEditForm(obj);
 				} else if(operation == 1){
+				
 					nuFORM.call_type    = 'geteditform';
 					nuFORM.record_id    = '-1';
 					nuSession.breadCrumb.pop();
 					nuBuildForm(nuFORM);
+					
 				}	
 			}
 			
@@ -1800,3 +1802,149 @@ function nuFile(c){
 
 }
 
+
+function nuObjectMover() {
+
+	var e = document.createElement('div');              //-- create draggable div
+	e.setAttribute('id', 'nuDrag');
+	$('body').append(e);
+	$('#' + e.id).css({
+		'width'            : 300,
+		'height'           : 350,
+		'top'              : 200,
+		'left'             : 600,
+		'position'         : 'absolute',
+		'background-color' : '#E1E8EA',
+		'border-width'     : '1px',
+		'border-color'     : '#01A6F5',
+		'border-style'     : 'solid',
+		'border-radius'    : '5px',
+		'filter'           : 'Alpha(Opacity=100)',
+		'opacity'          : '1'
+	})
+
+	var e = document.createElement('div');              //-- create draggable div
+	e.setAttribute('id', 'nuDragBar');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'                   : '300px',
+		'height'                  : '25px',
+		'top'                     : '0px',
+		'left'                    : '0px',
+		'position'                : 'absolute',
+		'background-color'        : '#C0CDD1',
+		'z-index'                 : '1',
+		'border-top-left-radius'  : '5px',
+		'border-top-right-radius' : '5px'
+	})
+	.mousedown(function() {
+		$('#nuDrag').draggable();
+	})
+	.mouseup(function() {
+		$('#nuDrag').draggable("destroy");
+	});
+
+	var e = document.createElement('div');              //-- create draggable div
+	e.setAttribute('id', 'nuDragBarClose_');
+	$('#nuDragBar').append(e);
+	$('#' + e.id).css({
+		'width'            : '20px',
+		'height'           : '20px',
+		'top'              : '1px',
+		'left'             : '0px',
+		'position'         : 'absolute',
+		'background-color' : '#E1E8EA',
+		'z-index'          : '2'
+	})
+	.addClass('nuClose')
+	.html('&#10006;')
+	.mousedown(function() {
+			$('#nuModal').remove();
+			$('#nuDrag').remove();
+	});
+	var e          = document.createElement('select');       //-- create a new listbox object
+	e.multiple     = 'multiple';
+	e.setAttribute('id', 'nuObjectList');
+
+	$('#nuDrag').append(e);
+	$('#nuObjectList').css({
+		'width'            : '280px',
+		'height'           : '200px',
+		'top'              : '35px',
+		'left'             : '10px',
+		'position'         : 'absolute',
+		'z-index'          : '2'
+	})
+
+	nuAddSelectableObjects();
+	
+}
+
+
+function nuAddSelectableObjects(){
+
+	if($('#nuObjectList').length == 0){return;}             //-- object dialog is not open
+
+	var i         = String();
+	var t         = String();
+	var o         = String();
+	var tab       = nuOnDisplayedTab();
+
+	$("#nuObjectList option").remove();
+	
+	$("[data-adjustable]").each(function(x) {
+	
+		i         = $("[data-adjustable]")[x].id;
+		o         = $('#' + i).attr('data-nuobject-type');
+
+		if($.inArray(o , ['display', 'dropdown', 'html', 'iframe', 'listbox', 'text', 'textarea']) != -1){
+
+			t     = $("#title_" + i).html();
+			
+			if(t == '&nbsp;'){
+				t = o.toUpperCase() + ' : (id:' + i + ')';
+			}else{
+				t = o.toUpperCase() + ' : ' + t;
+			}
+		
+		}
+		
+		if(o == 'words') {t = o.toUpperCase() + ' : ' + $('#' + i).html();}
+		if(o == 'button'){t = o.toUpperCase() + ' : ' + $('#' + i).val();}
+		if(o == 'lookup'){t = o.toUpperCase() + ' : ' + $('#title_' + i.substr(4)).html();}
+		
+		if($("#" + i).css('visiblity') != 'hidden' && $('#' + tab + ' #' + i).length > 0){
+
+			$("#nuObjectList").append("<option value='"+i+"'>"+t+"</option>") ;
+			
+		}
+		
+	});
+
+}
+
+
+function nuOnDisplayedTab(){
+
+	var t;
+	var v;
+	
+	$("[id^='nu_tab_area']").each(function(x) {
+
+		t = $("[id^='nu_tab_area']")[x].id;
+
+		if($('#' + t).css('visibility') == 'visible'){
+			v = t;
+		}
+		
+	});
+			return v;
+	
+	
+//	$("#nu_tab_area0 input")
+
+}
+
+
+
+	
