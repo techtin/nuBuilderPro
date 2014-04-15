@@ -27,8 +27,8 @@ print $GLOBALS['nuSetup']->set_css;  //-- html header
 $i = "";
 $h = "";
 $t = "";
-$u = $_GET['u'];
-$p = $_GET['p'];
+$u = isset($_GET['u']) ? $_GET['u'] : '';
+$p = isset($_GET['p']) ? $_GET['p'] : '';
 
 if( array_key_exists('i', $_GET) ) {
     $i  = $_GET['i'];
