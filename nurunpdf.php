@@ -51,8 +51,6 @@ nuBuildReport($PDF, $REPORT, $TABLE_ID);
 $hashData['nu_pages']        = nuGetTotalPages();
 nuReplaceLabelHashVariables($REPORT, $hashData);
 
-//nuDebug(print_r($GLOBALS['nu_report'],1));
-
 nuPrintReport($PDF, $REPORT, $GLOBALS['nu_report'], $JSON);
 
 nuRunQuery("DROP TABLE IF EXISTS $TABLE_ID");

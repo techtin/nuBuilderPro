@@ -15,7 +15,6 @@ $GLOBALS['EXTRAJS']  = '';
 nuGetFormProperties(nuV('form_id'));
 $hashData            = nuHashData();
 $GLOBALS['hashData'] = $hashData;
-//nudebug(print_r($hashData,1));
 
 //==============================================================================
 //                                  LOGIN
@@ -1256,7 +1255,6 @@ function nuGetLookupData($hashData) {
 	}
 
     $s              = "SELECT $id, $code, $desc $su $SQL->from $SQL->where ($searchIn = '$searchFor')";
-nuDebug($s);		
     $s              = nuReplaceHashes($s, $hashData);
     $T              = nuRunQuery($s);
     if (nuErrorFound()) {

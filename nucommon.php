@@ -1263,7 +1263,6 @@ function nuEmailGetReportFile($request, $request_url = null) {
 	$handle                   = fopen($tmp_file, "w");
 	fwrite($handle, $contents);
 	fclose($handle);
-nuDebug($tmp_file);	
 	return $tmp_file;
 }
 
