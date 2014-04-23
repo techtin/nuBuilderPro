@@ -458,7 +458,8 @@ function nuBuilderSession(){
 		$('#' + e.id).css( 'height', this.subformRowHeight[i]+'px');
 		$('#' + e.id).css( 'position', 'absolute');
 		$('#' + e.id).html(this.subformRowHTML[i]);
-
+		$('.hasDatepicker').removeClass('hasDatepicker').datepicker();
+		
 			$('#' + e.id + ' .ui-autocomplete-input').each(function(i){
 				nuAutocomplete(this);
 			})
