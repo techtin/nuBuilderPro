@@ -10,6 +10,7 @@ function nuBuildBrowseForm(o){
 	var formRecords     = Array();
 	formRecords[0]      = o.records;
 	window.nu_user_name = o.nu_user_name;
+	nuCloseModal();
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
 	nuBuildHolder('nuActionButtonHolder', 'nuActionButtonHolder', 'nuHolder');

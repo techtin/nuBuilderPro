@@ -15,6 +15,7 @@ function nuBuildEditForm(o){
 	var formRecords     = Array();
 	formRecords[0]      = o.records;
 	nuFORM.last_edit    = o.edited;
+	nuCloseModal();
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
 	nuBuildHolder('nuActionButtonHolder', 'nuActionButtonHolder', 'nuHolder');

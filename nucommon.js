@@ -563,7 +563,7 @@ function nuOpenNewWindowParent(w) {
 
 function nuOpenLookup(pThis, pFilter){
 
-//	nuFORM.call_type     = 'none';
+	nuCloseModal();
 	var parent           = '';
 	var w                = new nuWindow();
     w.parent_form_id     = nuFORM.parent_form_id;
@@ -647,6 +647,8 @@ function nuGoToForm(i, ask){
         }
         
     }
+
+	nuCloseModal();
     if(arguments.length == 0){
             var i = window.nuSession.breadCrumb.length - 1;
     }
@@ -1863,8 +1865,7 @@ function nuObjectMover() {
 	.addClass('nuClose')
 	.html('&#10006;')
 	.mousedown(function() {
-			$('#nuModal').remove();
-			$('#nuDrag').remove();
+		nuCloseModal();
 	});
 	var e          = document.createElement('select');       //-- create a new listbox object
 	e.multiple     = 'multiple';
@@ -1879,11 +1880,33 @@ function nuObjectMover() {
 		'position'         : 'absolute',
 		'z-index'          : '2'
 	})
+	.change(function() {
+			nuHighlightSelected();
+	});
 
 	nuAddSelectableObjects();
 	
 }
 
+
+function nuHighlightSelected(){
+
+	$('.nuSelected').removeClass('nuSelected');
+
+	$("#nuObjectList > option:selected").each(function() {
+		$('#' + this.value).addClass('nuSelected');
+	});
+
+}
+
+
+
+function nuCloseModal(){
+
+	$('#nuModal').remove();
+	$('#nuDrag').remove();
+	
+}
 
 function nuAddSelectableObjects(){
 
@@ -1917,7 +1940,11 @@ function nuAddSelectableObjects(){
 		if(o == 'button'){t = o.toUpperCase() + ' : ' + $('#' + i).val();}
 		if(o == 'lookup'){t = o.toUpperCase() + ' : ' + $('#title_' + i.substr(4)).html();}
 		
-		if($("#" + i).css('visiblity') != 'hidden' && $('#' + tab + ' #' + i).length > 0){
+		var vis   = $("#" + i).css('visiblity') != 'hidden';              //-- visible
+		var intab = $('#' + tab + ' #' + i).length > 0;                   //-- in this tab
+		var notsf = $("#" + i).attr('data-prefix') == '';                 //-- not in a subform
+		
+		if(vis && intab && notsf){
 
 			$("#nuObjectList").append("<option value='"+i+"'>"+t+"</option>") ;
 			
