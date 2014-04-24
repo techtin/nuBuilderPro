@@ -40,21 +40,20 @@ if( array_key_exists('title', $_SESSION) ) {
     $t  = $_SESSION['title'];
 }
 $l  = nuGetLanguage();
-
-//$k1 = $GLOBALS['nuSetup']->set_inkfilepicker_key;
-
 $de = $GLOBALS['nuSetup']->set_denied;
 
 
 print "
+
+<style>
+.nuSelected              {cursor:move;outline:1px solid red}
+</style>
 
 <script>
 
 window.nuDenied   = '$de';
 window.nuUsername = '$u';
 window.nuPassword = '$p';
-
-//filepicker.setKey('$k1');
 
 $l
     
