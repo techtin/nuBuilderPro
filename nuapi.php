@@ -1356,22 +1356,24 @@ function nuGetEditForm($hashData) {
 
     $beforeOpen = nuReplaceHashes(nuF('sfo_custom_code_run_before_open'), $hashData);
     eval($beforeOpen);
-    $formID               = nuV('form_id');
-    $J['nu_user_name']    = nuV('nu_user_name');
-    $J['record_id']       = nuV('record_id');
-    $J['session']         = nuV('session_id');
-    $J['form_title']      = nuF('sfo_title');
-    $nuRepositonObjects   = nuGetRepositonObjects();
-    $js                   = nuF('sfo_custom_code_run_javascript');
-    $J['form_javascript'] = $nuRepositonObjects . nuReplaceHashes($js, $hashData);
+    $formID                   = nuV('form_id');
+    $J['nu_user_name']        = nuV('nu_user_name');
+    $J['record_id']           = nuV('record_id');
+    $J['session']             = nuV('session_id');
+    $J['form_title']          = nuF('sfo_title');
+    $nuRepositonObjects       = nuGetRepositonObjects();
+	$J['draggable_objects']   = nuGetDraggableObjects();
+nuDebug(print_r($J['draggable_objects'],1));	
+    $js                       = nuF('sfo_custom_code_run_javascript');
+    $J['form_javascript']     = $nuRepositonObjects . nuReplaceHashes($js, $hashData);
     nuPHPPDFBreadcrumb();
     if($GLOBALS['EXTRAJS'] != ''){
         $J['form_javascript'] = $J['form_javascript'] . "\n\n\n//-- Custom Javascript Added via the PHP function : nuAddJavascript()\n\n\n" . $GLOBALS['EXTRAJS'];
     }
 
-    $data            = nuGetObjectsForOneRecord('form', $formID, nuV('record_id'), $hashData);
-    $buttons         = nuGetEditButtons($formID, $hashData);
-    $J['buttons']    = $buttons;
+    $data                     = nuGetObjectsForOneRecord('form', $formID, nuV('record_id'), $hashData);
+    $buttons                  = nuGetEditButtons($formID, $hashData);
+    $J['buttons']             = $buttons;
 
 	if(count($data['objects']) == 1){                                           //-- fake an Object
 	
@@ -1515,6 +1517,41 @@ $m
 
     return $j;
 }
+
+
+function nuGetDraggableObjects() {
+
+    $i = nuV('form_id');
+	$o = array();
+    $s = "
+        SELECT 
+            zzzsys_object_id, 
+            sob_all_name, 
+            sob_all_type, 
+            sob_all_top, 
+            sob_all_left 
+        FROM zzzsys_object 
+        WHERE sob_zzzsys_form_id = ? 
+        ORDER BY
+            sob_all_tab_number, 
+            sob_all_column_number, 
+            sob_all_order_number 
+    ";
+
+    $t = nuRunQuery($s, array($i));
+	
+    if (nuErrorFound()){return $o;}
+
+    if ($t->rowCount() == 0){return $o;}
+
+    while ($r = db_fetch_object($t)){
+		$o[] = array($r->zzzsys_object_id ,$r->sob_all_name ,$r->sob_all_type, is_numeric($r->sob_all_top) ? $r->sob_all_top : 0, is_numeric($r->sob_all_left) ? $r->sob_all_left : 0);
+    }
+
+    return $o;
+}
+
+
 
 function nuGetBrowseForm($hashData) {
     

@@ -619,14 +619,18 @@ function nuAddBreadCrumbs(){
 
 function nuAddJavascript(o){
         
-    window.nuLoadBrowse = null;
-    window.nuLoadEdit   = null;
-	window.nuOnSave     = null;
-
-	var e = document.createElement('script');
+    window.nuLoadBrowse       = null;
+    window.nuLoadEdit         = null;
+	window.nuOnSave           = null;
+	window.nuDraggableObjects = Array();
+	
+	var e                     = document.createElement('script');
         
 	e.setAttribute('type', "text/javascript");
-	e.innerHTML = o.form_javascript;
+	
+	e.innerHTML               = o.form_javascript;
+	window.nuDraggableObjects = o.draggable_objects;
+	
 	$('#nuHolder').append(e);
         
 }
@@ -1938,13 +1942,41 @@ function nuOnDisplayedTab(){
 		}
 		
 	});
-			return v;
 	
+	return v;
 	
-//	$("#nu_tab_area0 input")
-
 }
 
+function nuDraggableObjectProperties(i, p, v){
 
+// nuDraggableObjects properties
+//	0  = zzzsys_object_id
+//	1  = sob_all_name
+//	2  = sob_all_type 
+//	3  = sob_all_top 
+//	4  = sob_all_left 
+//	5  = has been moved (0/1) (starts undefined)
+//	6  = sob_all_height       (starts undefined) 
+//	7  = sob_all_width        (starts undefined)
+
+	window.nuDraggableObjects.forEach(function(a) {
+		if(a[1] == i){
+		
+			if(v === undefined){             //-- get value
+				v    = a[p];
+				return;
+			}else{                           //-- set value
+				a[5] = 1;
+				a[p] = v;
+				return;
+			}
+			
+		}
+			
+	});
+
+	return v;
+	
+}
 
 	
