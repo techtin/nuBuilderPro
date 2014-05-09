@@ -61,7 +61,7 @@ print $script;
   
   <style>
   body                     {}
-  .nuSelected              {cursor:move;outline:1px solid red}
+  .nuSelected              {cursor:move;outline:2px solid red}
   .nuDialogFocus           {outline:2px solid red}
   .nuReportObject          {cursor:cell}
   .nuSection               {}

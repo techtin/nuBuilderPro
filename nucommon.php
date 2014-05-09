@@ -443,9 +443,9 @@ function nuHashData(){
 		
     }
 	
-	$setup                         = $GLOBALS['nuSetup'];                                                                          //-- Read SMTP AUTH Settings from zzsys_setup table
+	$setup                         = $GLOBALS['nuSetup'];                                              //-- Read SMTP AUTH Settings from zzsys_setup table
 	
-	$h['nu_denied']                = $setup->set_denied;                      //-- hide ids like .. eg. nu%
+	$h['nu_denied']                = $setup->set_denied;                                               //-- hide ids like .. eg. nu%
 
 	$h['nu_smtp_username']         = $setup->set_smtp_username;
 	$h['nu_smtp_password']         = $setup->set_smtp_password;
@@ -455,10 +455,10 @@ function nuHashData(){
 	$h['nu_smtp_use_ssl']          = $setup->set_smtp_use_ssl;
 	$h['nu_smtp_from_name']        = $setup->set_smtp_from_name;
 
-    $recordData                    = nuRecordArray($h);                       //-- record data
-    $sessionData                   = nuSessionArray(nuV('session_id'));       //-- user and access info
+    $sessionData                   = nuSessionArray(nuV('session_id'));                               //-- user and access info
+    $recordData                    = nuRecordArray(array_merge($sessionData, $h));                    //-- record data
 
-    foreach($_POST['nuWindow'] as $key => $value){                            //-- add current hash variables
+    foreach($_POST['nuWindow'] as $key => $value){                                                    //-- add current hash variables
     
         $h[$key]                   = $value;
         
@@ -473,12 +473,12 @@ function nuHashData(){
 			
 		}
 	}
-    return array_merge($recordData, $sessionData, $h);
+    return array_merge($recordData,$sessionData, $h);
 
 }
 
 function nuRecordArray($hashData){
-
+nuDebug(print_r($hashData,1));
     $ignore                = array();
     $ignore[]              = 'sre_layout';
     $ignore[]              = 'form_data';
@@ -490,8 +490,8 @@ function nuRecordArray($hashData){
 	$r                     = db_fetch_object($t);
 
 	if(nuV('call_type') != 'geteditform'){
-	
-		$bb                = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
+
+		$bb                = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);     //-- this is run to place any javascript into a Browse Form
 		eval($bb);
 	
 	}
@@ -570,6 +570,7 @@ function nuTextFormats(){
 
 //-----number formats
 	$format = array();
+	
 	$format[0]->type         = 'number';
 	$format[0]->format       = '0';
 	$format[0]->decimal      = '.';

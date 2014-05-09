@@ -1,5 +1,5 @@
 window.loading = false;
-
+window.nuLastMoverClick = new Date().getTime();
 
 
 function nuSubformArray(sf, all){
@@ -623,13 +623,13 @@ function nuAddJavascript(o){
     window.nuLoadEdit         = null;
 	window.nuOnSave           = null;
 	window.nuDraggableObjects = Array();
-	
+	window.nuDraggableObjects = o.draggable_objects;
+
 	var e                     = document.createElement('script');
         
 	e.setAttribute('type', "text/javascript");
 	
 	e.innerHTML               = o.form_javascript;
-	window.nuDraggableObjects = o.draggable_objects;
 	
 	$('#nuHolder').append(e);
         
@@ -1500,49 +1500,31 @@ function nuMoveObject(id, top, left){
     $('#' + p).append(e);
     $('#' + e.id).append(t)
    .css({
-        'top'          : top+'px',
-        'left'         :   left+'px',
+        'top'          : top  + 'px',
+        'left'         : left + 'px',
         'position'     : 'absolute',
         'border-style' : 'none'
-   })
+	})
    .addClass('nuSelectedTab');
 
-    $('#' + t.id).append($('#tr_'+id));
+	$('#' + e.id).mousedown(function() {
+	
+		var cover = window.nuOTP[nuDraggableObjectProperties(e.id.substr(10), 'sob_all_type')].cover
+		if(!$('#' + cover + e.id.substr(10)).hasClass('nuSelected')){
 
-    if(nuIsGA()){
+			if(!window.nuControlKey){
+				nuAddSelectableObjects();
+			}
+			
+			$('#nuObjectList option[value=' + e.id.substr(10) + ']').attr('selected', true);
+			$('#nuObjectList').change();
+			
+		}
 
-		$('#title_' + id).hover(
-                function (){
-                        if(nuIsMoveable()){
-                            $('#' + this.id).css('color', 'red');
-                        }
-                }, 
-                function (){
-                        $('#' + this.id).css('color', '');
-                }
-        );
+	});
 
-        $('#' + e.id).draggable({
-            
-            stop: function() { 
+	$('#' + t.id).append($('#tr_'+id));
 
-                var pos              = $('#' + e.id).position();
-                if($('#' + e.id).attr('data-nuobject') == undefined){
-                    
-                    var oID          = $('#' + e.id).attr('data-id');
-                    
-                }else{
-                    
-                    var oID          = $('#' + e.id).attr('data-nuobject');
-                    
-                }
-
-                nuFORM.moved_objects = nuFORM.moved_objects + '|' + pos.top + ',' + pos.left + ',' + oID; 
-
-            },
-            drag: function(event, ui) { if(!nuIsMoveable()) return false; }
-        });
-    }
 	
 }
 
@@ -1811,14 +1793,16 @@ function nuFile(c){
 
 function nuObjectMover() {
 
+	nuCloseModal();
+	
 	var e = document.createElement('div');              //-- create draggable div
 	e.setAttribute('id', 'nuDrag');
 	$('body').append(e);
 	$('#' + e.id).css({
 		'width'            : 300,
-		'height'           : 350,
-		'top'              : 200,
-		'left'             : 600,
+		'height'           : 450,
+		'top'              : 50,
+		'left'             : 50,
 		'position'         : 'absolute',
 		'background-color' : '#E1E8EA',
 		'border-width'     : '1px',
@@ -1884,21 +1868,576 @@ function nuObjectMover() {
 			nuHighlightSelected();
 	});
 
+	$("[id^='nuButton']").attr( "disabled", "disabled" );                                                       //-- remove see through divs
+
+
+	$('#nuObjectList').change();
 	nuAddSelectableObjects();
+	nuMoverAdjustHorButton(240, 10);
+	nuMoverMoveLeftButton(275, 10);
+	nuMoverMoveRightButton(310, 10);
+	nuMoverMoveDownButton(345, 10);
+	nuMoverMoveUpButton(380, 10);
+	nuMoverUnselectButton(415, 10);
+	nuMoverAdjustVerButton(240, 170);
+	nuMoverAlignLeftButton(275, 170);
+	nuMoverAlignRightButton(310, 170);
+	nuMoverAlignTopButton(345, 170);
+	nuMoverAlignBottomButton(380, 170);
+	nuMoverSaveButton(415, 170);
+	
+}
+
+
+function nuMoverAdjustHorButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverAdjustHor');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Space Horizontally');
+	e.setAttribute('title',   'Adjust All Highlighted Objects Horizontally');
+	e.setAttribute('onclick', 'nuMoverAdjustHorClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAdjustHorClick(){
+
+	var ltor    = Array();
+	var rtol    = Array();
+	var tw      = 0;
+	var l, r, w, o, e, g, s;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		o       = nuDraggableObjectProperties(this.value);
+		e       = new nuEmptyObject();
+		e.i     = this.value;
+		e.l     = Number(o.holder_left) + Number(o.title_width)                                              //-- left
+		e.w     = parseInt($('#' + window.nuOTP[o.sob_all_type].cover + this.value).css('width'));           //-- width
+		e.r     = e.l + e.w;                                                                                 //-- right
+		tw      = tw + e.w;                                                                                  //-- total width
+		
+		ltor.push(e);
+		rtol.push(e);
+
+	});
+
+
+	ltor.sort(function(A, B){return A.r - B.r;});
+	rtol.sort(function(A, B){return B.l - A.l;});
+
+	
+	l           = ltor[0].l;                                                                                 //-- left position of most left object    _---- ----- -----
+	r           = rtol[0].r;                                                                                 //-- right position of most right object  ----- ----- ----_
+	g           = ((r-l) - tw) / (rtol.length -1);                                                           //-- new calculated gap between objects   -----_-----_-----
+	s           = ltor[0].l;                                                                                 //-- starting left                        _---- ----- -----
+
+
+	for(var i = 0 ; i < ltor.length - 1 ; i++) {                                                             //-- reposition all Objects ordered by left most (except the last one)
+
+		o       = nuDraggableObjectProperties(ltor[i].i);
+		if(i > 0){nuMoveObject(ltor[i].i, o.holder_top, s - o.title_width);}                                 //-- move object
+		s       = s + g + ltor[i].w;
+	
+	}
+					
+	nuRecalculateCoordinates();
+
+}
+
+
+function nuMoverAdjustVerButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverAdjustVer');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Space Vertically');
+	e.setAttribute('title',   'Adjust All Highlighted Objects Vertically');
+	e.setAttribute('onclick', 'nuMoverAdjustVerClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAdjustVerClick(){
+
+	var t = 10000000;
+	var b = 0;
+	var h = 0;
+	var n = 0;
+	var a = Array();
+	var o;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		o       = nuDraggableObjectProperties(this.value);
+		t       = Math.min(t, Number(o.holder_top) );                                                      //-- calculate highest top
+		b       = Math.max(b, Number(o.holder_top) + Number(o.object_height));                            //-- calculate lowest bottom
+		h       = h + Number(o.object_height);                                                                //-- total height of objects
+		n       = n + 1;                                                                                      //-- number of objects
+		
+		var top = new nuEmptyObject();
+		top.id  = o.sob_all_name;
+		top.t   = Number(o.holder_top);
+		
+		a.push(top);
+
+	});
+
+	var s = a.sort(function(A, B){return A.t - B.t;});
+	var newGap = (b-t-h) / (n-1);
+	var newTop  = t;
+	
+	for(var i = 0 ; i < s.length - 1 ; i++) {                      //-- reposition all Objects ordered by highest (except the last one)
+
+		o       = nuDraggableObjectProperties(s[i].id);
+		nuMoveObject(s[i].id, newTop, s[i].holder_left);                                      //-- move object
+		newTop  = newTop + newGap + Number(o.object_height);
+	
+	}
+					
+	nuRecalculateCoordinates();
+
+}
+
+
+function nuMoverMoveLeftButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverMoveLeft');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Move Left');
+	e.setAttribute('title',   'Move All Highlighted Objects Left');
+	e.setAttribute('onclick', 'nuMoverMoveClick(0, -1)');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverMoveRightButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverMoveRight');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Move Right');
+	e.setAttribute('title',   'Move All Highlighted Objects Right');
+	e.setAttribute('onclick', 'nuMoverMoveClick(0, 1)');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+
+function nuMoverMoveDownButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverMoveDown');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Move Down');
+	e.setAttribute('title',   'Move All Highlighted Objects Down');
+	e.setAttribute('onclick', 'nuMoverMoveClick(1, 0)');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverMoveUpButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverMoveUp');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Move Up');
+	e.setAttribute('title',   'Move All Highlighted Objects Up');
+	e.setAttribute('onclick', 'nuMoverMoveClick(-1, 0)');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverUnselectButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverUnselect');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'UnSelect All');
+	e.setAttribute('title',   'Unselect All Objects');
+	e.setAttribute('onclick', 'nuMoverUnselectClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+function nuMoverUnselectClick(){
+
+	nuAddSelectableObjects();
+	$("#nuObjectList").change();
+	
+
+}
+
+function nuMoverMoveClick(t, l){
+
+	var gap =  new Date().getTime() - window.nuLastMoverClick;
+	window.nuLastMoverClick = new Date().getTime();
+
+	if(gap < 200){
+		t = t*10;
+		l = l*10;
+	}
+	
+	$("#nuObjectList > option:selected").each(function() {
+	
+		var o = nuDraggableObjectProperties(this.value);
+		nuDraggableObjectProperties(this.value, 'holder_top',  Number(o.holder_top)  + t);      //-- set top
+		nuDraggableObjectProperties(this.value, 'holder_left', Number(o.holder_left) + l);      //-- set left
+		nuMoveObject(this.value, Number(o.holder_top) + t, Number(o.holder_left) + l);          //-- move object
+		nuDraggableObjectProperties(this.value, 'has_been_moved', 1);                           //-- has been moved
+		
+	});
+
+}
+
+
+function nuMoverAlignLeftButton(t, l){
+
+	var e = document.createElement('input');                                                   //-- create button
+	e.setAttribute('id', 'nuMoverAlignLeft');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Align To Left');
+	e.setAttribute('title',   'Align All Highlighted Objects To Left');
+	e.setAttribute('onclick', 'nuMoverAlignLeftClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAlignLeftClick(){
+
+	var r = 10000000;
+	var o = 0;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		o = nuDraggableObjectProperties(this.value);
+		r = Math.min(r, Number(o.holder_left) + Number(o.title_width));                                                          //-- calculate left
+
+	});
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		var l = r - nuDraggableObjectProperties(this.value, 'title_width');
+		nuMoveObject(this.value, nuDraggableObjectProperties(this.value, 'holder_top'), l);                                      //-- move object
+		
+	});
+					
+	nuRecalculateCoordinates();
+
+}
+
+
+function nuMoverAlignRightButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverAlignRight');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Align To Right');
+	e.setAttribute('title',   'Align All Highlighted Objects To Right');
+	e.setAttribute('onclick', 'nuMoverAlignRightClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAlignRightClick(){
+
+	var r = 0;
+	var o = 0;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		o = nuDraggableObjectProperties(this.value);
+		r = Math.max(r, Number(o.holder_left) + Number(o.holder_width));                                                         //-- calculate right
+
+	});
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		var l = r - nuDraggableObjectProperties(this.value, 'holder_width');
+		nuMoveObject(this.value, nuDraggableObjectProperties(this.value, 'holder_top'), l);                                      //-- move object
+		
+	});
+					
+	nuRecalculateCoordinates();
+					
+}
+
+
+
+function nuMoverAlignBottomButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverAlignBottom');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Align To Bottom');
+	e.setAttribute('title',   'Align All Highlighted Objects To Bottom');
+	e.setAttribute('onclick', 'nuMoverAlignBottomClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAlignBottomClick(){
+
+	var h = 0;
+	var o = 0;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		o = nuDraggableObjectProperties(this.value);
+		h = Math.max(h, Number(o.holder_top) + Number(o.holder_height));                                                         //-- calculate bottom
+	});
+
+	$("#nuObjectList > option:selected").each(function() {
+		var t = h - nuDraggableObjectProperties(this.value, 'holder_height');
+		nuMoveObject(this.value, t, nuDraggableObjectProperties(this.value, 'holder_left'));                                     //-- move object
+		
+	});
+					
+	nuRecalculateCoordinates();
+					
+}
+
+
+function nuMoverAlignTopButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoverAlignTop');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Align To Top');
+	e.setAttribute('title',   'Align All Highlighted Objects To Top');
+	e.setAttribute('onclick', 'nuMoverAlignTopClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'z-index'          : 1500,
+		'position'         : 'absolute',
+	})
+
+}
+
+
+function nuMoverAlignTopClick(){
+
+	var h  = 1000000;
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		h = Math.min(h,nuDraggableObjectProperties(this.value, 'holder_top'));                               //-- calculate top
+		
+	});
+
+	$("#nuObjectList > option:selected").each(function() {
+	
+		nuMoveObject(this.value, h, nuDraggableObjectProperties(this.value, 'holder_left'));                 //-- move object
+
+	});
+
+	nuRecalculateCoordinates();
+
+}
+
+
+function nuMoverSaveButton(t, l){
+
+	var e = document.createElement('input');                           //-- create button
+	e.setAttribute('id', 'nuMoveSave');
+	e.setAttribute('type', 'button');
+	e.setAttribute('value',   'Save');
+	e.setAttribute('title',   'Save all Moved Objects');
+	e.setAttribute('onclick', 'nuMoveSaveClick()');
+	$('#nuActionButtonHolder').append(e);
+	$('#' + e.id).addClass('nuButton');
+	$('#nuDrag').append(e);
+	$('#' + e.id).css({
+		'width'            : 120,
+		'height'           : 30,
+		'top'              : t,
+		'left'             : l,
+		'position'         : 'absolute',
+		'color'            : 'red',
+	})
+
+}
+
+function nuMoveSaveClick(){
+
+    var w                    = new nuCopyJSObject(nuFORM);
+	w.call_type              = 'savemovedobjects';
+	w.moved_objects          = Array();
+
+
+	window.nuDraggableObjects.forEach(function(a) {                      //-- get all Objects that have been moved
+
+		if(a.has_been_moved == 1){
+			var o            = new nuEmptyObject();
+			o.id             = a.zzzsys_object_id;
+			o.top            = a.holder_top;
+			o.left           = a.holder_left;
+			
+			w.moved_objects.push(o);
+		}
+	
+	});
+
+	var request = $.ajax({
+		url      : "nuapi.php",
+		type     : "POST",
+		data     : {nuWindow : w},
+		dataType : "json",
+		async    : false
+		}).done(function(data){
+
+			if(nuErrorMessage(data.ERRORS, false)){nuRemoveModal();return;}
+
+			var obj          = $.parseJSON(data.DATA);
+			window.nuFormats = $.parseJSON(obj.formats);
+			window.formatter = new nuFormatter();
+			var b            = window.nuSession.breadCrumb[window.nuSession.breadCrumb.length-1];                            
+
+			if(b!= window.nuFORM) nuSession.setBreadCrumb(window.nuFORM);
+			
+			nuBuildEditForm(obj);
+	});
 	
 }
 
 
 function nuHighlightSelected(){
 
-	$('.nuSelected').removeClass('nuSelected');
-
+	nuDraggableObjectProperties(-1, 'is_selected', 0);         //-- has not been selected
+	
+	$(".nuSelected").removeClass('nuSelected');
+	
 	$("#nuObjectList > option:selected").each(function() {
-		$('#' + this.value).addClass('nuSelected');
+
+		nuDraggableObjectProperties(this.value, 'holder_height', parseInt($('#nu_holder_' + this.value).css('height')));
+		nuDraggableObjectProperties(this.value, 'holder_width', parseInt($('#nu_holder_' + this.value).css('width')));
+		nuDraggableObjectProperties(this.value, 'is_selected', 1);
+		$('#td_right_' + this.value).addClass('nuSelected');
+		if(nuDraggableObjectProperties(this.value, 'sob_all_type') == 'subform'){
+			$('#scroll_' + this.value).addClass('nuSelected');                                  //-- for Subform
+		}
+		if(nuDraggableObjectProperties(this.value, 'sob_all_type') == 'browse'){
+			$('#nu_holder_' + this.value).addClass('nuSelected');                               //-- for Browse
+		}
+		$('#nu_see_through_' + this.value).css('cursor', 'move');
+			
 	});
 
 }
-
 
 
 function nuCloseModal(){
@@ -1910,44 +2449,82 @@ function nuCloseModal(){
 
 function nuAddSelectableObjects(){
 
-	if($('#nuObjectList').length == 0){return;}             //-- object dialog is not open
+	if($('#nuObjectList').length == 0){return;}                                                  //-- object dialog is not open
 
 	var i         = String();
 	var t         = String();
 	var o         = String();
-	var tab       = nuOnDisplayedTab();
+	var p         = String();
+	var tab       = nuDisplayedTabNo();
 
+	$(".nuSelected").removeClass('nuSelected');
 	$("#nuObjectList option").remove();
+	$("[id^='nu_see_through_']").remove();                                                       //-- remove see through divs
 	
-	$("[data-adjustable]").each(function(x) {
+	window.nuDraggableObjects.forEach(function(a) {
 	
-		i         = $("[data-adjustable]")[x].id;
-		o         = $('#' + i).attr('data-nuobject-type');
+		i         = a.sob_all_name;                                                              //-- id
+		o         = a.sob_all_type;                                                              //-- type
+		t         = $("#" + window.nuOTP[o].title + a.sob_all_name).html();
 
-		if($.inArray(o , ['display', 'dropdown', 'html', 'iframe', 'listbox', 'text', 'textarea']) != -1){
-
-			t     = $("#title_" + i).html();
-			
-			if(t == '&nbsp;'){
-				t = o.toUpperCase() + ' : (id:' + i + ')';
-			}else{
-				t = o.toUpperCase() + ' : ' + t;
-			}
-		
+		if(t.replaceAll('&nbsp;', '') == ''){
+			t = a.sob_all_type.toUpperCase() + ' : (id:' + a.sob_all_name + ')';
+		}else{
+			t = a.sob_all_type.toUpperCase() + ' : ' + t;
 		}
 		
-		if(o == 'words') {t = o.toUpperCase() + ' : ' + $('#' + i).html();}
-		if(o == 'button'){t = o.toUpperCase() + ' : ' + $('#' + i).val();}
-		if(o == 'lookup'){t = o.toUpperCase() + ' : ' + $('#title_' + i.substr(4)).html();}
+		if(a.sob_all_type == 'words') {t = a.sob_all_type.toUpperCase() + ' : ' + $('#' + a.sob_all_name).html();}
+		if(a.sob_all_type == 'button'){t = a.sob_all_type.toUpperCase() + ' : ' + $('#' + a.sob_all_name).val();}
 		
-		var vis   = $("#" + i).css('visiblity') != 'hidden';              //-- visible
-		var intab = $('#' + tab + ' #' + i).length > 0;                   //-- in this tab
-		var notsf = $("#" + i).attr('data-prefix') == '';                 //-- not in a subform
-		
-		if(vis && intab && notsf){
+		var vis   = $("#" + a.sob_all_name).css('visiblity') != 'hidden';                        //-- visible
+		var intab = tab == nuDraggableObjectProperties(a.sob_all_name, 'tab_number');            //-- in this tab
 
-			$("#nuObjectList").append("<option value='"+i+"'>"+t+"</option>") ;
+		if(vis && intab){
+			$("#nuObjectList").append("<option value='"+ a.sob_all_name +"'>"+t+"</option>") ;
+			nuPlaceInHolder(a.sob_all_name);
+
+			var n  = a.sob_all_name;
+			var h  = window.nuOTP[a.sob_all_type].cover  + a.sob_all_name;
+			var i  = 'nu_see_through_'                   + a.sob_all_name;
+			var dW = parseInt($('#' +  window.nuOTP[a.sob_all_type].cover + n).css( 'width'))
 			
+			if($('#code' + n).length > 0){
+				dW = dW + parseInt($('#code' + n).css( 'width')) + 2;
+			}
+			if($('#description' + n).length > 0){
+				dW = dW + parseInt($('#description' + n).css( 'width')) + 2;
+			}
+			if($('#btn_' + n).length > 0){
+				dW = dW + parseInt($('#btn_' + n).css( 'width')) + 2;
+			}
+			
+			var e  = document.createElement('div');       //-- cover object with a see through div
+			e.setAttribute('id',  i);
+			$('#' + h).css('overflow', 'hidden');
+			$('#' + h).append(e);
+			$('#' + i).css( 'background-color', '');
+			$('#' + i).css( 'position', 'absolute');
+			$('#' + i).css( 'z-index', 1000);
+			$('#' + i).css( 'top',  '0px');
+			$('#' + i).css( 'left', (parseInt(nuDraggableObjectProperties(a.sob_all_name, 'title_width')) + 4) + 'px' );
+			$('#' + i).css( 'width', $('#' + h).css('width'));
+			$('#' + i).css( 'height', $('#' + h).css('height'));
+
+			$('#nu_holder_' + a.sob_all_name).draggable({
+
+				handle: '#' + i,
+
+				drag: function( event, ui ){
+					nuMoveSelected(this.id);
+				},
+
+				stop: function() { 
+				
+					nuRecalculateCoordinates();
+					
+				}
+			});
+
 		}
 		
 	});
@@ -1955,7 +2532,45 @@ function nuAddSelectableObjects(){
 }
 
 
-function nuOnDisplayedTab(){
+function nuRecalculateCoordinates(){
+	
+	$("#nuObjectList > option:selected").each(function() {
+
+		var pos              = $('#nu_holder_' + this.value).position();
+		nuDraggableObjectProperties(this.value, 'holder_top',     pos.top);
+		nuDraggableObjectProperties(this.value, 'holder_left',    pos.left);
+		nuDraggableObjectProperties(this.value, 'has_been_moved', 1);
+			
+	});
+
+}
+    
+function nuMoveSelected(id){
+
+
+    var p  = $('#' + id).position();
+	var t  = p.top -  Number(nuDraggableObjectProperties(id.substr(10), 'holder_top'));
+	var l  = p.left - Number(nuDraggableObjectProperties(id.substr(10), 'holder_left'));
+	var nt = 0;
+	var nl = 0;
+	
+	$("#nuObjectList > option:selected").each(function() {
+	
+		var nt  = Number(nuDraggableObjectProperties(this.value, 'holder_top'))  + t;
+		var nl  = Number(nuDraggableObjectProperties(this.value, 'holder_left')) + l;
+		nuDraggableObjectProperties(this.value, 'holder_top',  nt);
+		nuDraggableObjectProperties(this.value, 'holder_left', nl);
+		nuDraggableObjectProperties(this.value, 'is_selected', 1);
+		$('#nu_holder_' + this.value).css('top',  nt);
+		$('#nu_holder_' + this.value).css('left',  nl);
+		
+	});
+	
+
+}
+    
+
+function nuDisplayedTabNo(){
 
 	var t;
 	var v;
@@ -1965,7 +2580,7 @@ function nuOnDisplayedTab(){
 		t = $("[id^='nu_tab_area']")[x].id;
 
 		if($('#' + t).css('visibility') == 'visible'){
-			v = t;
+			v = t.substr(11);
 		}
 		
 	});
@@ -1976,26 +2591,38 @@ function nuOnDisplayedTab(){
 
 function nuDraggableObjectProperties(i, p, v){
 
-// nuDraggableObjects properties
-//	0  = zzzsys_object_id
-//	1  = sob_all_name
-//	2  = sob_all_type 
-//	3  = sob_all_top 
-//	4  = sob_all_left 
-//	5  = has been moved (0/1) (starts undefined)
-//	6  = sob_all_height       (starts undefined) 
-//	7  = sob_all_width        (starts undefined)
+	var i = i;
+	var p = p;
+	var v = v;
+	
+// (i) if i = -1 then update all elements in the array
+// (p) if p === undefined return all properties in an array
 
 	window.nuDraggableObjects.forEach(function(a) {
-		if(a[1] == i){
+
+		if(a[1] == i && p === undefined){             //-- get all values for 1 object
+		
+			v = new nuEmptyObject();
+			
+			for (var el in a) {
+				v[el] = a[el];
+			}
+			
+			return;
+			
+		}
+
+		if(a[1] == i || i == -1){            //-- if i = -1 then update all elements in the array
 		
 			if(v === undefined){             //-- get value
 				v    = a[p];
 				return;
 			}else{                           //-- set value
-				a[5] = 1;
 				a[p] = v;
-				return;
+				
+				if(i > -1){                  //-- update just this element
+					return;
+				}
 			}
 			
 		}
@@ -2006,4 +2633,143 @@ function nuDraggableObjectProperties(i, p, v){
 	
 }
 
+function nuSetAllDraggableObjectProperties(){
+
+	var tabno    = -1;
+	var tabIndex = '-1';
 	
+	nuSetObjectTypeProperties();
+	
+	window.nuDraggableObjects.forEach(function(a) {
+
+
+		if(tabIndex != a[3]){ 
+			tabIndex          = a[3];
+			++tabno;
+		}
+	
+		a.zzzsys_object_id    = a[0];
+		a.sob_all_name        = a[1];
+		a.sob_all_type        = a[2];
+		a.sob_all_tab_number  = a[3];
+		a.sob_all_top         = a[4];
+		a.sob_all_left        = a[5];
+		a.has_been_moved      = 0;
+		a.is_selected         = 0;
+		a.tab_number          = tabno;
+		a.prefix              = '';
+		if(a[2] == 'lookup') {a.prefix = 'code';}
+		if(a[2] == 'subform'){a.prefix = 'scroll_';}
+		a.title_width         = nuGetTitleWidth(a[1]);
+		a.holder_top          = 0;
+		a.holder_left         = 0;
+		a.holder_height       = 0;
+		a.holder_width        = 0;
+		a.object_top          = 0;
+		a.object_left         = 0;
+		if($('#' + a.prefix + a[1]).length == 1){
+			var pos               = $('#' + a.prefix + a[1]).position();
+			a.object_top          = pos.top;
+			a.object_left         = pos.left;
+		}
+
+		if(a[2] == 'subform' || a[2] == 'browse'){a.title_width = 0;}       //-- title is above not to the left of object
+
+		if(a[2] == 'lookup'){
+		
+			a.object_height   = parseInt($('#code' + a[1]).css('height'));
+			a.object_width    = parseInt($('#code' + a[1]).css('width')) + parseInt($('#btn_' + a[1]).css('width')) + parseInt($('#description' + a[1]).css('width')) + 4;
+			
+		}else{
+		
+			a.object_height   = parseInt($('#' + a[1]).css('height'));
+			a.object_width    = parseInt($('#' + a[1]).css('width'));
+			
+		}
+		
+		if(a[4] == 0 && a[5] == 0){                                         //-- floating within a tab's table
+
+			var p = $('#' + a.prefix + a[1]).position();		
+			a.holder_top      = p.top - (a[2] == 'lookup' ? 3 : 2);
+			a.holder_left     = p.left - a.title_width - 4;
+			
+		}else{                                                              //-- specifically positioned
+		
+			a.holder_top      = a[4];
+			a.holder_left     = a[5];
+			
+		}
+		
+	});
+
+}
+
+function nuGetTitleWidth(i){
+	
+	var h = "<div id='nuTestWidth' style='position:absolute;visible:hidden;height:auto;width:auto'>" + $('#title_' + i).html() + "</div>";
+	$('body').append(h);
+	var w = parseInt($('#nuTestWidth').css('width'));
+	$('#nuTestWidth').remove();
+	return w;
+	
+}	
+	
+function nuPlaceInHolder(i){
+
+	var o = nuDraggableObjectProperties(i);
+
+	nuMoveObject(i, o.holder_top, o.holder_left);
+	nuDraggableObjectProperties(i, 'has_been_moved', 1);
+	
+}
+
+
+function nuEmptyObject(){
+
+	this.nu = '';
+
+}
+
+
+function nuSetObjectTypeProperties(){
+
+//-- Get Object Type Properties
+
+	window.nuOTP                        = Array();
+	var a                               = Array();
+	
+	a.push('browse');
+	a.push('button');
+	a.push('display');
+	a.push('dropdown');
+	a.push('html');
+	a.push('iframe');
+	a.push('listbox');
+	a.push('lookup');
+	a.push('subform');
+	a.push('text');
+	a.push('textarea');
+	a.push('words');
+
+	for(var i = 0 ; i < a.length ; i++){
+		
+		window.nuOTP[a[i]]              = new nuEmptyObject();
+		window.nuOTP[a[i]].title        = 'title_';            //-- holds the object title
+		window.nuOTP[a[i]].prefix       = '';                  //-- used when aligning to other objects
+		window.nuOTP[a[i]].cover        = 'td_right_';         //-- cover with see through div
+
+	}
+	
+	window.nuOTP['lookup'].prefix       = 'code';
+	window.nuOTP['subform'].title       = 'browse_title_';
+	window.nuOTP['subform'].prefix      = 'scroll_';
+	window.nuOTP['subform'].cover       = 'scroll_';
+	window.nuOTP['browse'].title        = 'browse_title';
+	window.nuOTP['browse'].cover        = 'nu_holder_';
+	
+}
+
+
+
+
+

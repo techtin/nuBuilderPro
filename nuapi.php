@@ -88,6 +88,16 @@ if (nuV('call_type') == 'runprintbrowse') {
 
 
 //==============================================================================
+//                              SAVE MOVED OBJECTS
+//==============================================================================
+if (nuV('call_type') == 'savemovedobjects') {
+
+	nuSaveMovedObjects();
+	$hashData         = nuHashData();
+    $response['DATA'] = nuGetEditForm($hashData);
+}
+
+//==============================================================================
 //                              DELETEFORM
 //==============================================================================
 if (nuV('call_type') == 'deleteform') {
@@ -102,7 +112,6 @@ if (nuV('call_type') == 'deleteform') {
 //==============================================================================
 if (nuV('call_type') == 'saveform') {
 
-    nuMoveObjects(nuV('moved_objects'));                                           //-- save any positions for rearranged Objects
     $response['ERRORS'] = nuCheckForm(nuV('form_data'));
 	
 	$nuHash             = $hashData;
@@ -326,22 +335,19 @@ function nuBuildTable($f, $p, $hashData) {
     return $i;
 }
 
-function nuMoveObjects($moves) {
+function nuSaveMovedObjects() {
 
     if (nuV('nu_user_name') != 'globeadmin') {
         return;
     }                       //-- only globeadmin can save move changes
 
-    $m = explode('|', $moves);                                    //-- split up objects
-    $f = nuV('form_id');
+    $m      = nuV('moved_objects');                                    //-- split up objects
+    $f      = nuV('form_id');
+    for ($a = 0; $a < count($m); $a++) {
 
-    for ($I = 1; $I < count($m); $I++) {
-
-        $p = explode(',', $m[$I]);                                //-- split up properties  (top, left, object ID)
-        $t = $p[0];
-        $l = $p[1];
-        $i = $p[2];
-
+		$i = $m[$a]['id'];
+		$t = $m[$a]['top'];
+		$l = $m[$a]['left'];
         $s = "UPDATE zzzsys_object SET sob_all_top = '$t' , sob_all_left = '$l'  WHERE sob_zzzsys_form_id = '$f' AND zzzsys_object_id = '$i' ";
 
         nuRunQuery($s);
@@ -1363,7 +1369,6 @@ function nuGetEditForm($hashData) {
     $J['form_title']          = nuF('sfo_title');
     $nuRepositonObjects       = nuGetRepositonObjects();
 	$J['draggable_objects']   = nuGetDraggableObjects();
-nuDebug(print_r($J['draggable_objects'],1));	
     $js                       = nuF('sfo_custom_code_run_javascript');
     $J['form_javascript']     = $nuRepositonObjects . nuReplaceHashes($js, $hashData);
     nuPHPPDFBreadcrumb();
@@ -1498,6 +1503,7 @@ function nuGetRepositonObjects() {
     }
 
     $m = '';
+	$m .= "";
     while ($r = db_fetch_object($t)) {
 
         $m .= "
@@ -1506,16 +1512,25 @@ function nuGetRepositonObjects() {
     }
 
     $j = "
-	
+
 $(document).ready(function() {
 
-$m
+	window.nuDraggableObjects.forEach(function(a) {
+	
+		if(a[4] > 0 && a[5] > 0){
+		
+			nuMoveObject(a[1], a[4], a[5]);
+			
+		}
+	
+	});
 
 });
 
 ";
 
     return $j;
+	
 }
 
 
@@ -1528,8 +1543,9 @@ function nuGetDraggableObjects() {
             zzzsys_object_id, 
             sob_all_name, 
             sob_all_type, 
-            sob_all_top, 
-            sob_all_left 
+			IF(ISNULL(sob_all_top), '0', IF(sob_all_top  = '','0',sob_all_top))   AS thetop, 
+			IF(ISNULL(sob_all_left),'0', IF(sob_all_left = '','0',sob_all_left))  AS theleft, 
+			sob_all_tab_number
         FROM zzzsys_object 
         WHERE sob_zzzsys_form_id = ? 
         ORDER BY
@@ -1545,7 +1561,7 @@ function nuGetDraggableObjects() {
     if ($t->rowCount() == 0){return $o;}
 
     while ($r = db_fetch_object($t)){
-		$o[] = array($r->zzzsys_object_id ,$r->sob_all_name ,$r->sob_all_type, is_numeric($r->sob_all_top) ? $r->sob_all_top : 0, is_numeric($r->sob_all_left) ? $r->sob_all_left : 0);
+		$o[] = array($r->zzzsys_object_id ,$r->sob_all_name ,$r->sob_all_type, $r->sob_all_tab_number, $r->thetop, $r->theleft);
     }
 
     return $o;

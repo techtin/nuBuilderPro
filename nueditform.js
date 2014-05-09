@@ -86,7 +86,8 @@ function nuBuildEditForm(o){
 		addButtons(o.buttons);	
 		nuAddBreadCrumbs();	
         nuAddJavascript(o);
-        
+		nuSetAllDraggableObjectProperties();
+
         if(window.nuLoadEditGlobal){               //-- allows the user the ability to jun javascript on every Edit Screen
             nuLoadEditGlobal();
         }
@@ -102,13 +103,10 @@ function nuPoweredBy(t){
 
     if(!nuIsGA()){return;}
     
-    if(window.nuMoveable){
-        window.nuMoveable = false;
-        $('#'+t.id).attr('src', 'numove_black.png');
-    }else{
-        window.nuMoveable = true;
-        $('#'+t.id).attr('src', 'numove_red.png');
-    }
+	window.nuMoveable = true;
+	$('#'+t.id).attr('src', 'numove_red.png');
+	nuObjectMover();
+
 }
 
 function nuGetHashData(o,r){
@@ -205,8 +203,6 @@ function nuSetLookupAttributes(e,c,img,d,o,i,prefix, rowPK){
 	c.setAttribute('data-parent',          o[i].f_id);
 	d.setAttribute('data-prefix',          prefix);
 	
-
-
 
 
 
@@ -381,7 +377,7 @@ function nuSelectTab(tab, form_height, form_width){
 	$('#nu_tab_area'+tab).css('width', form_width);
 	$('#nu_tab_area'+tab).css('visibility','visible');
 	$('#tab'+tab).css('border-bottom-color',$('#tab'+tab).css('background-color'));
-	
+
 	if($('#nuObjectList').length == 1){
 			nuAddSelectableObjects();
 	
@@ -656,13 +652,13 @@ function nuRecordObjects(formType, formTop){
 		var d          = document.createElement('input');       //-- create a new lookup description object
 
 		this.nuObjectWrapper(o,i,p);
-		c.setAttribute('data-adjustable',      'true');
 		nuSetLookupAttributes(e,c,img,d,o,i,this.prefix, this.rowPK);
 
 		$('#'+'td_right_'+e.id).append(c,img,d,e);
 		$('#' + e.id).css({ 
             'visibility' : 'hidden',
-            'width'      : '0px'
+            'width'      : '0px',
+			'position'   : 'absolute'
         });
         
 		$('#' + c.id).css( 'width', c_width+'px');
@@ -678,6 +674,7 @@ function nuRecordObjects(formType, formTop){
 		}
 		if(d_width == '0'){
 			$('#' + d.id).css( 'visibility', 'hidden');
+			$('#' + d.id).css(  'position', 'absolute');
 		}
         
 		$('#' + d.id).css( 'width', d_width+'px')
@@ -693,6 +690,7 @@ function nuRecordObjects(formType, formTop){
 
 		if(o[i].display != '1') {
 			$('#' + img.id).css(  'visibility', 'hidden');
+			$('#' + img.id).css(  'position', 'absolute');
 		}
 	
 		if (o[i].autocomplete == '1'){
@@ -785,6 +783,8 @@ function nuRecordObjects(formType, formTop){
         $('#' + e.id).css({ 
             'top'          : o[i].top + 'px',
             'left'         : o[i].left + 'px',
+            'width'        : o[i].width + 'px',
+            'height'       : o[i].height + 'px',
             'position'     : 'absolute',
             'border-style' : 'none'
         })
@@ -865,7 +865,6 @@ function nuRecordObjects(formType, formTop){
 		e.setAttribute('data-nuobject-type',   o[i].type);
 		e.setAttribute('data-prefix',          this.prefix);
 		e.setAttribute('data-row',             this.row);
-		e.setAttribute('data-adjustable',      'true');
         
         if(this.prefix == '')  {
             e.setAttribute('tabindex', window.nuTab);
@@ -970,6 +969,8 @@ function nuRecordObjects(formType, formTop){
 		$('#' + e.id).css({ 
             'top'          : o[i].top + 'px',
             'left'         : o[i].left + 'px',
+            'width'        : o[i].width + 'px',
+            'height'       : o[i].height + 'px',
             'position'     : 'absolute',
             'border-style' : 'none'
         })

@@ -46,7 +46,7 @@ $de = $GLOBALS['nuSetup']->set_denied;
 print "
 
 <style>
-.nuSelected              {cursor:move;outline:1px solid red}
+.nuSelected              {cursor:move;outline:2px solid red}
 </style>
 
 <script>
