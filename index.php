@@ -72,15 +72,15 @@ function nuGetTitle(){
 function nuHomeWarning(){
 
 	if(nuFORM.edited == '1'){
-		return 'Leave This Form Without Saving? Doing this will return you to the login screen.';
+		return nuTranslate('Leave This Form Without Saving?')+'  '+nuTranslate('Doing this will return you to the login screen.');
 	}
-    return 'Doing this will return you to the login screen.';
+	return nuTranslate('Doing this will return you to the login screen.');
 }
 
 function nuWindowWarning(){
 
 	if(nuFORM.edited == '1'){
-		return 'Leave This Form Without Saving?';
+		return nuTranslate('Leave This Form Without Saving?');
 	}
     return null;
 }

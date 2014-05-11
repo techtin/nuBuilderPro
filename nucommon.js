@@ -187,7 +187,7 @@ function toggleModalMode(){   //-- login screen
             'font-family'      : 'sans-serif',
             'font-size'        : '15px'
         })
-		.html('Username :');
+		.html(nuTranslate('Username :'));
         
 		var e = document.createElement('span');
 		e.setAttribute('id', 'sptitleb');
@@ -200,7 +200,7 @@ function toggleModalMode(){   //-- login screen
             'font-family'      : 'sans-serif',
             'font-size'        : '15px'
         })
-		.html('Password :');
+		.html(nuTranslate('Password :'));
 
 		var e = document.createElement('input');
 		e.setAttribute('id', 'u');
@@ -599,7 +599,7 @@ function nuAddBreadCrumbs(){
 		$('#'+e.id).html(b[i].title)
 		.addClass('nuBreadCrumbSectionEnd');
 		if(i+1==b.length){
-			e.setAttribute('title',   'You are here..');
+			e.setAttribute('title',   nuTranslate('You are here..'));
 			e.setAttribute('data-id',   b[i].form_id);
 			e.setAttribute('ondblclick',   'nuOpenFormForm(this)');
 			
@@ -641,7 +641,7 @@ function nuGoToForm(i, ask){
     if(nuFORM.edited == '1'){
         
         if(arguments.length != 2){
-            if(!confirm("Leave This Form Without Saving?")){
+            if(!confirm(nuTranslate("Leave This Form Without Saving?"))){
                 return;
             }
         }
@@ -666,7 +666,7 @@ function nuReloadForm(){
 	
     if(nuFORM.edited == '1'){
         
-		if(!confirm("Leave This Form Without Saving?")){
+		if(!confirm(nuTranslate("Leave This Form Without Saving?"))){
 			return;
 		}
         
@@ -1449,7 +1449,7 @@ function nuLogin(u, p){
 		dataType: "json"
 		}).done(function(data){
 			if(data.DATA['session_id'] == 'Login Failed'){
-				alert('Your username or password was incorrect');
+				alert(nuTranslate('Your username or password was incorrect'));
 				toggleModalMode();
 				$('#p').val('');
 				$('#p').focus();

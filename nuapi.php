@@ -817,11 +817,11 @@ function nuValidField($FIELD, $validFields, $formInfo, $primary_key, $ROW, $main
         if ($validFields[$i]->field_name == $fld) {                                                                                    //-- using a valid field name
             if (($validFields[$i]->no_blanks == '1' or $validFields[$i]->no_duplicates == '1' ) and $val == '') {                  //-- cannot be left blank
                 $ERR = nuGetTabAndTitle($fld, $mainForm, $parentID);
-                if ($mainForm) {                                                                                               //-- main form
-                    $ERR->message = "$ERR->title cannot be left blank..  (TAB : $ERR->tab)";
-                } else {
-                    $ERR->message = "$ERR->title in subform on row $ROW cannot be left blank..";
-                }
+				if ($mainForm) {                                                                                               //-- main form
+					$ERR->message = "$ERR->title " . nuTranslate('cannot be left blank') . "..  (" . nuTranslate('TAB') . " : $ERR->tab)";
+				} else {
+					$ERR->message = "$ERR->title " . nuTranslate('in subform') . " " . nuTranslate('on row') . " $ROW " . nuTranslate('cannot be left blank') . "..";
+				}
                 return $ERR;
             }
             if ($validFields[$i]->no_duplicates == '1') {                                                                          //-- check for duplicates
@@ -838,11 +838,11 @@ function nuValidField($FIELD, $validFields, $formInfo, $primary_key, $ROW, $main
 
                 if ($r[0] != '') {                                                                                             //-- duplicate record
                     $ERR = nuGetTabAndTitle($fld, $mainForm, $parentID);
-                    if ($mainForm) {                                                                                       //-- main form
-                        $ERR->message = "There is already a record with a $ERR->title with a value of $val..  (TAB : $ERR->tab)";
-                    } else {
-                        $ERR->message = "There is already a record with a $ERR->title with a value of $val in subform $formInfo->form_name on row $ROW..  (TAB : $ERR->tab)";
-                    }
+					if ($mainForm) {                                                                                       //-- main form
+						$ERR->message = nuTranslate('There is already a record with a') . " $ERR->title " . nuTranslate('with a value of') . " $val..  (" . nuTranslate('TAB') . " : $ERR->tab)";
+					} else {
+						$ERR->message = nuTranslate('There is already a record with a') . " $ERR->title " . nuTranslate('with a value of') . " $val " . nuTranslate('in subform') . " $formInfo->form_name " . nuTranslate('on row') . " $ROW..  (" . nuTranslate('TAB') . " : $ERR->tab)";
+					}
                     return $ERR;
                 }
             }
@@ -863,11 +863,11 @@ function nuValidField($FIELD, $validFields, $formInfo, $primary_key, $ROW, $main
                     } else {
 
                         $ERR = nuGetTabAndTitle($fld, $mainForm, $parentID);
-                        if ($mainForm) {                                                                                  //-- main form
-                            $ERR->message = "$ERR->title has an invalid date.. (TAB : $ERR->tab)";
-                        } else {
-                            $ERR->message = "$ERR->title has an invalid date in subform $formInfo->form_name on row $ROW..  (TAB : $ERR->tab)";
-                        }
+						if ($mainForm) {                                                                                  //-- main form
+							$ERR->message = "$ERR->title " . nuTranslate('has an invalid date') . ".. (" . nuTranslate('TAB') . " : $ERR->tab)";
+						} else {
+							$ERR->message = "$ERR->title " . nuTranslate('has an invalid date') . " " . nuTranslate('in subform') . " $formInfo->form_name " . nuTranslate('on row') . " $ROW..  (" . nuTranslate('TAB') . " : $ERR->tab)";
+						}
                         return $ERR;
                     }
                 }
@@ -883,11 +883,12 @@ function nuValidField($FIELD, $validFields, $formInfo, $primary_key, $ROW, $main
                     } else {
 
                         $ERR = nuGetTabAndTitle($fld, $mainForm, $parentID);
-                        if ($mainForm) {                                                                                   //-- main form
-                            $ERR->message = "$ERR->title has an invalid number..  (TAB : $ERR->tab)";
-                        } else {
-                            $ERR->message = "$ERR->title has an invalid number in subform $formInfo->form_name on row $ROW..  (TAB : $ERR->tab)";
-                        }
+
+						if ($mainForm) {                                                                                   //-- main form
+							$ERR->message = "$ERR->title " . nuTranslate('has an invalid number') . ".. (" . nuTranslate('TAB') . " : $ERR->tab)";
+						} else {
+							$ERR->message = "$ERR->title " . nuTranslate('has an invalid number') . " " . nuTranslate('in subform') . " $formInfo->form_name " . nuTranslate('on row') . " $ROW..  (" . nuTranslate('TAB') . " : $ERR->tab)";
+						}
                         return $ERR;
                     }
                 }
