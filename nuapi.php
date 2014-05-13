@@ -348,7 +348,8 @@ function nuSaveMovedObjects() {
 		$i = $m[$a]['id'];
 		$t = $m[$a]['top'];
 		$l = $m[$a]['left'];
-        $s = "UPDATE zzzsys_object SET sob_all_top = '$t' , sob_all_left = '$l'  WHERE sob_zzzsys_form_id = '$f' AND zzzsys_object_id = '$i' ";
+		$o = $m[$a]['order'];
+        $s = "UPDATE zzzsys_object SET sob_all_column_number = '10', sob_all_order_number = '$o', sob_all_top = '$t' , sob_all_left = '$l'  WHERE sob_zzzsys_form_id = '$f' AND zzzsys_object_id = '$i' ";
 
         nuRunQuery($s);
         if (nuErrorFound()) {

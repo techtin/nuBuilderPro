@@ -66,6 +66,23 @@ function nuKeyPressed(e, isPressed){
 		window.nuControlKey   = isPressed;
         $('.nuSelected').css( 'cursor',  'move');
 	}
+
+	$("#nuObjectList > option:selected").each(function() {
+
+		var o       = nuDraggableObjectProperties(this.value);
+		var t       = Number(o.holder_top);          //-- top
+		var l       = Number(o.holder_left);         //-- left
+		
+        if (e.keyCode == 37){l--;}                   //-- left
+        if (e.keyCode == 39){l++;}                   //-- right
+        if (e.keyCode == 38){t--;}                   //-- up
+        if (e.keyCode == 40){t++;}                   //-- down
+
+		nuMoveObject(this.value, t, l);              //-- move object
+		
+	});
+					
+	nuRecalculateCoordinates();
 	
 }
 
@@ -1805,6 +1822,7 @@ function nuObjectMover() {
 		'left'             : 50,
 		'position'         : 'absolute',
 		'background-color' : '#E1E8EA',
+		'z-index'          : 5000,
 		'border-width'     : '1px',
 		'border-color'     : '#01A6F5',
 		'border-style'     : 'solid',
@@ -1823,7 +1841,7 @@ function nuObjectMover() {
 		'left'                    : '0px',
 		'position'                : 'absolute',
 		'background-color'        : '#C0CDD1',
-		'z-index'                 : '1',
+		'z-index'                 : 5000,
 		'border-top-left-radius'  : '5px',
 		'border-top-right-radius' : '5px'
 	})
@@ -1844,7 +1862,7 @@ function nuObjectMover() {
 		'left'             : '0px',
 		'position'         : 'absolute',
 		'background-color' : '#E1E8EA',
-		'z-index'          : '2'
+		'z-index'          : 5000
 	})
 	.addClass('nuClose')
 	.html('&#10006;')
@@ -1862,7 +1880,7 @@ function nuObjectMover() {
 		'top'              : '35px',
 		'left'             : '10px',
 		'position'         : 'absolute',
-		'z-index'          : '2'
+		'z-index'          : 5000
 	})
 	.change(function() {
 			nuHighlightSelected();
@@ -1870,23 +1888,60 @@ function nuObjectMover() {
 
 	$("[id^='nuButton']").attr( "disabled", "disabled" );                                                       //-- remove see through divs
 
-
 	$('#nuObjectList').change();
+	
 	nuAddSelectableObjects();
-	nuMoverAdjustHorButton(240, 10);
-	nuMoverMoveLeftButton(275, 10);
-	nuMoverMoveRightButton(310, 10);
-	nuMoverMoveDownButton(345, 10);
+
+	nuMoverAdjustVerButton(240, 10);
+	nuMoverAdjustHorButton(275, 10);
 	nuMoverMoveUpButton(380, 10);
-	nuMoverUnselectButton(415, 10);
-	nuMoverAdjustVerButton(240, 170);
+	nuMoverMoveDownButton(415, 10);
+	nuMoverUnselectButton(240, 170);
 	nuMoverAlignLeftButton(275, 170);
 	nuMoverAlignRightButton(310, 170);
 	nuMoverAlignTopButton(345, 170);
 	nuMoverAlignBottomButton(380, 170);
 	nuMoverSaveButton(415, 170);
+
+}
+
+
+
+function nuMoveUpInObjectList(){
+
+	$('#nuObjectList option:selected').each(function(){
+		$(this).insertBefore($(this).prev());
+	});
+	
+	nuReorderTab();
+
+}
+
+function nuMoveDownInObjectList(){
+
+	$('#nuObjectList option:selected').each(function(){
+		$(this).insertAfter($(this).next());
+	});
+	
+	nuReorderTab();
+
+}
+
+function nuReorderTab(){
+
+	var o = 10;
+
+	$("#nuObjectList option").each(function() {
+
+		nuDraggableObjectProperties(this.value, 'object_number', o);
+		o = o + 10;
+		
+	});
+	
+	window.nuDraggableObjects.sort(function(A, B){return ((A.tab_number*1000)+(A.object_number*1)) - ((B.tab_number*1000)+(B.object_number*1));});
 	
 }
+
 
 
 function nuMoverAdjustHorButton(t, l){
@@ -1905,7 +1960,7 @@ function nuMoverAdjustHorButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -1974,7 +2029,7 @@ function nuMoverAdjustVerButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2061,7 +2116,7 @@ function nuMoverMoveRightButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2074,9 +2129,9 @@ function nuMoverMoveDownButton(t, l){
 	var e = document.createElement('input');                           //-- create button
 	e.setAttribute('id', 'nuMoverMoveDown');
 	e.setAttribute('type', 'button');
-	e.setAttribute('value',   'Move Down');
-	e.setAttribute('title',   'Move All Highlighted Objects Down');
-	e.setAttribute('onclick', 'nuMoverMoveClick(1, 0)');
+	e.setAttribute('value',   'Move Down List');
+	e.setAttribute('title',   'Rearrange Tab Order');
+	e.setAttribute('onclick', 'nuMoveDownInObjectList()');
 	$('#nuActionButtonHolder').append(e);
 	$('#' + e.id).addClass('nuButton');
 	$('#nuDrag').append(e);
@@ -2096,9 +2151,9 @@ function nuMoverMoveUpButton(t, l){
 	var e = document.createElement('input');                           //-- create button
 	e.setAttribute('id', 'nuMoverMoveUp');
 	e.setAttribute('type', 'button');
-	e.setAttribute('value',   'Move Up');
-	e.setAttribute('title',   'Move All Highlighted Objects Up');
-	e.setAttribute('onclick', 'nuMoverMoveClick(-1, 0)');
+	e.setAttribute('value',   'Move Up List');
+	e.setAttribute('title',   'Rearrange Tab Order');
+	e.setAttribute('onclick', 'nuMoveUpInObjectList()');
 	$('#nuActionButtonHolder').append(e);
 	$('#' + e.id).addClass('nuButton');
 	$('#nuDrag').append(e);
@@ -2129,7 +2184,7 @@ function nuMoverUnselectButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2143,27 +2198,6 @@ function nuMoverUnselectClick(){
 
 }
 
-function nuMoverMoveClick(t, l){
-
-	var gap =  new Date().getTime() - window.nuLastMoverClick;
-	window.nuLastMoverClick = new Date().getTime();
-
-	if(gap < 200){
-		t = t*10;
-		l = l*10;
-	}
-	
-	$("#nuObjectList > option:selected").each(function() {
-	
-		var o = nuDraggableObjectProperties(this.value);
-		nuDraggableObjectProperties(this.value, 'holder_top',  Number(o.holder_top)  + t);      //-- set top
-		nuDraggableObjectProperties(this.value, 'holder_left', Number(o.holder_left) + l);      //-- set left
-		nuMoveObject(this.value, Number(o.holder_top) + t, Number(o.holder_left) + l);          //-- move object
-		nuDraggableObjectProperties(this.value, 'has_been_moved', 1);                           //-- has been moved
-		
-	});
-
-}
 
 
 function nuMoverAlignLeftButton(t, l){
@@ -2182,7 +2216,7 @@ function nuMoverAlignLeftButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2229,7 +2263,7 @@ function nuMoverAlignRightButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2277,7 +2311,7 @@ function nuMoverAlignBottomButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2322,7 +2356,7 @@ function nuMoverAlignTopButton(t, l){
 		'height'           : 30,
 		'top'              : t,
 		'left'             : l,
-		'z-index'          : 1500,
+		'z-index'          : 5000,
 		'position'         : 'absolute',
 	})
 
@@ -2381,14 +2415,14 @@ function nuMoveSaveClick(){
 
 	window.nuDraggableObjects.forEach(function(a) {                      //-- get all Objects that have been moved
 
-		if(a.has_been_moved == 1){
+//		if(a.has_been_moved == 1){
 			var o            = new nuEmptyObject();
 			o.id             = a.zzzsys_object_id;
 			o.top            = a.holder_top;
 			o.left           = a.holder_left;
-			
+			o.order          = a.object_number; 
 			w.moved_objects.push(o);
-		}
+//		}
 	
 	});
 
@@ -2436,6 +2470,8 @@ function nuHighlightSelected(){
 		$('#nu_see_through_' + this.value).css('cursor', 'move');
 			
 	});
+	
+	$('#nuMoverUnselect').focus();
 
 }
 
@@ -2635,8 +2671,9 @@ function nuDraggableObjectProperties(i, p, v){
 
 function nuSetAllDraggableObjectProperties(){
 
-	var tabno    = -1;
-	var tabIndex = '-1';
+	var tabno                  = -1;
+	var tabIndex               = '-1';
+	var object_number          = 10;
 	
 	nuSetObjectTypeProperties();
 	
@@ -2644,10 +2681,15 @@ function nuSetAllDraggableObjectProperties(){
 
 
 		if(tabIndex != a[3]){ 
-			tabIndex          = a[3];
+			tabIndex           = a[3];
+			object_number      = 0;              //-- Object order within Tab
 			++tabno;
 		}
+		
+		object_number         = object_number + 10;
 	
+		a.tab_number          = tabno;
+		a.object_number        = object_number;
 		a.zzzsys_object_id    = a[0];
 		a.sob_all_name        = a[1];
 		a.sob_all_type        = a[2];
@@ -2656,7 +2698,6 @@ function nuSetAllDraggableObjectProperties(){
 		a.sob_all_left        = a[5];
 		a.has_been_moved      = 0;
 		a.is_selected         = 0;
-		a.tab_number          = tabno;
 		a.prefix              = '';
 		if(a[2] == 'lookup') {a.prefix = 'code';}
 		if(a[2] == 'subform'){a.prefix = 'scroll_';}
@@ -2768,8 +2809,6 @@ function nuSetObjectTypeProperties(){
 	window.nuOTP['browse'].cover        = 'nu_holder_';
 	
 }
-
-
 
 
 
