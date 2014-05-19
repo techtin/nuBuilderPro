@@ -19,6 +19,7 @@ require_once('config.php');
 require_once('nucommon.php');
 
 jsinclude('nuformat.js');
+jsinclude('nucalendar.js');
 jsinclude('nucommon.js');
 jsinclude('nueditform.js');
 jsinclude('nubrowseform.js');

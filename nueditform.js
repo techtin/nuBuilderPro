@@ -736,7 +736,9 @@ function nuRecordObjects(formType, formTop){
 		$('#' + e.id).css( 'text-align', nuFormatAlign(o[i].align));
 
 		if(o[i].is_date && o[i].read_only != '1'){
-			$( "#"+e.id).datepicker({ dateFormat: nuFormats[o[i].format].jquery });
+//			$( "#"+e.id).datepicker({ dateFormat: nuFormats[o[i].format].jquery });
+			var currentOnClick = e.getAttribute('onclick');
+			e.setAttribute('onclick', currentOnClick+';nuPopupCalendar(this);');
 		}
 		
 		if(o[i].text_type != ''){

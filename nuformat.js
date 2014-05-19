@@ -440,6 +440,14 @@ function nuBuilderSession(){
 		
 		var was                     = name+("000" + String(n  )).slice(-4);
 		var now                     = name+("000" + String(n+1)).slice(-4);
+		
+		if($('#nuCalendar').length == 0){
+			var cal                 = '';
+		}else{
+			var cal                 = $('#nuCalendar').parent().attr('id').substr(9);
+		}
+		
+		$('#nuCalendar').remove();
 		var h                       = $('#'+pthis.id).html();
 		this.subformRowNumber[i]    = n+1;
 		var rx                      = new RegExp(was, 'g');
@@ -458,8 +466,11 @@ function nuBuilderSession(){
 		$('#' + e.id).css( 'height', this.subformRowHeight[i]+'px');
 		$('#' + e.id).css( 'position', 'absolute');
 		$('#' + e.id).html(this.subformRowHTML[i]);
-		$('.hasDatepicker').removeClass('hasDatepicker').datepicker();
-		
+		if(cal != ''){
+console.log(cal);			
+			nuPopupCalendar(document.getElementById(cal));
+		}
+//		$('.hasDatepicker').removeClass('hasDatepicker').datepicker();
 			$('#' + e.id + ' .ui-autocomplete-input').each(function(i){
 				nuAutocomplete(this);
 			})

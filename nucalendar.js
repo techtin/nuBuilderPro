@@ -1,0 +1,355 @@
+
+window.nuCalColor = '#F0F0F0';
+window.nuCalTop   =  - 30;
+
+function nuAppendChild(p,t,i){
+
+	var o                                     = document.createElement(t);
+	o.setAttribute('id',i);
+	p.appendChild(o);
+	document.getElementById(i).style.zIndex   = 3000;
+	return document.getElementById(i);
+	
+}
+
+function nuPopupCalendar(pThis){
+	
+	$('#nuCalendar').remove();
+
+	window.nuCalendarCaller  = pThis.id;
+	var p                    = document.getElementById($('#'+pThis.id).parent().attr('id'));
+	var c                    = nuAppendChild(p,'div','nuCalendar');
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.position         = 'absolute';
+	c.style.top              = p.top;
+	c.style.left             = p.left;
+	c.style.width            = '210px';
+	c.style.height           = '213px';
+	c.style.color            = '#000000';
+	c.style.borderStyle      = 'solid'; 
+	c.style.borderWidth      = '1px'; 
+	c.style.borderColor      = 'grey'; 
+	c.style.borderTopLeftRadius = '5px'; 
+	c.style.borderTopRightRadius = '5px'; 
+	c.style.borderBottomLeftRadius = '5px'; 
+	c.style.borderBottomRightRadius = '5px'; 
+	c.style.boxShadow               = '5px 5px 5px #888888';
+	
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalCloser');
+
+	c.setAttribute("onclick", "document.getElementById('nuCalendar').remove();");
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 32) + 'px';
+	c.style.left             = '2px';
+	c.style.width            = '20px';
+	c.style.height           = '20px';
+	c.style.backgroundColor  = 'lightgrey';
+	c.style.textAlign        = 'center';
+	c.style.fontSize         = '14px';
+	c.style.fontStyle        = 'bold';
+	c.style.color            = '#000000';
+	c.style.cursor           = 'pointer';
+	c.style.borderTopLeftRadius = '5px'; 
+	c.style.borderTopRightRadius = '5px'; 
+	c.style.borderBottomLeftRadius = '5px'; 
+	c.style.borderBottomRightRadius = '5px'; 
+	c.innerHTML              = '&#x2716;';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalYear');
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 55) + 'px';
+	c.style.left             = '60px';
+	c.style.width            = '90px';
+	c.style.height           = '25px';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.textAlign        = 'center';
+	c.style.fontSize         = '14px';
+	c.style.color            = '#000000';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalYearLess');
+
+	c.setAttribute("onclick", "window.nuCalYear--;nuPopulateCalendar('')");
+
+	c.onmouseover            = function(){this.style.backgroundColor = ''};
+	c.onmouseout             = function(){this.style.backgroundColor = window.nuCalColor;};
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 55) + 'px';
+	c.style.left             = '40px';
+	c.style.width            = '30px';
+	c.style.height           = '25px';
+	c.style.cursor           = 'pointer';
+	c.className              = 'nuBrowseRowSelected';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.textAlign        = 'center';
+	c.style.color            = '#000000';
+	c.style.fontSize         = '14px';
+	c.innerHTML              = '&#9668;';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalYearMore');
+
+	c.setAttribute("onclick", "window.nuCalYear++;nuPopulateCalendar('')");
+	
+	c.onmouseover            = function(){this.style.backgroundColor = ''};
+	c.onmouseout             = function(){this.style.backgroundColor = window.nuCalColor;};
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 55) + 'px';
+	c.style.left             = '140px';
+	c.style.width            = '30px';
+	c.style.height           = '25px';
+	c.style.cursor           = 'pointer';
+	c.className              = 'nuBrowseRowSelected';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.textAlign        = 'center';
+	c.style.color            = '#000000';
+	c.style.fontSize         = '14px';
+	c.innerHTML              = '&#9658;';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalMonth');
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 75) + 'px';
+	c.style.left             = '60px';
+	c.style.width            = '90px';
+	c.style.height           = '25px';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.fontSize         = '14px';
+	c.style.textAlign        = 'center';
+	c.style.color            = '#000000';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalMonthLess');
+
+	c.setAttribute("onclick", "window.nuCalMonth--;nuPopulateCalendar(this.id)");
+
+	c.onmouseover            = function(){this.style.backgroundColor = ''};
+	c.onmouseout             = function(){this.style.backgroundColor = window.nuCalColor;};
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 75) + 'px';
+	c.style.left             = '40px';
+	c.style.width            = '30px';
+	c.style.height           = '25px';
+	c.style.cursor           = 'pointer';
+	c.className              = 'nuBrowseRowSelected';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.textAlign        = 'center';
+	c.style.color            = '#000000';
+	c.style.fontSize         = '14px';
+	c.innerHTML              = '&#9668;';
+
+	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalMonthMore');
+
+	c.setAttribute("onclick", "window.nuCalMonth++;nuPopulateCalendar(this.id)");
+
+	c.onmouseover            = function(){this.style.backgroundColor = ''};
+	c.onmouseout             = function(){this.style.backgroundColor = window.nuCalColor;};
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 75) + 'px';
+	c.style.left             = '140px';
+	c.style.width            = '30px';
+	c.style.height           = '25px';
+	c.style.cursor           = 'pointer';
+	c.className              = 'nuBrowseRowSelected';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.textAlign        = 'center';
+	c.style.color            = '#000000';
+	c.style.fontSize         = '14px';
+	c.innerHTML              = '&#9658;';
+	
+	var t                    = 90; 
+	var l                    = 0;
+
+	for(var i = 0 ; i < 42 ; i++){
+	
+		if(t == 90){nuTitleBox(i, l);}
+		nuDayBox(i, l, t)
+		if(l == 180){
+			l                = 0;
+			t                = t + 20;
+		}else{
+			l                = l + 30;
+		}
+		
+	}
+	
+	var fd                   = formatter.formatField($('#' + window.nuCalendarCaller).attr('data-nuformat') ,$('#' + window.nuCalendarCaller).val(),true);  //-- format value for sql string	
+
+	var d                    = new Date();
+
+	if(fd != ''){
+	
+		d.setDate(Number(fd.split('-')[2]));
+		d.setMonth(Number(fd.split('-')[1]) - 1);
+		d.setFullYear(fd.split('-')[0]);
+	}
+
+	nuPopulateCalendar('', d.getFullYear(), d.getMonth(), d.getDate());
+	
+}
+
+function nuTitleBox(n, l){
+
+	var t                    = 'SMTWTFS';
+	var c                    = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalTitle'+n);
+	
+	
+	c.style.position         = 'absolute';
+	c.style.top              = (window.nuCalTop + 97) + 'px';
+	c.style.left             = l + 'px';
+	c.style.width            = '28px';
+	c.style.height           = '18px';
+	c.style.backgroundColor  = '#EDEDED';
+	c.style.color            = '#000000';
+	c.style.borderColor      = '#D3D3D3';
+	c.style.borderStyle      = 'solid';
+	c.style.borderWidth      = '1px';
+	c.style.fontSize         = '14px';
+	c.style.textAlign        = 'center';
+	c.innerHTML              = t.substr(n, 1);
+
+}
+
+function nuDayBox(n, l, t){
+
+	var c                    = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalDay'+n);
+	var today                =  new Date();
+	
+	c.onmouseover            = function(){this.style.backgroundColor = ''};
+	c.onmouseout             = function(){this.style.backgroundColor = window.nuCalColor;};
+
+	c.setAttribute("onclick", "window.nuCalDay=this.innerHTML;nuCalChoice()");
+	
+	c.style.position         = 'absolute';
+	c.className              = 'nuBrowseRowSelected';
+	c.style.backgroundColor  = window.nuCalColor;
+	c.style.top              = (window.nuCalTop + t + 30) + 'px';
+	c.style.left             = l + 'px';
+	c.style.width            = '30px';
+	c.style.height           = '20px';
+	c.style.fontSize         = '14px';
+	c.style.textAlign        = 'center';
+	c.style.cursor           = 'pointer';
+
+}
+
+function nuPopulateCalendar(id, y, m, d){
+
+	if(arguments.length != 1){
+		window.nuCalDay                                   = d;
+		window.nuCalMonth                                 = m;
+		window.nuCalYear                                  = y;
+	}
+	window.nuCalMonth = nuMonthScope(window.nuCalMonth);
+	
+	if(id == 'nuCalMonthLess' && window.nuCalMonth == 11){
+		window.nuCalYear = window.nuCalYear - 1;
+	}
+	
+	if(id == 'nuCalMonthMore' && window.nuCalMonth == 0){
+		window.nuCalYear = window.nuCalYear + 1;
+	}
+	
+	document.getElementById('nuCalYear').innerHTML        = window.nuCalYear;
+	document.getElementById('nuCalMonth').innerHTML       = nuFullMonth(window.nuCalMonth);
+	var s                                                 = new Date(window.nuCalYear, window.nuCalMonth, 1);
+	var today                                             = new Date();
+	var day                                               = 0;
+	var nextmonth                                         = 0;
+	
+	for(var i = 0 ; i < 42 ; i++){
+	
+		document.getElementById('nuCalDay' + i).innerHTML = '';
+		
+	}
+	
+	for(var i = s.getDay() ; i < 42 ; i++){
+		
+		day++;
+		s.setDate(day);
+		c = document.getElementById('nuCalDay' + i);
+		
+		if(s.getDate() != day){
+			return;
+		}
+		
+		if(today.getDate() == day && today.getMonth() == window.nuCalMonth && today.getFullYear() == window.nuCalYear){
+			c.style.color            = 'red';
+		}else{
+			c.style.color            = '#000000';
+		}
+		c.innerHTML = day;
+		
+	}
+
+}
+
+
+function nuPreviousMonth(y, m, d){
+
+	m = nuMonthScope(m-1);
+	
+	var d   = new Date(y, m, 1);
+	
+	var p   = Array();
+	var day = 1;
+	debugger;
+	while (d.getDate() == day) {
+	
+		p.push(day);
+		d.setDate(day);
+		day++;
+
+	}	
+	return p;
+
+}
+
+
+function nuFullMonth(n){
+	
+	var m  = Array();
+	
+	m[0]   = 'January';
+	m[1]   = 'February';
+	m[2]   = 'March';
+	m[3]   = 'April';
+	m[4]   = 'May';
+	m[5]   = 'June';
+	m[6]   = 'July';
+	m[7]   = 'August';
+	m[8]   = 'September';
+	m[9]   = 'October';
+	m[10]  = 'November';
+	m[11]  = 'December';
+
+	return String(m[n]);
+	
+}
+
+
+function nuCalChoice(){
+
+	window.nuCalMonth = nuMonthScope(window.nuCalMonth);
+	var df            = document.getElementById(window.nuCalendarCaller);
+	
+	df.value          = window.nuCalDay + '-' + (Number(window.nuCalMonth) + 1)+ '-' + window.nuCalYear;
+	df.value          = formatter.formatField(df.getAttribute('data-nuformat') ,df.value);
+	$('#nuCalendar').remove();
+	
+	
+}
+
+
+function nuMonthScope(m){
+
+	if(m<0){m=11;}
+	if(m>11){m=0;}
+	
+	return m;
+
+}
+
