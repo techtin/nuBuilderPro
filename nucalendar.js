@@ -254,7 +254,7 @@ function nuPopulateCalendar(id, y, m, d){
 	}
 	
 	document.getElementById('nuCalYear').innerHTML        = window.nuCalYear;
-	document.getElementById('nuCalMonth').innerHTML       = nuFullMonth(window.nuCalMonth);
+	document.getElementById('nuCalMonth').innerHTML       = nuTranslate(nuFullMonth(window.nuCalMonth));
 	var s                                                 = new Date(window.nuCalYear, window.nuCalMonth, 1);
 	var today                                             = new Date();
 	var day                                               = 0;
