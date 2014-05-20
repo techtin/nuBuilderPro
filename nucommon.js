@@ -2781,6 +2781,7 @@ function nuSetObjectTypeProperties(){
 	
 	a.push('browse');
 	a.push('button');
+	a.push('checkbox');
 	a.push('display');
 	a.push('dropdown');
 	a.push('html');

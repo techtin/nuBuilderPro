@@ -151,6 +151,10 @@ function nuObjectSize(o,e,i,xAndY){
         });
 		e.setAttribute('tabindex',          '10000');
 	}
+	if(o[i].type != 'checkbox'){
+		$('#' + e.id).css( 'width', o[i].width+'px')
+	}
+	
 
 	$('#' + e.id).css( 'width', o[i].width+'px')
 	if(!xAndY){return;}
@@ -619,11 +623,48 @@ function nuRecordObjects(formType, formTop){
 		nuObjectSize(o,e,i,false);
 		nuPopulateSelect(o,i,p,e);
 		$('#' + e.id).css( 'text-align', nuFormatAlign(o[i].align));
+		
         if ( o[i].read_only == '1' ) {
             $('#' + e.id).prop("disabled", true);
         }
+		
+        if ( o[i].value == '1' ) {
+            $('#' + e.id).prop("checked", true);
+            $('#' + e.id).val(1);
+        }else{
+            $('#' + e.id).prop("checked", false);
+            $('#' + e.id).val(0);
+		}
 
 	}
+	
+	this.nuBuildCheckBox = function(o,i,p){
+
+		var e          = document.createElement('input');       //-- create a new checkbox object
+		e.setAttribute('type', 'checkbox');
+
+		this.nuObjectWrapper(o,i,p);
+		this.nuSetAttributes(e,o,i);
+
+		$('#'+'td_right_'+e.id).append(e);
+		$('#'+'td_right_'+e.id).append(e);
+		nuObjectSize(o,e,i,false);
+		
+		if(this.type != 'g'){                                   //-- left align and vertically center
+			$('#'+e.id).css('width', 20);
+			$('#'+e.id).css('marginTop',3);			
+		}
+		
+		$('#' + e.id).css( 'text-align', nuFormatAlign(o[i].align));
+        if ( o[i].read_only == '1' ) {
+            $('#' + e.id).prop("disabled", true);
+        }
+		
+		$('#'+e.id).attr('value', "1");
+
+
+	}
+
 
 	this.nuBuildDisplay = function(o,i,p){
 
@@ -880,14 +921,27 @@ function nuRecordObjects(formType, formTop){
 			}
 		}
 		
-		if($.inArray(o[i].type , ['text','display','button']) != -1){
+		if($.inArray(o[i].type , ['text','display','button','checkbox']) != -1){
 			if(o[i].value==null){
 				o[i].value = '';
 			}
 			e.setAttribute('value', o[i].value);
 		}
 		
-		if($.inArray(o[i].type , ['text','textarea','dropdown','listbox','lookup']) != -1){
+		if(o[i].type == 'checkbox'){
+			var currentOnClick = e.getAttribute('onclick');
+			e.setAttribute('onclick',  currentOnClick+';nuToggleCB(this)');
+
+			switch (o[i].value){
+					case "1":
+					e.checked = true;
+					break;
+				default:
+					e.checked = false;
+			}
+		}
+		
+		if($.inArray(o[i].type , ['text','textarea','dropdown','checkbox','listbox','lookup']) != -1){
 		
 			e.setAttribute('data-saveable',  '1');
 			var currentOnChange = e.getAttribute('onchange');
@@ -1207,6 +1261,7 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
                                     e.setAttribute('data-addable', 'no');
                                 }
 				$('#' + formParent).append(e);
+				
 				$('#' + e.id).css({
                     'top'          : form.top+'px',
                     'width'        : (formWidth-40)+'px',
@@ -1214,7 +1269,7 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
                     'height'       : formHeight+'px',
                     'position'     : 'absolute',
                     'border-style' : 'none',
-                    'text-align'   : 'left'
+                    'text-align'   : 'center'
                 });
 
 				parent = e.id;
@@ -1262,6 +1317,7 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
 			if(formObjects[i].type == 'button'){        form.nuBuildButton       (formObjects,i,parent);}
 			if(formObjects[i].type == 'listbox'){       form.nuBuildListbox      (formObjects,i,parent);}
 			if(formObjects[i].type == 'dropdown'){      form.nuBuildDropdown     (formObjects,i,parent);}
+			if(formObjects[i].type == 'checkbox'){      form.nuBuildCheckBox     (formObjects,i,parent);}
 			if(formObjects[i].type == 'display'){       form.nuBuildDisplay      (formObjects,i,parent);}
 			if(formObjects[i].type == 'lookup'){        form.nuBuildLookup       (formObjects,i,parent);}
 			if(formObjects[i].type == 'textarea'){      form.nuBuildTextarea     (formObjects,i,parent);}
@@ -1515,3 +1571,13 @@ function nuGiveFocus(pThis){                                             //-- hi
 	}
 
 }
+
+function nuToggleCB(t){
+	
+    if($('#'+t.id).prop('checked')==true){
+		$('#'+t.id).attr('value', "1");
+	}else{
+		$('#'+t.id).attr('value', "0");
+	}
+}
+

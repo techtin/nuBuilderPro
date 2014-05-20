@@ -2155,6 +2155,9 @@ function nuGetObjectsForOneRecord($parent, $parentID, $recordID, $hashData) {
         if ($o->sob_all_type == 'listbox') {
             $OBJ[] = nuGetObjectListbox($recordArray, $o, $recordID, $hashData);
         }
+        if ($o->sob_all_type == 'checkbox') {
+            $OBJ[] = nuGetObjectCheckbox($recordArray, $o, $recordID, $hashData);
+        }
         if ($o->sob_all_type == 'dropdown') {
             $OBJ[] = nuGetObjectDropdown($recordArray, $o, $recordID, $hashData);
         }
@@ -2430,6 +2433,21 @@ function nuGetObjectDropdown($recordArray, $o, $recordID, $hashData) {
     }
 
     $nuObject->list = nuEncodeList(nuReplaceHashes($o->sob_dropdown_sql, $hashData));
+
+    return $nuObject;
+}
+
+function nuGetObjectCheckbox($recordArray, $o, $recordID, $hashData) {
+
+    $nuObject = nuBaseObject($o, $recordID, $hashData);
+
+    if ($recordID == '-1' or nuUseDefault($o)) {
+        $nuObject->value = nuGetDefaultValue($o->sob_all_default_value_sql, $hashData);
+    } else {
+        if($recordArray != "" and array_key_exists($o->sob_all_name, $recordArray)) {
+            $nuObject->value = $recordArray[$o->sob_all_name];
+        }
+    }
 
     return $nuObject;
 }

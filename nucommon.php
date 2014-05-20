@@ -58,8 +58,8 @@ function nuDebug($t){
 
     $i = nuID();
     $d = date('Y-m-d h:i:s');
-    $s = $nuDB->prepare("Insert INTO zzzsys_debug (zzzsys_debug_id, deb_message, deb_added) VALUES (? , ?, ?)");
-    
+    $s = $nuDB->prepare("INSERT INTO zzzsys_debug (zzzsys_debug_id, deb_message, deb_added) VALUES (? , ?, ?)");
+
     $s->execute(array($i, $t, $d));
     
     if($nuDB->errorCode() !== '00000'){
@@ -841,6 +841,15 @@ function nuTextFormats(){
 	$format[31]->phpdate     = '';
 	$format[31]->sql         = 'FORMAT(??,5)';
 
+//-----checkbox format
+
+	$format[32]->type        = 'checkbox';
+	$format[32]->format      = 'cb';
+	$format[32]->decimal     = '';
+	$format[32]->separator   = '';
+	$format[32]->sample      = 'checkbox';
+	$format[32]->phpdate     = '';
+	$format[32]->sql         = 'CONCAT(\'<input type="checkbox" \',IF(??,\'checked \',\'\'),\'disabled>\')';
 
 	return $format;
 
