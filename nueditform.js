@@ -627,15 +627,6 @@ function nuRecordObjects(formType, formTop){
         if ( o[i].read_only == '1' ) {
             $('#' + e.id).prop("disabled", true);
         }
-		
-        if ( o[i].value == '1' ) {
-            $('#' + e.id).prop("checked", true);
-            $('#' + e.id).val(1);
-        }else{
-            $('#' + e.id).prop("checked", false);
-            $('#' + e.id).val(0);
-		}
-
 	}
 	
 	this.nuBuildCheckBox = function(o,i,p){

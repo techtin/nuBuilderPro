@@ -478,7 +478,7 @@ function nuHashData(){
 }
 
 function nuRecordArray($hashData){
-nuDebug(print_r($hashData,1));
+
     $ignore                = array();
     $ignore[]              = 'sre_layout';
     $ignore[]              = 'form_data';
