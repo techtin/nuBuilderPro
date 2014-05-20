@@ -660,9 +660,6 @@ function nuRecordObjects(formType, formTop){
             $('#' + e.id).prop("disabled", true);
         }
 		
-		$('#'+e.id).attr('value', "1");
-
-
 	}
 
 
@@ -923,7 +920,7 @@ function nuRecordObjects(formType, formTop){
 		
 		if($.inArray(o[i].type , ['text','display','button','checkbox']) != -1){
 			if(o[i].value==null){
-				o[i].value = '';
+				o[i].value = 0;
 			}
 			e.setAttribute('value', o[i].value);
 		}
