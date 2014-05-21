@@ -13,16 +13,52 @@ function nuAppendChild(p,t,i){
 }
 
 function nuPopupCalendar(pThis){
-	
+
+	if(pThis===null){return;}
+
 	$('#nuCalendar').remove();
 
 	window.nuCalendarCaller  = pThis.id;
-	var p                    = document.getElementById($('#'+pThis.id).parent().attr('id'));
+	var p                    = document.getElementById('nuTabAreaHolder');
+	
+	var pos                  = $('#' + pThis.id).position();
+	var sf                   = $('#' + pThis.id).attr('data-prefix');
+	var top;
+	var left;
+	
+	if(sf == ''){                                                                           //-- on main form
+	
+		if($('#nu_holder_'  + pThis.id).length == 0){                                       //-- still in table
+		
+			var right         = $('#td_right_'  + pThis.id).position();
+			top               = right.top + 22;
+			left              = right.left + 2;
+			
+		}else{                                                                              //--  has been dragged
+		
+			var right         = $('#nu_holder_'  + pThis.id).position();
+			var title         = $('#td_left_'  + pThis.id).width();
+			top               = right.top + 22;
+			left              = right.left + parseInt(title) + 4;
+		}
+	}else{                                                                                  //-- in a subform
+		var holder           = $('#nu_holder_' + sf.substr(0, sf.length-4)).position();
+		var right            = $('#td_right_'  + pThis.id).position();
+		var bottoma          = $('#objects_'   + sf.substr(0, sf.length-4)).position();
+		var bottomb          = $('#scroll_'   + sf.substr(0, sf.length-4)).position();
+		var bottomc          = $('#' + sf + '_nuRow').position();
+		
+		top                  = holder.top  + bottoma.top + bottomb.top + bottomc.top + 22;
+		left                 = holder.left + right.left;
+	}
+	
+	
+	
 	var c                    = nuAppendChild(p,'div','nuCalendar');
 	c.style.backgroundColor  = window.nuCalColor;
 	c.style.position         = 'absolute';
-	c.style.top              = p.top;
-	c.style.left             = p.left;
+	c.style.top              = top + 'px';
+	c.style.left             = left + 'px';
 	c.style.width            = '210px';
 	c.style.height           = '213px';
 	c.style.color            = '#000000';

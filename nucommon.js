@@ -1469,7 +1469,7 @@ function nuLogin(u, p){
 				alert(nuTranslate('Your username or password was incorrect'));
 				toggleModalMode();
 				$('#p').val('');
-				$('#p').focus();
+				$('#u').focus();
 			}else{
 				window.nuFORM.form_id = data.DATA['index_id'];
 				nuSession.setBreadCrumb(window.nuFORM);

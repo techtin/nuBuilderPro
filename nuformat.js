@@ -444,7 +444,7 @@ function nuBuilderSession(){
 		if($('#nuCalendar').length == 0){
 			var cal                 = '';
 		}else{
-			var cal                 = $('#nuCalendar').parent().attr('id').substr(9);
+			var cal                 = window.nuCalendarCaller;
 		}
 		
 		$('#nuCalendar').remove();
@@ -466,14 +466,14 @@ function nuBuilderSession(){
 		$('#' + e.id).css( 'height', this.subformRowHeight[i]+'px');
 		$('#' + e.id).css( 'position', 'absolute');
 		$('#' + e.id).html(this.subformRowHTML[i]);
+		
 		if(cal != ''){
-console.log(cal);			
 			nuPopupCalendar(document.getElementById(cal));
 		}
-//		$('.hasDatepicker').removeClass('hasDatepicker').datepicker();
-			$('#' + e.id + ' .ui-autocomplete-input').each(function(i){
-				nuAutocomplete(this);
-			})
+		
+		$('#' + e.id + ' .ui-autocomplete-input').each(function(i){
+			nuAutocomplete(this);
+		})
 
 		$('#'+now+'_nuDelete').attr('checked','checked');
 	}
