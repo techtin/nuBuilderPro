@@ -12,7 +12,14 @@ $t                          = nuRunQuery("SELECT deb_message AS json FROM zzzsys
 $reportInfo                 = db_fetch_object($t);
 $JSON                       = json_decode($reportInfo->json);
 $pxREPORT                   = json_decode($JSON->sre_layout);
-$DATA                       = $JSON->slp_php;
+
+if($JSON->sre_zzzsys_sql == ''){
+	$DATA                   = $JSON->slp_php;
+}else{
+
+	$DATA                   = $JSON->sre_zzzsys_sql;
+}
+
 $TABLE_ID                   = nuTT();
 $GLOBALS['TABLE_ID']        = $TABLE_ID;
 $hashData                   = nuBuildHashData($JSON, $TABLE_ID);
@@ -27,6 +34,7 @@ $PDF->SetAutoPageBreak(false);
 $fonts      = explode("\n", trim($GLOBALS['nuSetup']->set_fonts));
 
 for($i = 0 ; $i < count($fonts) ; $i ++){
+
     if(trim($fonts[$i]) != ''){
         $PDF->AddFont($fonts[$i], '' , strtolower($fonts[$i]) . '.php');
         $PDF->AddFont($fonts[$i], 'B', strtolower($fonts[$i]) . '.php');
@@ -41,7 +49,11 @@ $PDF->SetMargins(1,1,1);
 
 $createTable                 = nuReplaceHashes($DATA, $hashData);
 
-eval($createTable);                                                                            //-- build temp table for report
+if($JSON->sre_zzzsys_sql == ''){
+	eval($createTable);                                                              //-- build temp table for report from php
+}else{
+	nuRunQuery('CREATE TABLE ' . $hashData['TABLE_ID'] . ' ' . $createTable);        //-- build temp table for report from sql
+}
 
 $GLOBALS['nu_columns']       = nuAddCriteriaValues($hashData);
 
