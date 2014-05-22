@@ -1880,6 +1880,7 @@ function nuObjectMover() {
 		'top'              : '35px',
 		'left'             : '10px',
 		'position'         : 'absolute',
+		'font-family'      : 'Lucida Console',
 		'z-index'          : 5000
 	})
 	.change(function() {
@@ -2501,17 +2502,8 @@ function nuAddSelectableObjects(){
 	
 		i         = a.sob_all_name;                                                              //-- id
 		o         = a.sob_all_type;                                                              //-- type
-		t         = $("#" + window.nuOTP[o].title + a.sob_all_name).html();
+		t         = o.toUpperCase() + ': ' + i;
 
-		if(t.replaceAll('&nbsp;', '') == ''){
-			t = a.sob_all_type.toUpperCase() + ' : (id:' + a.sob_all_name + ')';
-		}else{
-			t = a.sob_all_type.toUpperCase() + ' : ' + t;
-		}
-		
-		if(a.sob_all_type == 'words') {t = a.sob_all_type.toUpperCase() + ' : ' + $('#' + a.sob_all_name).html();}
-		if(a.sob_all_type == 'button'){t = a.sob_all_type.toUpperCase() + ' : ' + $('#' + a.sob_all_name).val();}
-		
 		var vis   = $("#" + a.sob_all_name).css('visiblity') != 'hidden';                        //-- visible
 		var intab = tab == nuDraggableObjectProperties(a.sob_all_name, 'tab_number');            //-- in this tab
 
