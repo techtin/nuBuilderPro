@@ -206,10 +206,6 @@ function nuSetLookupAttributes(e,c,img,d,o,i,prefix, rowPK){
 	c.setAttribute('data-form',            o[i].form);
 	c.setAttribute('data-parent',          o[i].f_id);
 	d.setAttribute('data-prefix',          prefix);
-	
-
-
-
 
 	if(o[i].read_only == '1'){
 		e.setAttribute('readonly',             true);
@@ -220,11 +216,11 @@ function nuSetLookupAttributes(e,c,img,d,o,i,prefix, rowPK){
 	}
 	
 	d.setAttribute('readonly',             true);
+    d.setAttribute('tabindex', '-1');
 
     if(prefix == '') {
         c.setAttribute('tabindex', window.nuTab);
         window.nuTab+=5;
-        d.setAttribute('tabindex', window.nuTab);
         window.nuTab+=5;
     }
 
