@@ -316,7 +316,8 @@ function nuGetIframeID(){
 
 function nuOpenObjectForm(pThis){
 
-	if(!nuIsGA()){return;}
+	if(!nuIsGA()){return;}                               //-- not globeadmin
+	if($('#nuObjectList').length == 1){return;}          //-- in drag drop mode
 
 	if(window.nuDenied != ''){                           //-- stop access to system tables
 		if(nuIsSystem()){
@@ -1523,7 +1524,7 @@ function nuMoveObject(id, top, left){
         'border-style' : 'none'
 	})
    .addClass('nuSelectedTab');
-
+   
 	$('#' + e.id).mousedown(function() {
 	
 		var cover = window.nuOTP[nuDraggableObjectProperties(e.id.substr(10), 'sob_all_type')].cover
@@ -1542,8 +1543,22 @@ function nuMoveObject(id, top, left){
 
 	$('#' + t.id).append($('#tr_'+id));
 
+	$('#title_' + id).css( 'width', nuSetTitleWidth(id) + 'px');
+
 	
 }
+
+
+function nuSetTitleWidth(i){
+	
+	var h = "<div id='nuTestWidth' style='position:absolute;visible:hidden;height:auto;width:auto'>" + $('#title_' + i).html() + "</div>";
+	$('body').append(h);
+	var w = parseInt($('#nuTestWidth').css('width'));
+	$('#nuTestWidth').remove();
+	return w + 2;
+	
+}	
+
 
 
 function nuIsGA(){
@@ -2693,7 +2708,7 @@ function nuSetAllDraggableObjectProperties(){
 		a.prefix              = '';
 		if(a[2] == 'lookup') {a.prefix = 'code';}
 		if(a[2] == 'subform'){a.prefix = 'scroll_';}
-		a.title_width         = nuGetTitleWidth(a[1]);
+		a.title_width         = parseInt($('#title_' + a[1]).css('width'));
 		a.holder_top          = 0;
 		a.holder_left         = 0;
 		a.holder_height       = 0;
@@ -2737,16 +2752,6 @@ function nuSetAllDraggableObjectProperties(){
 
 }
 
-function nuGetTitleWidth(i){
-	
-	var h = "<div id='nuTestWidth' style='position:absolute;visible:hidden;height:auto;width:auto'>" + $('#title_' + i).html() + "</div>";
-	$('body').append(h);
-	var w = parseInt($('#nuTestWidth').css('width'));
-	$('#nuTestWidth').remove();
-	return w;
-	
-}	
-	
 function nuPlaceInHolder(i){
 
 	var o = nuDraggableObjectProperties(i);

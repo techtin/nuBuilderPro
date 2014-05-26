@@ -966,10 +966,9 @@ function nuRecordObjects(formType, formTop){
 			e = document.createElement('td');              //-- create a new td
 			e.setAttribute('id','td_left_'+this.prefix+field);
 			$('#' + parent).append(e);
-			$('#' + e.id).css( 'text-align',     'right')
-			$('#' + e.id).css( 'vertical-align', 'top')
-			$('#' + e.id).html('<div id="title_'+field+'" data-id="'+o[i].o_id+'" onclick="nuGiveFocus(this)" ondblclick="nuOpenObjectForm(this)">'+title+'&nbsp;</div>')
-
+			$('#' + e.id).css( 'text-align',     'right');
+			$('#' + e.id).css( 'vertical-align', 'top');
+			$('#' + e.id).html('<div id="title_'+field+'" data-id="'+o[i].o_id+'" onclick="nuGiveFocus(this)" ondblclick="nuOpenObjectForm(this)">'+title+'&nbsp;</div>');
 
 			e = document.createElement('td');              //-- create a new td
 			e.setAttribute('id',  'td_right_'+this.prefix+field);
