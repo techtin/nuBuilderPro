@@ -509,9 +509,11 @@ function nuLookupClick(pthis){                                                  
 	if(w.lookup.substr(w.prefix.length,4) == 'btn_'){
 		document.defaultView.parent.$('#'+w.prefix+w.lookup.substr(w.prefix.length+4)).val(pk);
 		document.defaultView.parent.$('#'+w.prefix+w.lookup.substr(w.prefix.length+4)).change();
+		document.defaultView.parent.$('#'+w.prefix+'code'+w.lookup.substr(w.prefix.length+4)).focus();
 	} else {
 		document.defaultView.parent.$('#'+w.lookup).val(pk);
 		document.defaultView.parent.$('#'+w.lookup).change();
+		document.defaultView.parent.$('#code'+w.lookup).focus();
 	}
     
 	document.defaultView.parent.$('#nuModal').remove();	
