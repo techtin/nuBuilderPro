@@ -2590,23 +2590,24 @@ function nuDisplayObject($o,$hashData) {
 }
 
 function nuGetDefaultValue($sql, $hashData) {
-
     if ($sql == '') {
         return '';
     }
-    $sql         = nuReplaceHashes($sql, $hashData);
+  
     $nn          = nuNextNumberTables();                             //-- tables with auto-increment for getting a next number
     
     for($i = 0 ; $i < count($nn) ; $i++){
         
         $hash    = '#' . $nn[$i] . '#';
-        
+
         if (strrpos($sql, $hash) === false){
         }else{                                                       //-- used in this sql statement
-            $sql = str_replace($hash, nuNextNumber($nn[$i]), $sql);
+            $sql = "SELECT '".str_replace($hash, nuNextNumber($nn[$i]), $sql)."'";
         }
         
     }
+	
+	$sql         = nuReplaceHashes($sql, $hashData);
 
     $t           = nuRunQuery($sql);
     if (nuErrorFound()) {

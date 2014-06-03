@@ -1158,7 +1158,7 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
     if (nuV('call_type') == 'printpdf') {                                    //-- add report record to hash variables
         
-        $s              = "SELECT * FROM  zzzsys_report LEFT JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
+        $s              = "SELECT * FROM  zzzsys_report INNER JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
         $t              = nuRunQuery($s);
         
         if (nuErrorFound()) {
@@ -1313,14 +1313,13 @@ function nuNextNumberTables(){
                 FROM INFORMATION_SCHEMA.COLUMNS 
                 WHERE TABLE_SCHEMA = '$d' 
                 AND TABLE_NAME     = '$r[0]' 
-                AND COLUMN_NAME    = '$r[2]' 
+                AND COLUMN_NAME    != '$r[2]' 
                 AND DATA_TYPE      = 'varchar'
                 ";
             $ct = nuRunQuery($s);
             $cr = db_fetch_row($ct);
 
             if($cr[0] == 'varchar25'){                               //-- (test 3) second field is a varchar
-
                 $a[]  = $r[0];
             }
         
