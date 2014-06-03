@@ -1544,7 +1544,6 @@ function nuMoveObject(id, top, left){
 	$('#' + t.id).append($('#tr_'+id));
 
 	$('#title_' + id).css( 'width', nuSetTitleWidth(id) + 'px');
-
 	
 }
 
@@ -2708,7 +2707,9 @@ function nuSetAllDraggableObjectProperties(){
 		a.prefix              = '';
 		if(a[2] == 'lookup') {a.prefix = 'code';}
 		if(a[2] == 'subform'){a.prefix = 'scroll_';}
-		a.title_width         = parseInt($('#title_' + a[1]).css('width'));
+		
+		a.title_width         = nuSetTitleWidth(a[1]);
+//		a.title_width         = parseInt($('#title_' + a[1]).css('width'));
 		a.holder_top          = 0;
 		a.holder_left         = 0;
 		a.holder_height       = 0;
