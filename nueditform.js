@@ -1564,3 +1564,17 @@ function nuToggleCB(t){
 	}
 }
 
+function nuHideSaveButtons(hide){
+
+	$("[id^='nuButton']").each(function(index){
+	
+		if(hide){
+			$(this).css('visibility', 'hidden');
+		}else{
+			$(this).css('visibility', 'visible');
+		}
+			
+	});
+	
+}
+

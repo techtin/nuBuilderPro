@@ -814,8 +814,11 @@ function nuNewForm(sync,operation){                                             
 
 function nuSaveForm(sync,operation){
 
+	nuHideSaveButtons(true);
+	
     if(typeof nuOnSave   == 'function') {                                  //-- check if this custom function has been created
 		if(!nuOnSave()){                                                   //-- run it if it has
+			nuHideSaveButtons(false);
 			return;
 		}
 	}
@@ -840,6 +843,8 @@ function nuSaveForm(sync,operation){
 
 				if (confirm('Changed by ' + obj.user + ' do you wish to over write their changes?')) {
 					nuCompleteSavingForm(sync,operation);
+				}else{
+					nuHideSaveButtons(false);
 				}
 
 			}else{
@@ -1599,7 +1604,7 @@ function nuSavingProgressMessage(){
     $('#' + e.id).html('<img src=\'ajax-loader.gif\'/>')
     .addClass( 'nuSaveMessageProgress')
     .show();
-	$('input[id^="nuButton"]').hide();
+//	$('input[id^="nuButton"]').hide();
 }    
   
 function nuSavingMessage(){
@@ -1614,7 +1619,7 @@ function nuSavingMessage(){
 
 function nuAbortSave() {
 	$("#nuProgressSaved").hide();
-	$('input[id^="nuButton"]').show();
+	nuHideSaveButtons(false);
 }   
 
 function nuObjectToString(variable,i) {
