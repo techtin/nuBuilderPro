@@ -856,7 +856,6 @@ function nuTextFormats(){
 }
 
 
-
 class nuSqlString{
 
     public  $from         = '';

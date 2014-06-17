@@ -1,4 +1,26 @@
 
+
+function nuFormatDateByString(dt, s){
+
+	var f = new nuFormatter();
+	var d = String('0'+ dt.getDate()).substr(-2);
+	var m = String(dt.getMonth()+1);
+	var y = String(dt.getFullYear());
+	
+	
+	s = s.replace('yyyy', y);
+	s = s.replace('yy', y.substr(2));
+	s = s.replace('mmm', f.mmm[m]);
+	s = s.replace('mm', f.mm[m]);
+	s = s.replace('dd', d);
+	
+	return s;
+	
+}
+
+
+
+
 function nuFormatter(){
 
 	this.mmm  = Array();

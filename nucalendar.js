@@ -371,10 +371,13 @@ function nuCalChoice(){
 
 	window.nuCalMonth = nuMonthScope(window.nuCalMonth);
 	var df            = document.getElementById(window.nuCalendarCaller);
-	
-	df.value          = window.nuCalDay + '-' + (Number(window.nuCalMonth) + 1)+ '-' + window.nuCalYear;
-	df.value          = formatter.formatField(df.getAttribute('data-nuformat') ,df.value);
+	var d             = new Date(window.nuCalYear, window.nuCalMonth, window.nuCalDay);
+	df.value          = nuFormatDateByString(d, nuFormats[df.getAttribute('data-nuformat')].format)
+//	df.value          = window.nuCalDay + '-' + (Number(window.nuCalMonth) + 1)+ '-' + window.nuCalYear;
+//	df.value          = formatter.formatField(df.getAttribute('data-nuformat') ,df.value);
 	$('#nuCalendar').remove();
+	$('#' + df.id).change();
+	
 	
 	
 }
