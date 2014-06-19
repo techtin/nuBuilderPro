@@ -297,25 +297,22 @@ function nuID(){
 
 }
 
-
 function nuGetFormProperties($f){
 
     global $nuDB;
 	$t                      = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ?",array($f));
     if(nuErrorFound()){return;}
 	$r                      = db_fetch_array($t);
-	
+	$r 			= nuCheckSafePHPMode($f, $r);	
 	$GLOBALS['currentForm'] = $r;
 
 }
-
 
 function nuF($field){    //-- fields from current Form
 
 	return $GLOBALS['currentForm'][$field];
 
 }
-
 
 function nuSessionArray($i){
 	
@@ -1633,7 +1630,7 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 
 function nuGetSafePHP($file) {
 
-	$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;	
+	$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;
 	$contents = @file_get_contents($full_file_and_path);
 	if ($contents === false) {
 		nuDebug("error accessing file data in $full_file_and_path");
@@ -1641,6 +1638,29 @@ function nuGetSafePHP($file) {
 	}
 	return $contents;
 
+}
+
+function nuCheckSafePHPMode($f, $r) {
+
+	$fieldsToCheck = array(
+        	'sfo_custom_code_run_after_delete',
+                'sfo_custom_code_run_after_save',
+                'sfo_custom_code_run_before_browse',
+                'sfo_custom_code_run_before_open',
+                'sfo_custom_code_run_before_save'
+        );
+
+	if ( $_SESSION['SafeMode'] === true ) {
+		for ( $x = 0; $x < count($fieldsToCheck); $x++ ) {
+			$field = $fieldsToCheck[$x];
+			if ( array_key_exists($field, $r) ) {
+				$file      = $f.'_'.$field;
+				$r[$field] = nuGetSafePHP($file); 
+			} 
+		}
+	}
+
+	return $r;
 }
 
 ?>
