@@ -10,6 +10,7 @@ $_SESSION['DBUser']                 = $nuConfigDBUser;
 $_SESSION['DBPassword']             = $nuConfigDBPassword;
 $_SESSION['DBGlobeadminPassword']   = $nuConfigDBGlobeadminPassword;
 $_SESSION['title']                  = $nuConfigtitle; 
+$_SESSION['SafeMode']		    = (isset($nuConfigSafeMode) ? $nuConfigSafeMode : false);
 
 require_once('nudatabase.php');
 
@@ -99,6 +100,12 @@ function nuRunPHP($c){
     $s = "SELECT * FROM zzzsys_php WHERE slp_code = ? ";
     $t = nuRunQuery($s, array($c));
     $r = db_fetch_object($t);
+
+    if ( $_SESSION['SafeMode'] === true ) {
+	$file       = $r->zzzsys_php_id.'_'.slp_php;
+	$r->slp_php = nuGetSafePHP($file);
+    }	
+
     $e = nuReplaceHashes($r->slp_php, $GLOBALS['latest_hashData']);
     
     eval($e);
@@ -1145,6 +1152,12 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
         }
 
         $r              = db_fetch_object($t);
+
+	if ( $_SESSION['SafeMode'] === true ) {
+        	$file       = $r->zzzsys_php_id.'_'.slp_php;
+        	$r->slp_php = nuGetSafePHP($file);
+    	}
+
         if(!nuPHPAccess($r->zzzsys_php_id)){
             nuDisplayError("Access denied to PHP - ($theID)");
             return;
@@ -1163,10 +1176,15 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
         if (nuErrorFound()) {
             return;
         }
-        $r              = db_fetch_object($t);
-
-        if(!nuReportAccess($r->zzzsys_report_id)){
-
+        
+	$r              = db_fetch_object($t);
+	
+	if ( $_SESSION['SafeMode'] === true ) {
+        	$file       = $r->zzzsys_php_id.'_'.slp_php;
+        	$r->slp_php = nuGetSafePHP($file);
+    	}
+        
+	if(!nuReportAccess($r->zzzsys_report_id)){
 		nuDisplayError("Access denied to Report - ($theID)");
             return;
         }
@@ -1590,9 +1608,14 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 
     } else if($hashData['nu_php_code'] !=  '') {                                                          //-- Run PHP Code
     
-        $s                                       = "SELECT slp_php FROM  zzzsys_php WHERE slp_code = '$pPDForPHP'";
+        $s                                       = "SELECT zzzsys_php_id, slp_php FROM  zzzsys_php WHERE slp_code = '$pPDForPHP'";
         $t                                       = nuRunQuery($s);
         $r                                       = db_fetch_object($t);
+
+	if ( $_SESSION['SafeMode'] === true ) {
+        	$file       = $r->zzzsys_php_id.'_'.slp_php;
+        	$r->slp_php = nuGetSafePHP($file);
+    	}
 
         $php                                     = nuReplaceHashes($r->slp_php, $hashData);
         eval($php);
@@ -1606,6 +1629,18 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
     
 	return nuSendEmail($pEmailTo, $fromaddress, $fromname, $pMessage, $pSubject, $filelist);
 	
+}
+
+function nuGetSafePHP($file) {
+
+	$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;	
+	$contents = @file_get_contents($full_file_and_path);
+	if ($contents === false) {
+		nuDebug("error accessing file data in $full_file_and_path");
+		$contents = '';
+	}
+	return $contents;
+
 }
 
 ?>

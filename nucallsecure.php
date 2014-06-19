@@ -16,6 +16,11 @@
 	$r                            = db_fetch_object($t);
 	
 	if(nuPHPAccess($r->zzzsys_php_id)){
+
+		if ( $_SESSION['SafeMode'] === true ) {
+                	$file = $r->zzzsys_php_id.'_'.slp_php;
+                	$r->slp_php = nuGetSafePHP($file);
+                }
 	
 		$e                        = nuReplaceHashes($r->slp_php, $hashData);
 		eval($e); 
