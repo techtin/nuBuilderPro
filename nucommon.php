@@ -1639,7 +1639,7 @@ function nuGetSafePHP($file, $id) {
 			$contents = '';
 		}
 	} else {
-		$contents;
+		$contents = '';
 	}
 
 	return $contents;
