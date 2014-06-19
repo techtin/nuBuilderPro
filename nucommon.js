@@ -366,6 +366,7 @@ function nuOpenForm(parentFormID, parentRecordID, formID, recordID, formTitle, f
 	w.parent_form_id   = parentFormID;
 	w.parent_record_id = parentRecordID;
 	w.title            = formTitle;
+	w.form_data        = nuGetData();
 	
 	if(arguments.length == 6){
 		w.filter       = filter;
