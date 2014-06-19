@@ -11,6 +11,7 @@ $_SESSION['DBPassword']             = $nuConfigDBPassword;
 $_SESSION['DBGlobeadminPassword']   = $nuConfigDBGlobeadminPassword;
 $_SESSION['title']                  = $nuConfigtitle; 
 $_SESSION['SafeMode']		    = (isset($nuConfigSafeMode) ? $nuConfigSafeMode : false);
+$_SESSION['SafePHP']		    = (isset($nuConfigSafePHP) ? $nuConfigSafePHP : array());	
 
 require_once('nudatabase.php');
 
@@ -103,7 +104,7 @@ function nuRunPHP($c){
 
     if ( $_SESSION['SafeMode'] === true ) {
 	$file       = $r->zzzsys_php_id.'_'.slp_php;
-	$r->slp_php = nuGetSafePHP($file);
+	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
     }	
 
     $e = nuReplaceHashes($r->slp_php, $GLOBALS['latest_hashData']);
@@ -1152,7 +1153,7 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
 	if ( $_SESSION['SafeMode'] === true ) {
         	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file);
+        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
     	}
 
         if(!nuPHPAccess($r->zzzsys_php_id)){
@@ -1178,7 +1179,7 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 	
 	if ( $_SESSION['SafeMode'] === true ) {
         	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file);
+        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
     	}
         
 	if(!nuReportAccess($r->zzzsys_report_id)){
@@ -1611,7 +1612,7 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 
 	if ( $_SESSION['SafeMode'] === true ) {
         	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file);
+        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
     	}
 
         $php                                     = nuReplaceHashes($r->slp_php, $hashData);
@@ -1628,14 +1629,19 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 	
 }
 
-function nuGetSafePHP($file) {
+function nuGetSafePHP($file, $id) {
 
-	$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;
-	$contents = @file_get_contents($full_file_and_path);
-	if ($contents === false) {
-		nuDebug("error accessing file data in $full_file_and_path");
-		$contents = '';
+	if ( in_array($id, $_SESSION['SafePHP']) ) {
+		$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;
+		$contents = @file_get_contents($full_file_and_path);
+		if ($contents === false) {
+			nuDebug("error accessing file data in $full_file_and_path");
+			$contents = '';
+		}
+	} else {
+		$contents;
 	}
+
 	return $contents;
 
 }
@@ -1655,7 +1661,7 @@ function nuCheckSafePHPMode($f, $r) {
 			$field = $fieldsToCheck[$x];
 			if ( array_key_exists($field, $r) ) {
 				$file      = $f.'_'.$field;
-				$r[$field] = nuGetSafePHP($file); 
+				$r[$field] = nuGetSafePHP($file, $f); 
 			} 
 		}
 	}
