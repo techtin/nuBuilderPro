@@ -6,5 +6,6 @@
     $nuConfigDBPassword             = "root";
     $nuConfigDBGlobeadminPassword   = "nu";             //-- globeadmin password
     $nuConfigtitle                  = "site_c";	
+    //$nuConfigSafeMode               = true;
 
 ?>
