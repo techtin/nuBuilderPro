@@ -457,7 +457,8 @@ function nuValidateRecord($r, $hashData) {
         return true;
     }
 
-    $bb      = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
+    $r->sfo_custom_code_run_before_browse 	= nuGetSafePHP('sfo_custom_code_run_before_browse', $recordID, $r->sfo_custom_code_run_before_browse);
+    $bb      					= nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
     eval($bb);
 
     $sfo_sql = nuReplaceHashes($r->sfo_sql, $hashData);
@@ -1162,8 +1163,9 @@ function nuGetAutocompleteData($hashData) {
         return;
     }
 
-    $f            = db_fetch_object($T);
-    $bb           = nuReplaceHashes($f->sfo_custom_code_run_before_browse, $hashData);
+    $f            				= db_fetch_object($T);
+    $f->sfo_custom_code_run_before_browse       = nuGetSafePHP('sfo_custom_code_run_before_browse', $f->zzzsys_form_id, $f->sfo_custom_code_run_before_browse);
+    $bb           				= nuReplaceHashes($f->sfo_custom_code_run_before_browse, $hashData);
     eval($bb);
 
     $searchIn     = $code;
@@ -1224,8 +1226,9 @@ function nuGetLookupData($hashData) {
         return;
     }
 
-    $f            = db_fetch_object($T);
-    $bb           = nuReplaceHashes($f->sfo_custom_code_run_before_browse, $hashData);
+    $f            				= db_fetch_object($T);
+    $f->sfo_custom_code_run_before_browse 	= nuGetSafePHP('sfo_custom_code_run_before_browse', $f->zzzsys_form_id, $f->sfo_custom_code_run_before_browse);
+    $bb           				= nuReplaceHashes($f->sfo_custom_code_run_before_browse, $hashData);
     eval($bb);
 
 	
@@ -1239,6 +1242,8 @@ function nuGetLookupData($hashData) {
 
 	
 	$o->sob_lookup_php = str_replace('#RECORD_ID#', nuV('record_id'), $o->sob_lookup_php);
+
+//TODO
 	eval($o->sob_lookup_php);                                                                       //-- define any php functions that may be used
 	
     while ($r = db_fetch_object($t)) {
@@ -2649,8 +2654,9 @@ function nuGetLookupValues($f, $o, $recordID, $hashData, $default){
         return;
     }
 
-    $r     = db_fetch_object($t);
-    $bb    = nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
+    $r     					= db_fetch_object($t);
+    $r->sfo_custom_code_run_before_browse 	= nuGetSafePHP('sfo_custom_code_run_before_browse', $r->zzzsys_form_id, $r->sfo_custom_code_run_before_browse);
+    $bb    					= nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);
     eval($bb);
 
 	$SQL   = new nuSqlString($r->sfo_sql);
