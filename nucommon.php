@@ -11,8 +11,8 @@ $_SESSION['DBPassword']             = $nuConfigDBPassword;
 $_SESSION['DBGlobeadminPassword']   = $nuConfigDBGlobeadminPassword;
 $_SESSION['title']                  = $nuConfigtitle; 
 $_SESSION['SafeMode']		    = (isset($nuConfigSafeMode) ? $nuConfigSafeMode : false);
-$_SESSION['SafePHP']		    = (isset($nuConfigSafePHP) ? $nuConfigSafePHP : array());	
-
+$_SESSION['SafePHP']		    = (isset($nuConfigSafePHP) ? $nuConfigSafePHP : array());
+	
 require_once('nudatabase.php');
 
 set_time_limit(0);
@@ -102,10 +102,7 @@ function nuRunPHP($c){
     $t = nuRunQuery($s, array($c));
     $r = db_fetch_object($t);
 
-    if ( $_SESSION['SafeMode'] === true ) {
-	$file       = $r->zzzsys_php_id.'_'.slp_php;
-	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
-    }	
+    $r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
 
     $e = nuReplaceHashes($r->slp_php, $GLOBALS['latest_hashData']);
     
@@ -1151,10 +1148,7 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
         $r              = db_fetch_object($t);
 
-	if ( $_SESSION['SafeMode'] === true ) {
-        	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
-    	}
+	$r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
 
         if(!nuPHPAccess($r->zzzsys_php_id)){
             nuDisplayError("Access denied to PHP - ($theID)");
@@ -1176,11 +1170,8 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
         }
         
 	$r              = db_fetch_object($t);
-	
-	if ( $_SESSION['SafeMode'] === true ) {
-        	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
-    	}
+
+	$r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);	
         
 	if(!nuReportAccess($r->zzzsys_report_id)){
 		nuDisplayError("Access denied to Report - ($theID)");
@@ -1610,10 +1601,7 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
         $t                                       = nuRunQuery($s);
         $r                                       = db_fetch_object($t);
 
-	if ( $_SESSION['SafeMode'] === true ) {
-        	$file       = $r->zzzsys_php_id.'_'.slp_php;
-        	$r->slp_php = nuGetSafePHP($file, $r->zzzsys_php_id);
-    	}
+	$r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
 
         $php                                     = nuReplaceHashes($r->slp_php, $hashData);
         eval($php);
@@ -1629,24 +1617,40 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 	
 }
 
-function nuGetSafePHP($file, $id) {
+function nuGetSafePHP($field, $id, $value) {
 
-	if ( in_array($id, $_SESSION['SafePHP']) ) {
-		$full_file_and_path = dirname(__FILE__).'/nusafephp/'.$file;
-		$contents = @file_get_contents($full_file_and_path);
-		if ($contents === false) {
-			nuDebug("error accessing file data in $full_file_and_path");
+	// check if site is using nuBuilderProSafeMode
+	if ( $_SESSION['SafeMode'] === true ) {
+
+		// don't bother looking for file if the 'id' is not in Safe List Array
+		if ( in_array($id, $_SESSION['SafePHP']) ) {
+
+			// construct full file and path 
+			$file      		= $id.'_'.$field;
+			$full_file_and_path 	= dirname(__FILE__).'/nusafephp/'.$file;
+
+			// get file contents
+			$contents 		= @file_get_contents($full_file_and_path);
+
+			// check if file contents is false, normally means file does not exist or file permission issues
+			if ($contents === false) {
+				nuDebug("error accessing file data in $full_file_and_path");
+				$contents = '';
+			}
+
+		} else {
 			$contents = '';
 		}
+
 	} else {
-		$contents = '';
+		// return default value if not in safe mode
+		$contents = $value;
 	}
-
+	
 	return $contents;
-
 }
 
-function nuCheckSafePHPMode($f, $r) {
+function nuCheckSafePHPMode($id, $r) {
 
 	$fieldsToCheck = array(
         	'sfo_custom_code_run_after_delete',
@@ -1657,11 +1661,13 @@ function nuCheckSafePHPMode($f, $r) {
         );
 
 	if ( $_SESSION['SafeMode'] === true ) {
+
 		for ( $x = 0; $x < count($fieldsToCheck); $x++ ) {
+
 			$field = $fieldsToCheck[$x];
 			if ( array_key_exists($field, $r) ) {
-				$file      = $f.'_'.$field;
-				$r[$field] = nuGetSafePHP($file, $f); 
+
+				$r[$field] = nuGetSafePHP($field, $id, $r[$field]); 
 			} 
 		}
 	}

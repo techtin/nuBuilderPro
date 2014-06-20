@@ -10,14 +10,9 @@
 
 		if ($num == 1) {
 		
-			$r   = db_fetch_object($rs);
-
-			if ( $_SESSION['SafeMode'] === true ) {
-                		$file = $r->zzzsys_php_id.'_'.slp_php;
-                		$r->slp_php = nuGetSafePHP($file);
-        		}
-
-			$e   = 	nuReplaceHashes($r->slp_php, $_GET);
+			$r          = db_fetch_object($rs);
+			$r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
+			$e          = nuReplaceHashes($r->slp_php, $_GET);
 
 			eval($e); 
 			

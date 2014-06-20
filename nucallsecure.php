@@ -17,11 +17,7 @@
 	
 	if(nuPHPAccess($r->zzzsys_php_id)){
 
-		if ( $_SESSION['SafeMode'] === true ) {
-                	$file = $r->zzzsys_php_id.'_'.slp_php;
-                	$r->slp_php = nuGetSafePHP($file);
-                }
-	
+		$r->slp_php 		  = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
 		$e                        = nuReplaceHashes($r->slp_php, $hashData);
 		eval($e); 
 		$response['DATA']         = $nuParameters;
