@@ -15,6 +15,8 @@ $pxREPORT                   = json_decode($JSON->sre_layout);
 
 if($JSON->sre_zzzsys_sql == ''){
 	$DATA                   = $JSON->slp_php;
+	$ID             	= $JSON->zzzsys_php_id;
+	$DATA           	= nuGetSafePHP('slp_php', $ID, $DATA);
 }else{
 
 	$DATA                   = $JSON->sre_zzzsys_sql;
