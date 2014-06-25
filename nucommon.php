@@ -1620,11 +1620,13 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 
 function nuGetSafePHP($field, $id, $value) {
 
+	$check = $id.'_'.$field;
+
 	// check if site is using nuBuilderProSafeMode
 	if ( $_SESSION['SafeMode'] === true ) {
 
 		// don't bother looking for file if the 'id' is not in Safe List Array
-		if ( in_array($id, $_SESSION['SafePHP']) ) {
+		if ( in_array($check, $_SESSION['SafePHP']) ) {
 
 			// construct full file and path 
 			$file      		= $id.'_'.$field;
