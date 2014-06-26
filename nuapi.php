@@ -1240,10 +1240,10 @@ function nuGetLookupData($hashData) {
     $ON           = array();                                                                        //-- Object Name
     $su           = "";
 
-	
+
+	$o->sob_lookup_php = nuGetSafePHP('sob_lookup_php', $objectID, $o->sob_lookup_php);	
 	$o->sob_lookup_php = str_replace('#RECORD_ID#', nuV('record_id'), $o->sob_lookup_php);
 
-//TODO
 	eval($o->sob_lookup_php);                                                                       //-- define any php functions that may be used
 	
     while ($r = db_fetch_object($t)) {
