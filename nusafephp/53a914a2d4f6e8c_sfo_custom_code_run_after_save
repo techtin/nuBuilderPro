@@ -1,0 +1,177 @@
+$name = '#sad_name#';
+$table = '#sad_table#';
+$selected = '#selectedList#';
+$order = '#orderList#';
+$selectedValue = '#selectedValueList#';
+$where = '#sad_where_clause#';
+if($where == '') {
+	$where = '';
+} else {
+	$where = 'WHERE '.$where;
+}
+
+//table sql
+$table_sql = <<< EOSQL
+	CREATE TABLE #TABLE_ID#
+	SELECT
+		*
+	FROM
+		$table
+	$where
+EOSQL;
+
+$table_sql = str_replace("'","\'",$table_sql);
+
+
+//layout
+$r = nuReportR();
+
+$objNum = 1000;
+$left = 50;
+
+$fields = explode(",",$selected);
+for($i = 0; $i < sizeof($fields); $i++) {
+	$attr = explode(";",$fields[$i]);
+	
+	$objNum++;
+	
+	$r->groups[0]->sections[0]->objects[] = nuReportO('object$objNum', 5, $left, $attr[0], $attr[1], $attr[2], $attr[3]);
+	
+	$left += $attr[1] + 20;
+}
+
+$layout = json_encode($r);
+
+
+//creating the report
+$id = uniqid(1);
+
+$sql = "
+	INSERT INTO zzzsys_report (
+		zzzsys_report_id,
+		sre_code,
+		sre_description,
+		sre_group,
+		sre_zzzsys_sql,
+		sre_zzzsys_form_id,
+		sre_layout
+	) VALUES (
+		'$id',
+		'$name',
+		'$name',
+		'Custom',
+		'$table_sql',
+		'51bf99ca103dbd5',
+		'$layout'
+	)
+";
+nuRunQuery($sql);
+
+function nuReportR(){
+
+	$o                   = new stdClass;
+
+	$o->bottom           = 260;
+	$o->currentGroup     = 0;
+	$o->height           = 297;
+	$o->left             = 30;
+	$o->orientation      = "P";
+	$o->paper            = "A4";
+	$o->right            = 30;
+	$o->top              = 30;
+	$o->width            = 210;
+	$o->groups[]         = nuReportG(10);
+	$o->groups[]         = nuReportG(0);
+	$o->groups[]         = nuReportG(1);
+	$o->groups[]         = nuReportG(2);
+	$o->groups[]         = nuReportG(3);
+	$o->groups[]         = nuReportG(4);
+	$o->groups[]         = nuReportG(5);
+	$o->groups[]         = nuReportG(6);
+	$o->groups[]         = nuReportG(7);
+	$o->groups[]         = nuReportG(8);
+	$o->groups[]         = nuReportG(9);
+
+	return $o;
+
+}
+
+	
+function nuReportG($f){
+
+	$g                    = new stdClass;
+	$h                    = 0;
+	$l                    = '';
+		
+	if($f == 10){$l = 'Detail';$h = 40;}
+	if($f == 0) {$l = 'Report';$h = 40;}
+	if($f == 1) {$l = 'Page';$h = 40;}
+
+	$g->sortBy            = "a";
+	$g->sortField         = $l;
+
+	$s                    = new stdClass;
+
+	$s->color             = "#FFFFFF";
+	$s->height            = $h;
+	$s->id                = "";
+	$s->label             = $l . " Header";
+	$s->margins           = 4;
+	$s->objects           = array();
+	$s->page_break        = 0;
+	$s->top               = 110;
+
+	$g->sections[]        = $s;
+	
+	if($f == 10){return $g;}                       //-- no second section
+
+	$s                    = new stdClass;
+
+	$s->color             = "#FFFFFF";
+	$s->height            = $h;
+	$s->id                = "";
+	$s->label             = $l . " Footer";
+	$s->margins           = 6;
+	$s->objects           = array();
+	$s->page_break        = 0;
+	$s->top               = 150;
+
+	$g->sections[]        = $s;
+	
+	return $g;
+	
+}
+	
+
+
+function nuReportO($i, $t, $l, $field, $width, $align, $format){
+
+	$o                    = new stdClass;
+
+	$o->backgroundColor   = "white";
+	$o->borderColor       = "black";
+	$o->borderWidth       = 0;
+	$o->fieldName         = "$field";        //-- trp_delivery_date for field or Customer Name for label
+	$o->fontColor         = "black";
+	$o->fontFamily        = "helvetica";
+	$o->fontSize          = "10";
+	$o->fontWeight        = "";
+	$o->format            = "$format";        // blank or 0-31
+	$o->group             = 0;
+	$o->height            = 18;
+	$o->id                = $i;        //-- eg. object1009 starting at 1000
+	$o->left              = $l;
+	$o->maxRows           = 0;
+	$o->minRows           = 0;
+	$o->name              = $i;        //-- eg. object1009 starting at 1000
+	$o->objectType        = "field";
+	$o->section           = 0;
+	$o->selected          = 0;
+	$o->textAlign         = "$align";
+	$o->top               = $t;
+	$o->width             = $width;
+	$o->zIndex            = 100;
+
+	return $o;
+	
+}
