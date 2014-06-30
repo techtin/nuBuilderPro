@@ -493,7 +493,7 @@ function nuRecordArray($hashData){
 
 	if(nuV('call_type') != 'geteditform'){
 
-		$r->sfo_custom_code_run_before_browse 	= nuGetSafePHP('sfo_custom_code_run_before_browse', $r->zzzsys_php_id, $r->sfo_custom_code_run_before_browse);
+		$r->sfo_custom_code_run_before_browse 	= nuGetSafePHP('sfo_custom_code_run_before_browse', $r->zzzsys_form_id, $r->sfo_custom_code_run_before_browse);
 		$bb                			= nuReplaceHashes($r->sfo_custom_code_run_before_browse, $hashData);     //-- this is run to place any javascript into a Browse Form
 		eval($bb);
 	
@@ -1620,11 +1620,13 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
 
 function nuGetSafePHP($field, $id, $value) {
 
+	$check = $id.'_'.$field;
+
 	// check if site is using nuBuilderProSafeMode
 	if ( $_SESSION['SafeMode'] === true ) {
 
 		// don't bother looking for file if the 'id' is not in Safe List Array
-		if ( in_array($id, $_SESSION['SafePHP']) ) {
+		if ( in_array($check, $_SESSION['SafePHP']) ) {
 
 			// construct full file and path 
 			$file      		= $id.'_'.$field;
@@ -1657,6 +1659,7 @@ function nuCheckSafePHPMode($id, $r) {
         	'sfo_custom_code_run_after_delete',
                 'sfo_custom_code_run_after_save',
                 'sfo_custom_code_run_before_browse',
+		'sfo_custom_code_run_after_browse',
                 'sfo_custom_code_run_before_open',
                 'sfo_custom_code_run_before_save'
         );
