@@ -1241,6 +1241,7 @@ function nuGetLookupData($hashData) {
     $su           = "";
 
 
+	
 	$o->sob_lookup_php = nuGetSafePHP('sob_lookup_php', $objectID, $o->sob_lookup_php);	
 	$o->sob_lookup_php = str_replace('#RECORD_ID#', nuV('record_id'), $o->sob_lookup_php);
 	$o->sob_lookup_php = str_replace('#call_type#', nuV('call_type'), $o->sob_lookup_php);
