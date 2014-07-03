@@ -1163,7 +1163,7 @@ function nuPDForPHPParameters($hashData, $validate = '', $saveToFile = false) {
 
     if (nuV('call_type') == 'printpdf') {                                    //-- add report record to hash variables
         
-        $s              = "SELECT * FROM  zzzsys_report INNER JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
+        $s              = "SELECT * FROM  zzzsys_report LEFT JOIN zzzsys_php ON sre_zzzsys_php_id = zzzsys_php_id WHERE sre_code = '$theID'";
         $t              = nuRunQuery($s);
         
         if (nuErrorFound()) {
