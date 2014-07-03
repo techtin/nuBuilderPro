@@ -27,7 +27,7 @@ function nuBuildEditForm(o){
 	
 	window.hashData     = Array();
 	window.nuVALUES     = Array();
-    window.nuTab        = 0;
+    window.nuTab        = 5;
 	window.hashData     = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
 	nuFORM.form_width   = o.form_width;
 	nuFORM.form_height  = o.form_height;
@@ -87,7 +87,7 @@ function nuBuildEditForm(o){
 		nuAddBreadCrumbs();	
         nuAddJavascript(o);
 		nuSetAllDraggableObjectProperties();
-		$("[tabindex ='0']").focus();
+		$("[tabindex ='5']").focus();
 		
         if(window.nuLoadEditGlobal){               //-- allows the user the ability to jun javascript on every Edit Screen
             nuLoadEditGlobal();

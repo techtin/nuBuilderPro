@@ -1800,9 +1800,11 @@ function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name'
 		if(f != l[i] && f.split('_').length > 1 && f.split('_')[0] == l[i].split('_')[0]){
 		
 			for(var s = 1 ; s < f.split('_').length ; s ++){
-			
-				t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
-				
+				if(f.split('_')[s] != 'id') {
+
+					t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
+				}
+
 			}
 			
 			return t.join(' ');
@@ -1813,8 +1815,10 @@ function nuFieldTitle(f, l){                   //-- formats f ('cus_street_name'
 
 	for(var s = 0 ; s < f.split('_').length ; s ++){
 	
-		t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
-		
+		if(f.split('_')[s] != 'id') {
+			t.push(f.split('_')[s].charAt(0).toUpperCase() + f.split('_')[s].slice(1));
+		}
+
 	}
 	
 	return t.join(' ');
