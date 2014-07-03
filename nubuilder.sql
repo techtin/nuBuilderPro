@@ -400,7 +400,7 @@ CREATE TABLE `zzzsys_lookup` (
   `slo_zzzsys_object_id` varchar(25) DEFAULT NULL,
   `zzzsys_slo_table_field_name` varchar(100) DEFAULT NULL,
   `zzzsys_slo_object_name` varchar(100) DEFAULT NULL,
-  `zzzsys_slo_field_function_name` varchar(200) NOT NULL,
+  `zzzsys_slo_field_function_name` varchar(2000) NOT NULL,
   `zzzsys_lookup_log_added_at` datetime NOT NULL,
   `zzzsys_lookup_log_added_by` varchar(25) NOT NULL,
   `zzzsys_lookup_log_changed_at` datetime NOT NULL,
@@ -828,4 +828,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-27 12:29:42
+-- Dump completed on 2014-07-03  9:58:20
