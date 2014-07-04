@@ -10,38 +10,99 @@ if($where == '') {
 	$where = 'WHERE '.$where;
 }
 
+$table_id = '#'.'TABLE_ID#';
+
+$sql_var = '$sql';
+
 //table sql
-$table_sql = <<< EOSQL
-	CREATE TABLE #TABLE_ID#
+$table_sql = <<<EOSQL
+$sql_var = "
+	CREATE TABLE $table_id
 	SELECT
 		*
 	FROM
 		$table
 	$where
+";
+nuRunQuery($sql_var);
 EOSQL;
 
 $table_sql = str_replace("'","\'",$table_sql);
 
+$pip = uniqid(1);
+
+$sql = "
+	INSERT INTO zzzsys_php (
+		zzzsys_php_id,
+		slp_code,
+		slp_description,
+		slp_group,
+		slp_php,
+		slp_zzzsys_form_id,
+		slp_nonsecure
+	) VALUES (
+		'$pip',
+		'$name',
+		'$name',
+		'$name',
+		'$table_sql',
+		'51bf99ca103dbd5',
+		'1'
+	)
+";
+nuRunQuery($sql);
 
 //layout
 $r = nuReportR();
 
 $objNum = 1000;
 $left = 50;
+$fieldTop = 5;
+$labelTop = 40;
 
+$r->groups[2]->sections[0]->objects[] = nuReportO('labelTitle', 5, 50, "label", $name, 500, 'l', 0, 20, 25);
+$r->groups[2]->sections[0]->height = 70;
+
+$footerText = 'Page #page# of #pages#, Printed: #code#, Printed On: #year#-#month#-#day# #hour#:#minute#:#second#';
+$r->groups[2]->sections[1]->objects[] = nuReportO('labelFooter', 5, 50, "label", $footerText, 700, 'l', 0, 10, 18);
+
+$attributes = explode(",",$selectedValue);
 $fields = explode(",",$selected);
-for($i = 0; $i < sizeof($fields); $i++) {
-	$attr = explode(";",$fields[$i]);
+
+for($i = 0; $i < sizeof($attributes); $i++) {
+
+	$attr = explode(";",$attributes[$i]);
+
+	if(($left + $attr[1]) >= 840) {
+		$left = 50;
+		$labelTop += 25;
+		$fieldTop += 25;
+		$r->groups[0]->sections[0]->height = $fieldTop + 30;
+		$r->groups[2]->sections[0]->height = $labelTop + 30;
+	}
 	
 	$objNum++;
 	
-	$r->groups[0]->sections[0]->objects[] = nuReportO('object$objNum', 5, $left, $attr[0], $attr[1], $attr[2], $attr[3]);
+	$r->groups[2]->sections[0]->objects[] = nuReportO('label'.$objNum, $labelTop, $left, "label", $attr[0], $attr[1], $attr[2], $attr[3], 10, 18);
+	$r->groups[0]->sections[0]->objects[] = nuReportO('object'.$objNum, $fieldTop, $left, "field", $fields[$i], $attr[1], $attr[2], $attr[3], 10, 18);
 	
 	$left += $attr[1] + 20;
+
+}
+
+$labelTop += 25;
+
+$r->groups[2]->sections[0]->objects[] = nuReportO('headerLine', $labelTop , 20, "label", '', 800, 'l', 0, 20, 3);
+
+$orders = explode(",",$order);
+
+for($i = 0; $i < (sizeof($orders)); $i++) {
+	$r->groups[($i+3)]->sections[0]->height = 20;
+	$r->groups[($i+3)]->sections[1]->height = 20;
+	$r->groups[($i+3)]->sortField = $orders[$i];
 }
 
 $layout = json_encode($r);
-
 
 //creating the report
 $id = uniqid(1);
@@ -52,16 +113,16 @@ $sql = "
 		sre_code,
 		sre_description,
 		sre_group,
-		sre_zzzsys_sql,
 		sre_zzzsys_form_id,
+		sre_zzzsys_php_id,
 		sre_layout
 	) VALUES (
 		'$id',
 		'$name',
 		'$name',
 		'Custom',
-		'$table_sql',
 		'51bf99ca103dbd5',
+		'$pip',
 		'$layout'
 	)
 ";
@@ -144,27 +205,38 @@ function nuReportG($f){
 	
 
 
-function nuReportO($i, $t, $l, $field, $width, $align, $format){
+function nuReportO($i, $t, $l, $type, $field, $width, $align, $format, $fontSize, $height){
 
 	$o                    = new stdClass;
 
-	$o->backgroundColor   = "white";
+	if($i == 'headerLine') {
+		$o->backgroundColor   = "black";
+	} else {
+		$o->backgroundColor   = "white";
+	}	
+	
 	$o->borderColor       = "black";
 	$o->borderWidth       = 0;
 	$o->fieldName         = "$field";        //-- trp_delivery_date for field or Customer Name for label
 	$o->fontColor         = "black";
 	$o->fontFamily        = "helvetica";
-	$o->fontSize          = "10";
-	$o->fontWeight        = "";
+	$o->fontSize          = "$fontSize";
+	
+	if($type = 'label' && $i != 'labelFooter') {
+		$o->fontWeight        = "B";
+	} else {
+		$o->fontWeight        = "";
+	}	
+	
 	$o->format            = "$format";        // blank or 0-31
 	$o->group             = 0;
-	$o->height            = 18;
+	$o->height            = $height;
 	$o->id                = $i;        //-- eg. object1009 starting at 1000
 	$o->left              = $l;
 	$o->maxRows           = 0;
 	$o->minRows           = 0;
 	$o->name              = $i;        //-- eg. object1009 starting at 1000
-	$o->objectType        = "field";
+	$o->objectType        = "$type";
 	$o->section           = 0;
 	$o->selected          = 0;
 	$o->textAlign         = "$align";
