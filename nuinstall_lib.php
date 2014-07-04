@@ -45,6 +45,18 @@ class nuinstall {
 		}
         }
 
+	function returnArrayResults() {
+
+		$result 	     = array('summary1'=>array(), 'summary2'=>array(), 'sqlErrors'=>array(), 'warnings'=>array() );
+		
+		$result['summary1']  = $this->summary1;
+        	$result['summary2']  = $this->summary2;
+        	$result['sqlErrors'] = $this->sqlErrors;
+        	$result['warnings']  = $this->warnings;
+		
+		return $result;
+	}
+
 	function addDisplay($content) {
 		$this->display .= $content;
 	}
