@@ -48,6 +48,11 @@ class nuinstall {
 	function returnArrayResults() {
 
 		$result 	     = array('summary1'=>array(), 'summary2'=>array(), 'sqlErrors'=>array(), 'warnings'=>array() );
+
+		$this->summary1	     = addDefaultToArray($this->summary1, 'No Column(s) Added');
+                $this->summary2	     = addDefaultToArray($this->summary2, 'No Column(s) Changed');
+                $this->sqlErrors     = addDefaultToArray($this->sqlErrors, 'No SQL errors');
+                $this->warnings      = addDefaultToArray($this->warnings, 'No Warnings');
 		
 		$result['summary1']  = $this->summary1;
         	$result['summary2']  = $this->summary2;
@@ -55,6 +60,14 @@ class nuinstall {
         	$result['warnings']  = $this->warnings;
 		
 		return $result;
+	}
+
+	function addDefaultToArray($arrayToCheck, $defaultMsg) {
+
+		if ( count($arrayToCheck) == 0 ) {
+			$arrayToCheck[0] = $defaultMsg;
+		}
+		return $arrayToCheck;
 	}
 
 	function addDisplay($content) {
