@@ -16,7 +16,7 @@
 	define('DOWNLOAD_DEST', $download_dest);
 	define('COPY_DEST',     $copy_dest);
 
-	$exclude_files 	= array('ReadMe.md','ajax-loader.gif','apple-touch-icon.png','config.php','nuBuilder-Logo-medium.png','numove_black.png','numove_red.png','nurefresh_black.png');
+	$exclude_files 	= array('ReadMe.md','ajax-loader.gif','apple-touch-icon.png','config.php','nuBuilder-Logo-medium.png','numove_black.png','numove_red.png','nurefresh_black.png','nuphpgit.php','nuinstall_lib.php');
 	$folders	= array('','nusafephp');
 	$files_list	= array();
 	$errors		= array();
@@ -118,17 +118,19 @@ function checkGlobeadmin() {
 
 function updateDB() {
 
+	$result = array();
+
 	require_once("config.php");
         require_once("nuinstall_lib.php");
+
         $template = new nuinstall();
         $template->setDB($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
         $template->removeColumns = true;
         $template->removeIndexes = true;
+
         $template->run();
-
 	$result = $template->returnArrayResults();
-	logger(print_r($result, true));
-
+	// logger(print_r($result, true));
 	return $result;	
 }
 

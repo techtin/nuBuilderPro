@@ -49,10 +49,10 @@ class nuinstall {
 
 		$result 	     = array('summary1'=>array(), 'summary2'=>array(), 'sqlErrors'=>array(), 'warnings'=>array() );
 
-		$this->summary1	     = addDefaultToArray($this->summary1, 'No Column(s) Added');
-                $this->summary2	     = addDefaultToArray($this->summary2, 'No Column(s) Changed');
-                $this->sqlErrors     = addDefaultToArray($this->sqlErrors, 'No SQL errors');
-                $this->warnings      = addDefaultToArray($this->warnings, 'No Warnings');
+		$this->summary1	     = $this->addDefaultToArray($this->summary1, 'No Column(s) Added');
+                $this->summary2	     = $this->addDefaultToArray($this->summary2, 'No Column(s) Changed');
+                $this->sqlErrors     = $this->addDefaultToArray($this->sqlErrors, 'No SQL errors');
+                $this->warnings      = $this->addDefaultToArray($this->warnings, 'No Warnings');
 		
 		$result['summary1']  = $this->summary1;
         	$result['summary2']  = $this->summary2;
