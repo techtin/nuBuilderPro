@@ -77,13 +77,13 @@
 	$finalResult['cache'] 		= $cache;
 	$finalResult['dbupdate']	= $dbupdate;
 
-	echo "<pre>";
-	print_r($finalResult);
-	echo "</pre>";	
+	//echo "<pre>";
+	//print_r($finalResult);
+	//echo "</pre>";	
 
-	//$json = json_encode($finalResult);
-	//header('Content-Type: application/json');
-	//echo $json;
+	$json = json_encode($finalResult);
+	header('Content-Type: application/json');
+	echo $json;
 
 function checkGlobeadmin() {
 
