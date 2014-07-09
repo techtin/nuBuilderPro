@@ -77,10 +77,6 @@
 	$finalResult['cache'] 		= $cache;
 	$finalResult['dbupdate']	= $dbupdate;
 
-	//echo "<pre>";
-	//print_r($finalResult);
-	//echo "</pre>";	
-
 	$json = json_encode($finalResult);
 	header('Content-Type: application/json');
 	echo $json;
@@ -129,7 +125,11 @@ function updateDB() {
         $template->removeColumns = true;
         $template->removeIndexes = true;
         $template->run();
-	return $template->returnArrayResults();	
+
+	$result = $template->returnArrayResults();
+	logger(print_r($result, true));
+
+	return $result;	
 }
 
 function checkIsWriteable($folders, $download_dest, $copy_dest) {
@@ -438,6 +438,11 @@ class nuFile {
 		$this->download_dest	= GIT_CACHE_DEST.$folder.$seperator.$gitObj['name'];
 		$this->copy_dest	= COPY_DEST.$folder.$seperator.$gitObj['name'];
 	}
+}
+
+function logger($msg) {
+	$log = dirname(__FILE__).'/nuphpgit-errors.log';
+	error_log($msg, 3, $log);
 }
 
 ?>
