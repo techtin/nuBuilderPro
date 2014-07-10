@@ -1,4 +1,8 @@
 <?php
+	ob_start();
+
+	require_once("config.php");
+
 	define('NU_CACHE_TIME_STAMP', 'Y_m_d_H');
 
 	define('GITCACHE',	'GITCACHE');
@@ -24,7 +28,7 @@
 	$cache		= array();
 	$dbupdate	= array();
 	$finalResult 	= array( 'message'=>'', 'errors'=>array(), 'success'=>array(), 'cache'=>array(), 'dbupdate'=>array() );
-	$login 		= checkGlobeadmin();
+	$login 		= checkGlobeadmin($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
 
 	if ( 0 == errorCount() ) {	
 		try {
@@ -63,7 +67,7 @@
         }
 
 	if ( 0 == errorCount() ) {
-		$dbupdate = updateDB();
+		$dbupdate = updateDB($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
         }
 
 	if ( errorCount() > 0 ) {
@@ -78,14 +82,16 @@
 	$finalResult['dbupdate']	= $dbupdate;
 
 	$json = json_encode($finalResult);
+
+	ob_flush();
+	flush();
+
 	header('Content-Type: application/json');
 	echo $json;
 
-function checkGlobeadmin() {
+function checkGlobeadmin($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword) {
 
-/*
 	$login = false;
-	require_once("config.php");
 	$session_id = $_REQUEST['sessid'];
 
 	$db = new PDO("mysql:host=$nuConfigDBHost;dbname=$nuConfigDBName;charset=utf8", $nuConfigDBUser, $nuConfigDBPassword, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -110,17 +116,14 @@ function checkGlobeadmin() {
 		setError("Not Logged in as globeadmin");
 	}
 
+	unset($obj);
+	unset($db);
 	return $login;
-*/
-	return true;	
-
 }
 
-function updateDB() {
+function updateDB($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword) {
 
 	$result = array();
-
-	require_once("config.php");
         require_once("nuinstall_lib.php");
 
         $template = new nuinstall();
@@ -130,7 +133,6 @@ function updateDB() {
 
         $template->run();
 	$result = $template->returnArrayResults();
-	// logger(print_r($result, true));
 	return $result;	
 }
 
