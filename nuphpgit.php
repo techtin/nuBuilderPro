@@ -20,7 +20,7 @@
 	define('DOWNLOAD_DEST', $download_dest);
 	define('COPY_DEST',     $copy_dest);
 
-	$exclude_files 	= array('ReadMe.md','ajax-loader.gif','apple-touch-icon.png','config.php','nuBuilder-Logo-medium.png','numove_black.png','numove_red.png','nurefresh_black.png','nuphpgit.php','nuinstall_lib.php');
+	$exclude_files 	= array('ReadMe.md','ajax-loader.gif','apple-touch-icon.png','config.php','nuBuilder-Logo-medium.png','numove_black.png','numove_red.png','nurefresh_black.png');
 	$folders	= array('','nusafephp');
 	$files_list	= array();
 	$errors		= array();
