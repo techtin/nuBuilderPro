@@ -1327,6 +1327,8 @@ function nuLookupCode(pThis){  //-- get lookup from code
 
 			if(obj.id == 'many records' && obj.code == 'many records' && obj.description == 'many records'){
 				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), pThis.value);   //-- open a lookup
+			}else if(obj.id == ''){
+				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), '');            //-- open a lookup because there was no matching record    2014-07-14 SC
 			}else{
                 $('#'+obj.prefix+              obj.lookup_id).val(obj.id)
 				$('#'+obj.prefix+'code'       +obj.lookup_id).val(obj.code)
