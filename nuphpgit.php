@@ -76,8 +76,9 @@
 		$finalResult['message'] = 'SUCCESS';
 	}
 
+	$successCount 			= count($success);
 	$finalResult['errors'] 		= $errors;
-	$finalResult['success']		= $success;
+	$finalResult['success']		= array("$successCount File(s) updated");
 	$finalResult['cache'] 		= $cache;
 	$finalResult['dbupdate']	= $dbupdate;
 
