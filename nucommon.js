@@ -2442,14 +2442,14 @@ function nuMoveSaveClick(){
 
 	window.nuDraggableObjects.forEach(function(a) {                      //-- get all Objects that have been moved
 
-//		if(a.has_been_moved == 1){
+		if(a.has_been_moved == 1){
 			var o            = new nuEmptyObject();
 			o.id             = a.zzzsys_object_id;
 			o.top            = a.holder_top;
 			o.left           = a.holder_left;
 			o.order          = a.object_number; 
 			w.moved_objects.push(o);
-//		}
+		}
 	
 	});
 
@@ -2770,7 +2770,7 @@ function nuPlaceInHolder(i){
 	var o = nuDraggableObjectProperties(i);
 
 	nuMoveObject(i, o.holder_top, o.holder_left);
-	nuDraggableObjectProperties(i, 'has_been_moved', 1);
+//	nuDraggableObjectProperties(i, 'has_been_moved', 1);
 	
 }
 
