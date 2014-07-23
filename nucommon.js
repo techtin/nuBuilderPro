@@ -1324,10 +1324,10 @@ function nuLookupCode(pThis){  //-- get lookup from code
 		dataType : "json"
 		}).done(function(data){
 			var obj          = $.parseJSON(data.DATA);
-
+			
 			if(obj.id == 'many records' && obj.code == 'many records' && obj.description == 'many records'){
 				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), pThis.value);   //-- open a lookup
-			}else if(obj.id == ''){
+			}else if(obj.id == '' && pThis.value != ''){
 				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), '');            //-- open a lookup because there was no matching record    2014-07-14 SC
 			}else{
                 $('#'+obj.prefix+              obj.lookup_id).val(obj.id)
