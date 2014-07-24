@@ -1,6 +1,6 @@
 window.loading = false;
 window.nuLastMoverClick = new Date().getTime();
-
+window.nuTabsReordered = false;
 
 function nuSubformArray(sf, all){
 
@@ -1966,6 +1966,7 @@ function nuReorderTab(){
 	});
 	
 	window.nuDraggableObjects.sort(function(A, B){return ((A.tab_number*1000)+(A.object_number*1)) - ((B.tab_number*1000)+(B.object_number*1));});
+	window.nuTabsReordered = true;
 	
 }
 
@@ -2442,7 +2443,7 @@ function nuMoveSaveClick(){
 
 	window.nuDraggableObjects.forEach(function(a) {                      //-- get all Objects that have been moved
 
-		if(a.has_been_moved == 1){
+		if(a.has_been_moved == 1 || window.nuTabsReordered){
 			var o            = new nuEmptyObject();
 			o.id             = a.zzzsys_object_id;
 			o.top            = a.holder_top;
