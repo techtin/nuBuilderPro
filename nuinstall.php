@@ -115,6 +115,7 @@
 
 		$template       = new nuinstall();
         	$template->setDB($_SESSION['DBHost'], $_SESSION['DBName'], $_SESSION['DBUser'], $_SESSION['DBPassword']);
+		$template->checkInstall();
 
 		if ( $_POST['overrideSetup'] == "y" ) {
                         $template->overrideSetup = true;

@@ -21,7 +21,8 @@ class nuinstall {
 			if ( $this->checkDatabaseExists() ) {
 				if ( $this->checkTableExists('zzzsys_setup') ) {
 					$this->initResult = 'OK';
-					$this->overrideSetup = true;	
+					// changed *******************
+					$this->overrideSetup = false;	
 				} else {
 					$this->initResult = 'SCHEMA_INCOMPLETE';
 					$this->overrideSetup = true;
@@ -223,7 +224,7 @@ class nuinstall {
 
 	function deleteNubuilderInfo($template_table, $real_table) {
 
-		if ( $this->overrideSetup == false && $real_table == 'zzzsys_setup' ) {
+		if ( $this->overrideSetup === false && $real_table == 'zzzsys_setup' ) {
 			$this->addDisplay("<b>Skipping Delete zzzsys_table</b><br>");
 		} else {
 			// delete existing nuBuilder info in zzsys tables
@@ -384,7 +385,7 @@ class nuinstall {
 		}
                 $colum_order2 = implode(", ", $colum_order);
 
-		if ( $this->overrideSetup == false && $real_table == 'zzzsys_setup' ) {
+		if ( $this->overrideSetup === false && $real_table == 'zzzsys_setup' ) {
 			$this->addDisplay("<b>Skipping Insert into zzzsys_table</b><br>");
 		} else {
 
