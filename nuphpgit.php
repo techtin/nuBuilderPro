@@ -206,6 +206,7 @@ function setupSubFolders($folders, $folder) {
 
 function setupGitCacheFolder($folders) {
 
+	date_default_timezone_set(@date_default_timezone_get());
         $objDateTime    = new DateTime('NOW');
         $dateStr        = $objDateTime->format(NU_CACHE_TIME_STAMP);
         $cache_folder   = DOWNLOAD_DEST.'GIT_'.$dateStr.'/';
@@ -241,6 +242,7 @@ function setupGitCacheFolder($folders) {
 
 function setupTmpFolder($folders) {
 
+	date_default_timezone_set(@date_default_timezone_get());
 	$objDateTime 	= new DateTime('NOW');
 	$dateStr 	= $objDateTime->format(DateTime::ISO8601);
 	$tmp_folder	= DOWNLOAD_DEST.$dateStr;
