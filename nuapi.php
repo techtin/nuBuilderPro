@@ -1845,7 +1845,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     $PARENT_RECORD_ID = array();
     $searchFields     = array();
     $searchColumns    = explode(',', nuV('search_columns'));                     //-- create an array of searchable columns
-    $columnCount      = 1;
+    $columnCount      = 0;
     while ($R = db_fetch_object($T)) {                                           //-- create columns
         $nuObject         = new stdClass;
 

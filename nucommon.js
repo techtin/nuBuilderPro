@@ -580,7 +580,7 @@ function nuOpenNewWindowParent(w) {
 	window.parent.nuOpenNewWindow(w);
 }
 
-function nuOpenLookup(pThis, pFilter){
+function nuOpenLookup(pThis, pFilter, pSearch){
 
 	nuCloseModal();
 	var parent           = '';
@@ -592,6 +592,9 @@ function nuOpenLookup(pThis, pFilter){
 	w.filter             = '';
 	if(arguments.length == 2){
 		w.filter             = pFilter;
+	}
+	if(arguments.length == 3){
+		w.search             = pSearch;
 	}
 	w.breadcrumb         = '0'
 	w.prefix             = $('#'+pThis.id).attr('data-prefix');  //-- lookup prefix
@@ -1328,7 +1331,9 @@ function nuLookupCode(pThis){  //-- get lookup from code
 			if(obj.id == 'many records' && obj.code == 'many records' && obj.description == 'many records'){
 				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), pThis.value);   //-- open a lookup
 			}else if(obj.id == '' && pThis.value != ''){
-				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), '');            //-- open a lookup because there was no matching record    2014-07-14 SC
+			    var srch = pThis.value;
+				pThis.value = '';
+				nuOpenLookup(document.getElementById(obj.prefix+obj.lookup_id), '', srch);            //-- open a lookup because there was no matching record    2014-07-14 SC
 			}else{
                 $('#'+obj.prefix+              obj.lookup_id).val(obj.id)
 				$('#'+obj.prefix+'code'       +obj.lookup_id).val(obj.code)
