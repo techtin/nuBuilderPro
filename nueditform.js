@@ -211,6 +211,7 @@ function nuSetLookupAttributes(e,c,img,d,o,i,prefix, rowPK){
 	if(o[i].read_only == '1'){
 		e.setAttribute('readonly',             true);
 		c.setAttribute('readonly',             true);
+		c.setAttribute('tabindex', '-1');
 		img.setAttribute('disabled',           'disabled');
 	}else{
 		img.setAttribute('onclick',           'nuOpenLookup(this)');
@@ -623,6 +624,7 @@ function nuRecordObjects(formType, formTop){
 		
         if ( o[i].read_only == '1' ) {
             $('#' + e.id).prop("disabled", true);
+            $('#' + e.id).prop("tabindex", '-1');
         }
 	}
 	
@@ -691,6 +693,7 @@ function nuRecordObjects(formType, formTop){
 		
 		if ( o[i].read_only == '1' ) {
             $('#' + c.id).addClass('nuReadOnly');
+            $('#' + c.id).prop("tabindex", '-1');
         } else {
             $('#' + c.id).addClass('nuLookup');
 		}
@@ -762,7 +765,6 @@ function nuRecordObjects(formType, formTop){
 		$('#' + e.id).css( 'text-align', nuFormatAlign(o[i].align));
 
 		if(o[i].is_date && o[i].read_only != '1'){
-//			$( "#"+e.id).datepicker({ dateFormat: nuFormats[o[i].format].jquery });
 			var currentOnClick = e.getAttribute('onclick');
 			e.setAttribute('onclick', currentOnClick+';nuPopupCalendar(this);');
 		}
@@ -773,6 +775,7 @@ function nuRecordObjects(formType, formTop){
 		
 		if ( o[i].read_only == '1' ) {
 			$('#' + e.id).addClass('nuReadOnly');
+            $('#' + e.id).prop("tabindex", '-1');
 		}
 
 		if (o[i].f_id == 'nuform' && o[i].field == 'sfo_table' || o[i].f_id == 'nuobject' && (o[i].field == 'sob_subform_table' || o[i].field == 'sob_subform_foreign_key' )) {
@@ -941,6 +944,7 @@ function nuRecordObjects(formType, formTop){
 		
 		if(o[i].read_only == '1'){
 			e.setAttribute('readonly',          true);
+			e.setAttribute('tabindex',          '-1');
 		}
 
 	}
