@@ -1588,6 +1588,8 @@ function nuGetBrowseForm($hashData) {
     $J['edit_browse']      = nuV('edit_browse');
     $J['form_id']          = nuV('form_id');
     $J['nu_user_name']     = nuV('nu_user_name');
+	$GLOBALS['nuSum']      = false;
+	
     $t                     = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
     if (nuErrorFound()) {
         return;
@@ -1642,6 +1644,7 @@ function nuGetBrowseForm($hashData) {
 		$data['objects'][] = $nuObject;
 	}
 		
+    $J['sum']              = nuSumColumns($data['sql']);
     $J['objects']          = $data['objects'];
     $J['openform']         = $data['openform'];
     $J['parentform']       = $data['parentform'];
@@ -1653,6 +1656,33 @@ function nuGetBrowseForm($hashData) {
     $J['formats']          = json_encode(nuTextFormats());
 
     return json_encode($J);
+}
+
+function nuGetBrowseSum(){
+	$GLOBALS['nuSum']      = true;
+}
+
+function nuSumColumns($s){
+
+    if($GLOBALS['nuSum']){
+
+		$SQL       = new nuSqlString($s);
+		$fstart    = strrpos(strtoupper($s), ' FROM ');
+		$fstring   = substr($s, 7, $fstart-7);
+		$fields    = explode(',IFNULL(', $fstring);
+		
+		for($i = 1 ; $i < count($fields) ; $i++){
+			$SQL->addField('SUM(IFNULL(' . $fields[$i] . ')');
+		}
+
+		$t = nuRunQuery($SQL->SQL);
+		$r = db_fetch_row($t);
+
+		return $r;
+	}else{
+		return array();
+	}
+   
 }
 
 function nuGetEditButtons($f, $hashData) {
@@ -1950,6 +1980,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
         $row++;
     }
 
+    $J['sql']           = $formattedSQL;
     $J['objects']       = $OBJ;
     $J['records']       = $REC;
     $J['openform']      = $FORM_TO_OPEN;

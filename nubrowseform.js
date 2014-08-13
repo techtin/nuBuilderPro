@@ -10,6 +10,7 @@ function nuBuildBrowseForm(o){
 	var formRecords     = Array();
 	formRecords[0]      = o.records;
 	window.nu_user_name = o.nu_user_name;
+	nuFORM.sum          = o.sum;
 	nuCloseModal();
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
@@ -50,6 +51,20 @@ function nuBuildBrowseForm(o){
         }
         
         nuIframeWindowSizer();
+}
+
+function nuBrowseColumnTotal(c){
+
+	if(nuFORM.sum.length == 0){
+		console.log("nuGetBrowseSum(); must be run in 'Before Browse'");
+		return 0;
+	}
+	if(c > nuFORM.sum.length){
+		console.log("Invalid column number");
+		return 0;
+	}
+	
+	return nuFORM.sum[c];
 }
 
 
