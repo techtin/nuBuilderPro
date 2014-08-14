@@ -36,7 +36,7 @@ CREATE TABLE `template_zzzsys_access_level` (
   PRIMARY KEY (`zzzsys_access_level_id`),
   KEY `sal_name` (`sal_code`),
   KEY `sal_zzzsys_form_id` (`sal_zzzsys_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ CREATE TABLE `template_zzzsys_access_level_form` (
   PRIMARY KEY (`zzzsys_access_level_form_id`),
   KEY `saf_zzzsys_access_level_id` (`slf_zzzsys_access_level_id`),
   KEY `slf_zzzsys_form_id` (`slf_zzzsys_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `template_zzzsys_access_level_php` (
   PRIMARY KEY (`zzzsys_access_level_php_id`),
   KEY `slp_zzzsys_access_level_id` (`slp_zzzsys_access_level_id`),
   KEY `slp_zzzsys_library_id` (`slp_zzzsys_php_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `template_zzzsys_access_level_report` (
   PRIMARY KEY (`zzzsys_access_level_report_id`),
   KEY `slr_zzzsys_access_level_id` (`slr_zzzsys_access_level_id`),
   KEY `slr_zzzsys_report_id` (`slr_zzzsys_report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +179,7 @@ CREATE TABLE `template_zzzsys_browse` (
   PRIMARY KEY (`zzzsys_browse_id`),
   KEY `sbr_zzzsys_form_id` (`sbr_zzzsys_form_id`),
   KEY `sbr_sort` (`sbr_sort`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -200,12 +200,12 @@ DROP TABLE IF EXISTS `template_zzzsys_debug`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `template_zzzsys_debug` (
-  `zzzsys_debug_id` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `deb_message` longtext COLLATE utf8_unicode_ci,
+  `zzzsys_debug_id` varchar(25) NOT NULL,
+  `deb_message` longtext,
   `deb_added` datetime NOT NULL,
   PRIMARY KEY (`zzzsys_debug_id`),
   KEY `deb_added` (`deb_added`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +237,7 @@ CREATE TABLE `template_zzzsys_event` (
   `zzzsys_event_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_event_id`),
   KEY `sev_zzzsys_objecct_id` (`sev_zzzsys_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,7 +275,7 @@ CREATE TABLE `template_zzzsys_file` (
   `zzzsys_file_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_file_id`),
   KEY `sfi_code` (`sfi_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,7 +341,7 @@ CREATE TABLE `template_zzzsys_form` (
   PRIMARY KEY (`zzzsys_form_id`),
   KEY `sfo_name` (`sfo_name`),
   KEY `sfo_title` (`sfo_title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -375,7 +375,7 @@ CREATE TABLE `template_zzzsys_form_action` (
   `zzzsys_form_action_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_form_action_id`),
   KEY `sfa_zzzsys_form_id` (`sfa_zzzsys_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -409,7 +409,7 @@ CREATE TABLE `template_zzzsys_lookup` (
   `zzzsys_lookup_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_lookup_id`),
   KEY `slo_zzzsys_object_id` (`slo_zzzsys_object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -499,7 +499,7 @@ CREATE TABLE `template_zzzsys_object` (
   KEY `sob_all_tab_title` (`sob_all_tab_title`),
   KEY `sob_zzzsys_form_id` (`sob_zzzsys_form_id`),
   KEY `sob_all_column_number` (`sob_all_column_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -537,7 +537,7 @@ CREATE TABLE `template_zzzsys_php` (
   KEY `sat_all_code` (`slp_code`),
   KEY `sat_all_description` (`slp_description`),
   KEY `slp_zzzsys_form_id` (`slp_zzzsys_form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -576,7 +576,7 @@ CREATE TABLE `template_zzzsys_report` (
   KEY `sre_zzzsys_php_id` (`sre_zzzsys_php_id`),
   KEY `sre_zzzsys_form_id` (`sre_zzzsys_form_id`),
   KEY `sre_code` (`sre_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -606,7 +606,7 @@ CREATE TABLE `template_zzzsys_session` (
   `zzzsys_session_log_viewed_at` datetime NOT NULL,
   `zzzsys_session_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -649,7 +649,7 @@ CREATE TABLE `template_zzzsys_setup` (
   `zzzsys_setup_log_viewed_at` datetime NOT NULL,
   `zzzsys_setup_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_setup_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -707,7 +707,7 @@ CREATE TABLE `template_zzzsys_translate` (
   PRIMARY KEY (`zzzsys_translate_id`),
   KEY `trl_language` (`trl_language`),
   KEY `trl_english` (`trl_english`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -742,7 +742,7 @@ CREATE TABLE `template_zzzsys_user` (
   `zzzsys_user_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_user_id`),
   KEY `sus_zzzsys_user_group_id` (`sus_zzzsys_user_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -774,7 +774,7 @@ CREATE TABLE `template_zzzsys_user_group` (
   `zzzsys_user_group_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_user_group_id`),
   KEY `sug_zzzsys_access_level_id` (`sug_zzzsys_access_level_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -807,7 +807,7 @@ CREATE TABLE `template_zzzsys_user_log` (
   `zzzsys_user_log_log_viewed_by` varchar(25) NOT NULL,
   PRIMARY KEY (`zzzsys_user_log_id`),
   KEY `sul_zzzsys_user_id` (`sul_zzzsys_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -828,4 +828,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-08-13 16:08:15
+-- Dump completed on 2014-08-14 10:17:30
