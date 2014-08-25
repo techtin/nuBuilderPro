@@ -11,6 +11,7 @@ function nuBuildBrowseForm(o){
 	formRecords[0]      = o.records;
 	window.nu_user_name = o.nu_user_name;
 	nuFORM.sum          = o.sum;
+    window.nuStopPaging = false;
 	nuCloseModal();
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
@@ -314,6 +315,8 @@ function nuApplySearch(){
 
 function nuGotoPage(p, max){
 
+    if(window.nuStopPaging){return;}
+	
 	if(isNaN(p)){
 		nuFORM.page_number = 1;
 	}else if(p > max){
@@ -322,9 +325,11 @@ function nuGotoPage(p, max){
 		nuFORM.page_number = 1;
 	}else{
 		nuFORM.page_number = p;
-        }
+    }
 
-        window.nuSession.breadCrumb.pop();  //-- remove breadcrumb before another is added
+    window.nuStopPaging = true;
+    window.nuSession.breadCrumb.pop();  //-- remove breadcrumb before another is added
+	
 	nuBuildForm(nuFORM);
 
 }
