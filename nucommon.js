@@ -1447,12 +1447,12 @@ function nuAutocomplete(e) {
 
 
 
-function nuLogin(u, p){
+function nuLogin(u, p, k){
 
 	var w              = new nuWindow();
 	w.form_id          = 'nuindex';
 	w.call_type        = 'login';
-	w.record_id        = '-1';
+	w.record_id        = k == '' ? '-1' : k;
 	w.title            = nuTranslate('Home');
 	w.tip              = nuTranslate('Desktop');
 	window.nuFORM      = w;

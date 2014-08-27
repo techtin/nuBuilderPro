@@ -30,6 +30,7 @@ $h = "";
 $t = "";
 $u = isset($_GET['u']) ? $_GET['u'] : '';
 $p = isset($_GET['p']) ? $_GET['p'] : '';
+$k = isset($_GET['k']) ? $_GET['k'] : '';
 
 if( array_key_exists('i', $_GET) ) {
     $i  = $_GET['i'];
@@ -52,9 +53,10 @@ print "
 
 <script>
 
-window.nuDenied   = '$de';
-window.nuUsername = '$u';
-window.nuPassword = '$p';
+window.nuDenied     = '$de';
+window.nuUsername   = '$u';
+window.nuPassword   = '$p';
+window.nuPrimaryKey = '$k';
 
 $l
     
@@ -115,7 +117,7 @@ $(document).ready(function() {
 		if(window.nuUsername == '' && window.nuPassword == ''){
 			toggleModalMode();
 		}else{
-			nuLogin(window.nuUsername, window.nuPassword);
+			nuLogin(window.nuUsername, window.nuPassword, window.nuPrimaryKey);
 		}
 		
 	}else{                                                                  //-- iFrame or new window
