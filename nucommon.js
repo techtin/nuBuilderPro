@@ -743,6 +743,7 @@ function nuNewForm(sync,operation){                                             
 	}
 
 	nuFORM.call_type    = 'newform';
+	nuFORM.cloned       = '0';
 
     if(typeof nuOnSave == 'function') {
 		if(!nuOnSave()){
@@ -785,7 +786,7 @@ function nuNewForm(sync,operation){                                             
 				nuRemoveModal();
 				
 			} else {
-				nuFORM.clone            = '0';
+			
 				nuFORM.edited           = '0';
 				
 				if(operation == 0) {
@@ -864,9 +865,8 @@ function nuSaveForm(sync,operation){
 
 function nuCompleteSavingForm(sync,operation){                             //-- save data from form and rebuild form
 
-	if(nuFORM.call_type  == 'cloneform')  { nuFORM.cloned = '1';}          //-- data comes from a cloned form
-        
 	nuFORM.call_type     = 'saveform';
+	nuFORM.cloned        = '0';
 	nuFORM.form_data     = nuGetData();
 	var isLookup         = true;
 	
@@ -903,7 +903,7 @@ function nuCompleteSavingForm(sync,operation){                             //-- 
 				nuRemoveModal();
 			
 			} else {
-				nuFORM.clone     = '0';
+
 				nuFORM.edited    = '0';
 				
 				if(operation == 0) {
@@ -1097,6 +1097,7 @@ function nuCloneForm(pThis, formID, recordID){
 	w.form_id      = formID;
 	w.title        = $('title').html();
 	w.call_type    = 'cloneform';
+	w.cloned       = '1';
 	w.record_id    = recordID;
 	w.tip          = 'Edit';
 
