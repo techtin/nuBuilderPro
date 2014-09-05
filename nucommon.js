@@ -660,7 +660,7 @@ function nuAddJavascript(o){
 
 function nuGoToForm(i, ask){
 
-    if(nuFORM.edited == '1'){
+    if(nuFORM.edited == '1' && nuFORM.parent_form_id  != 'nurunreport' && nuFORM.parent_form_id  != 'nurunphp'){
         
         if(arguments.length != 2){
             if(!confirm(nuTranslate("Leave This Form Without Saving?"))){
@@ -686,7 +686,7 @@ function nuReloadForm(){
 
 	nuFORM.call_type    = 'geteditform';
 	
-    if(nuFORM.edited == '1'){
+    if(nuFORM.edited == '1' && nuFORM.parent_form_id  != 'nurunreport' && nuFORM.parent_form_id  != 'nurunphp'){
         
 		if(!confirm(nuTranslate("Leave This Form Without Saving?"))){
 			return;
