@@ -1681,15 +1681,4 @@ function nuCheckSafePHPMode($id, $r) {
 }
 
 
-function nuLoadPHPCode($c){
-
-    $s = "SELECT slp_php FROM  zzzsys_php WHERE slp_code = '$c'";
-    $t = nuRunQuery($s);
-    $r = db_fetch_row($t);
-    $p = nuReplaceHashes($r[0], $hashData);
-
-	eval($p);
-
-}
-
 ?>
