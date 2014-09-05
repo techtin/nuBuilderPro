@@ -82,7 +82,7 @@ function nuHomeWarning(){
 
 function nuWindowWarning(){
 
-	if(nuFORM.edited == '1'){
+	if(nuFORM.edited == '1' && nuFORM.parent_form_id  != 'nurunreport' && nuFORM.parent_form_id  != 'nurunphp'){
 		return nuTranslate('Leave This Form Without Saving?');
 	}
     return null;
