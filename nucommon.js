@@ -1093,6 +1093,13 @@ function nuDeleteForm(){  //-- delete data from form
 
 
 function nuCloneForm(pThis, formID, recordID){
+
+    if(typeof nuOnClone == 'function') {
+		if(!nuOnClone()){
+			return;
+		}
+	}
+
 	var w          = new nuWindow();
 	w.form_id      = formID;
 	w.title        = $('title').html();
