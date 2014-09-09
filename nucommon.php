@@ -98,13 +98,16 @@ function nuTT(){
 
 function nuRunPHP($c){
 
-    $s = "SELECT * FROM zzzsys_php WHERE slp_code = ? ";
-    $t = nuRunQuery($s, array($c));
-    $r = db_fetch_object($t);
+	if($GLOBALS['phpcode_'.$c] == 1){return;}   //-- load only once
+	
+	$GLOBALS['phpcode_'.$c] = 1;
+    $s                      = "SELECT * FROM zzzsys_php WHERE slp_code = ? ";
+    $t                      = nuRunQuery($s, array($c));
+    $r                      = db_fetch_object($t);
 
     $r->slp_php = nuGetSafePHP('slp_php', $r->zzzsys_php_id, $r->slp_php);
 
-    $e = nuReplaceHashes($r->slp_php, $GLOBALS['latest_hashData']);
+    $e                      = nuReplaceHashes($r->slp_php, $GLOBALS['latest_hashData']);
     
     eval($e);
 
