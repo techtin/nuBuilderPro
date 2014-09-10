@@ -94,7 +94,7 @@ class nuinstall {
 
 	function importTemplate() {
 
-                $this->addDisplay("<b>Importing template tables: </b>$restore <hr>");
+                $this->addDisplay("<b>Importing template tables: </b> <hr>");
 
 		$file   = realpath(dirname(__FILE__))."/nu_template.sql";
 		$handle = fopen($file, "r");
