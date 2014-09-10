@@ -111,7 +111,7 @@
 
 	}
 
-	if ($_POST['pwd'] == $_SESSION['DBGlobeadminPassword'] ) {
+	if ( isset($_POST['pwd']) &&  $_POST['pwd'] == $_SESSION['DBGlobeadminPassword'] ) {
 
 		$template       = new nuinstall();
         	$template->setDB($_SESSION['DBHost'], $_SESSION['DBName'], $_SESSION['DBUser'], $_SESSION['DBPassword']);
