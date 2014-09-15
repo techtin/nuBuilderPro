@@ -32,14 +32,14 @@ function nuSubformArray(sf, all){
 
 function nuRowPrefix(pthis){
 
-    $('#'+pthis.id).attr('data-prefix');
+    return $('#'+pthis.id).attr('data-prefix');
     
 }
 
 
 function nuRowNumber(pthis){
 
-    $('#'+pthis.id).attr('data-row');
+    return $('#'+pthis.id).attr('data-row');
     
 }
 
