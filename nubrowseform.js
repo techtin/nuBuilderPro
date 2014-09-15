@@ -42,16 +42,18 @@ function nuBuildBrowseForm(o){
     
 	nuAddJavascript(o);
     
-	$('#nuSearchField').focus();
+	if(nuFORM.edit_browse != 'true'){                            //-- set focus if not inside an Edit Form
+		$('#nuSearchField').focus();
+	}
         
-        if(window.nuLoadBrowseGlobal){               //-- allows the user the ability to jun javascript on every Browse Screen
-            nuLoadBrowseGlobal();
-        }
-        if(window.nuLoadBrowse){                     //-- allows the user the ability to jun javascript on this Browse Screen
-            nuLoadBrowse();
-        }
-        
-        nuIframeWindowSizer();
+	if(window.nuLoadBrowseGlobal){                               //-- allows the user the ability to run javascript on every Browse Screen
+		nuLoadBrowseGlobal();
+	}
+	if(window.nuLoadBrowse){                                     //-- allows the user the ability to run javascript on this Browse Screen
+		nuLoadBrowse();
+	}
+	
+	nuIframeWindowSizer();
 }
 
 function nuBrowseColumnTotal(c){
