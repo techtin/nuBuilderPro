@@ -1040,7 +1040,7 @@ function nuAddCriteriaValues($hashData){
     foreach($hashData AS $key => $value){
     
         if(!in_array($key, $c) and !is_array($value)){
-            $v   = addslashes($value);
+            $v   = substr(addslashes($value),0,199);
             $l   = min(strlen($v), 200);
             if($l > 0){
                 $a[] = " ADD `$key` VARCHAR($l) DEFAULT '$v' ";
