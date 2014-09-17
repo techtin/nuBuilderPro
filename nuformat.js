@@ -502,8 +502,16 @@ function nuBuilderSession(){
 }
 
 
+function nuAddRow(sf){
+
+   var r = nuSubformArray(sf).pop();        //-- get last row in subform
+   $('#' + r + '_nuRow').click();
+
+}   
+
+
 function nuSetEdited(){
- 
+
     if(nuFORM.edited == '0'){
         for(var i  = 0 ; i < $('.nuButton').length ; i++){
             
