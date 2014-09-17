@@ -104,6 +104,10 @@ function nuGetParentSession(){
 }
 
 
+function nuAddButtons(b){
+	addButtons(b);
+}
+
 function addButtons(buttons){
 
 	for(var i = 0 ; i < buttons.length ; i++){
