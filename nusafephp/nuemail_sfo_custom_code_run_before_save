@@ -1,0 +1,10 @@
+
+if('#nu_pdf_code#'!='') {
+    nuEmail('#nu_pdf_code#', '#to#', '#subject#','#message#', $hashData);
+}
+else if('#nu_php_code#'!='') {
+    nuEmail('#nu_php_code#', '#to#', '#subject#','#message#', $hashData);
+}
+else {
+    nuEmail('', '#to#', '#subject#','#message#', $hashData);
+}
