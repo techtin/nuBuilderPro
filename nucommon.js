@@ -1364,6 +1364,9 @@ function nuLookupCode(pThis){  //-- get lookup from code
                                 });
                 if( prev !== pThis.value) {     //--Ben: added to prevent javascript running multiple times over the same value.
                     eval(obj.javascript);
+					if(document.activeElement.tagName == 'BODY'){
+						$('#'+obj.prefix+'code'+obj.lookup_id).focus();
+					}
                 }
                 
 
