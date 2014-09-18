@@ -712,7 +712,7 @@ function nuRecordObjects(formType, formTop){
 		$('#' + img.id).css({ 
             'vertical-align': 'text-bottom',
             'width'         : '17px',
-            'height'        : '17px'
+            'height'        : '14px'
         })
         .addClass('nuClose')
         .html('&#10138;');
