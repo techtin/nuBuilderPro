@@ -1179,7 +1179,6 @@ function nuGetAutocompleteData($hashData) {
 		$SQL->where = "$SQL->where AND";
 	}
 	$s            = "SELECT $code, $desc $SQL->from $SQL->where ($searchIn like '%$searchFor%' or $desc like '%$searchFor%')";
-//  $s            = "SELECT $code, $desc FROM $f->sfo_table WHERE $searchIn like '%$searchFor%' or $desc like '%$searchFor%'";
     $s            = nuReplaceHashes($s, $hashData);
     $T            = nuRunQuery($s);
     if (nuErrorFound()) {
@@ -1206,7 +1205,7 @@ function nuGetAutocompleteData($hashData) {
 
 function nuGetLookupData($hashData) {
 
-    $searchFor    = nuV('record_id');
+    $searchFor    = addslashes(nuV('record_id'));
     $objectID     = nuV('object_id');
     $J['session'] = nuV('session_id');
     $s            = "SELECT * FROM zzzsys_object WHERE zzzsys_object_id = '$objectID'";
