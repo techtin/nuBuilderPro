@@ -145,7 +145,7 @@ function toggleModalMode(){   //-- login screen
             'position'         : 'absolute',
             'filter'           : 'Alpha(Opacity=20)',
             'opacity'          : '0.2',
-            'background-color' : '#000000'
+            'background-color' : '#FFFFFF'
         });
 
         var e = document.createElement('div');
@@ -156,11 +156,8 @@ function toggleModalMode(){   //-- login screen
             'height'           : '300px',
             'top'              : '15%',
             'left'             : '35%',
-            'border-style'     : 'solid',
-            'border-color'     : 'grey',
-            'border-width'     : '1px',
             'position'         : 'absolute',
-            'background-color' : 'white'
+            'background-color' : '#F0F0F0'
         })
 		.addClass( 'nuShadeHolder');
 
@@ -177,7 +174,7 @@ function toggleModalMode(){   //-- login screen
             'font-size'        : '25px',
             'font-family'      : 'sans-serif',
             'position'         : 'absolute',
-            'background-color' : 'white'
+            'background-color' : '#F0F0F0'
         })
 		.html('<img src=\'nuBuilder-Logo-medium.png\'/>');
 
@@ -193,7 +190,9 @@ function toggleModalMode(){   //-- login screen
             'font-size'        : '15px',
             'font-family'      : 'sans-serif',
             'position'         : 'absolute',
-            'background-color' : 'white'
+	    'color'            : '#666666',
+            'background-color' : '#F0F0F0'
+
         })
 		.html(nuGetTitle());
 
@@ -204,8 +203,9 @@ function toggleModalMode(){   //-- login screen
             'top'              : '135px',
             'left'             : '30px',
             'position'         : 'absolute',
-            'background-color' : 'white',
+            'background-color' : '#F0F0F0',
             'font-family'      : 'sans-serif',
+	    'color'            : '#666666',	
             'font-size'        : '15px'
         })
 		.html(nuTranslate('Username :'));
@@ -217,8 +217,9 @@ function toggleModalMode(){   //-- login screen
             'top'              : '180px',
             'left'             : '30px',
             'position'         : 'absolute',
-            'background-color' : 'white',
+            'background-color' : '#F0F0F0',
             'font-family'      : 'sans-serif',
+	    'color'            : '#666666',
             'font-size'        : '15px'
         })
 		.html(nuTranslate('Password :'));
@@ -235,6 +236,7 @@ function toggleModalMode(){   //-- login screen
             'position'         : 'absolute',
             'background-color' : 'white',
             'font-size'        : '22px',
+	    'color'            : '#666666',
             'line-height'      : '22px'
         });
 		
@@ -252,6 +254,7 @@ function toggleModalMode(){   //-- login screen
             'position'         : 'absolute',
             'background-color' : 'white',
             'font-size'        : '22px',
+	    'color'            : '#666666',
             'line-height'      : '22px'
         })
             .keypress(function(event) {
@@ -274,9 +277,10 @@ function toggleModalMode(){   //-- login screen
             'top'              : '230px',
             'left'             : '30px',
             'position'         : 'absolute',
-            'background-color' : '#D4CEE6',
-            'border-radius'    : '5px',
+            'background-color' : '#5bcaf5',
+            'border-radius'    : '0px',
             'font-size'        : '22px',
+	    'color'	       : 'white',	
             'line-height'      : '22px'
         })
 		.val('Login');
