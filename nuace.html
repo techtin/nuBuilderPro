@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>nuBuilder Code Editor</title>
+
+<style>
+   .nuAce        {position:absolute;border-style:none;font-family:helvetica;font-size:14px;font-weight:bold;background-color:black;width:300px;height:20px;top:40px;}
+   .nuTool       {padding:4px;border-style:none;font-family:helvetica;font-size:14px;color:white;background-color:grey;}
+   .nuTool:hover {background-color:orange;cursor:default}
+}
+</style>
+
+<script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+
+window.c = opener.nuFORM.aceLanguage;
+window.o = opener.nuFORM.aceField;
+window.t = opener.nuFORM.aceTitle;
+
+function nuLoad(){
+
+   window.editor = ace.edit('nu_editor');
+   editor.setTheme("ace/theme/monokai");
+   editor.setFontSize(16);
+      
+   if ( window.c == 'CSS' ) {
+		editor.getSession().setMode({path:"ace/mode/css", inline:true});
+   }
+   if ( window.c == 'HTML' ) {
+		editor.getSession().setMode({path:"ace/mode/html", inline:true});
+   }
+   if ( window.c == 'Javascript' ) {
+		editor.getSession().setMode({path:"ace/mode/javascript", inline:true});
+   }
+   if ( window.c == 'JSON' ) {
+		editor.getSession().setMode({path:"ace/mode/json", inline:true});
+   }
+   if ( window.c == 'MySql' ) {
+		editor.getSession().setMode({path:"ace/mode/mysql", inline:true});
+   }
+   if ( window.c == 'PHP' ) {
+		editor.getSession().setMode({path:"ace/mode/php", inline:true});
+   }
+   if ( window.c == 'Plain Text' ) {
+		editor.getSession().setMode({path:"ace/mode/plain_text", inline:true});
+   }
+   if ( window.c == 'SQL' ) {
+		editor.getSession().setMode({path:"ace/mode/sql", inline:true});
+   }
+   if ( window.c == 'Text' ) {
+		editor.getSession().setMode({path:"ace/mode/text", inline:true});
+   }
+   if ( window.c == 'XML' ) {
+		editor.getSession().setMode({path:"ace/mode/xml", inline:true});
+   }
+      
+   document.getElementById('nu_code_type').innerHTML   = window.c;
+   document.getElementById('nu_field_title').innerHTML = window.t;
+   nuResize();
+   editor.setValue(opener.window.document.getElementById(window.o).value);
+   
+}
+
+function nuResize(){
+
+   document.getElementById('nu_editor').style.width     = String(Number(window.innerWidth))       + 'px';
+   document.getElementById('nu_editor').style.height    = String(Number(window.innerHeight) - 70) + 'px';
+   document.getElementById('nu_code_type').style.top    = String(Number(window.innerHeight) - 25) + 'px';
+   document.getElementById('nu_field_title').style.top  = String(Number(window.innerHeight) - 25) + 'px';
+   document.getElementById('nu_field_title').style.left = String(Number(window.innerWidth) - 310) + 'px';
+   
+}
+
+function nuAceSave(){
+
+   opener.window.document.getElementById(window.o).value = editor.getValue();
+   window.close();
+
+}
+
+</script>
+
+</head>
+<body style='background-color:#000000' onload='nuLoad()' onresize='nuResize()'>
+
+	<span id='nuTool0' onclick='nuAceSave()' class='nuTool' style=''>Copy Changes</span>
+	<span id='nu_code_type'   class='nuAce' style='left:10px;text-align:left;color:lightblue'></span>
+	<span id='nu_field_title' class='nuAce' style='left:800px;text-align:right;color:green'></span>
+
+	<div id='nu_editor'       style='width:1000px;height:700px;top:40px;left:0px;text-align:left;position:absolute'></div>
+
+</body>
+</html> 

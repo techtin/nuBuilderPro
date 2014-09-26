@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="jquery/jquery-ui.css" />
 <script src="jquery/jquery-1.8.3.js" type='text/javascript'></script>
 <script src="jquery/jquery-ui.js" type='text/javascript'></script>
+<script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <?php
 require_once('config.php');

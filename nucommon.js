@@ -86,6 +86,10 @@ function nuKeyPressed(e, isPressed){
 	
 }
 
+String.prototype.capitalize = function() {
+    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+};
+
 String.prototype.replaceAll = function(str1, str2, ignore){
 
    return this.replace(new RegExp(str1.replace(/([\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, function(c){return "\\" + c;}), "g"+(ignore?"i":"")), str2);
@@ -2841,6 +2845,4 @@ function nuSetObjectTypeProperties(){
 	window.nuOTP['browse'].cover        = 'nu_holder_';
 	
 }
-
-
 

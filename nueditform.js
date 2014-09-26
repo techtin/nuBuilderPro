@@ -1,4 +1,100 @@
 
+function nuAceTitle(i){
+
+   var w = i.split('_');
+   w.shift();
+   var t = w.join(' ');
+   return t.capitalize();
+   
+}
+
+function nuOpenAce(l, f, t){
+
+	nuFORM.aceLanguage = l;
+	nuFORM.aceField    = f;
+	nuFORM.aceTitle    = nuAceTitle(f);
+	var ts             = new Date().getTime();
+	
+	window.open('nuace.html?' + ts);
+
+}
+
+function nuLoadAce(){
+
+   var ta = Array();
+   
+   ta.push('SQL|sfo_add_button_display_condition');
+   ta.push('SQL|sfo_save_button_display_condition');
+   ta.push('SQL|sfo_delete_button_display_condition');
+   ta.push('SQL|sfo_clone_button_display_condition');
+   ta.push('SQL|sfo_new_button_display_condition');
+   ta.push('SQL|sfo_print_button_display_condition');
+   ta.push('SQL|sob_all_display_condition');
+   ta.push('SQL|sfa_button_display_condition');
+   ta.push('SQL|sfo_sql');
+   ta.push('SQL|sfo_breadcrumb');
+   ta.push('SQL|sob_all_default_value_sql');
+   ta.push('SQL|sob_display_sql');
+   ta.push('SQL|sob_dropdown_sql');
+   ta.push('SQL|sob_listbox_sql');
+   ta.push('SQL|sob_lookup_sql');
+   ta.push('SQL|sob_subform_sql');
+   ta.push('SQL|sre_zzzsys_sql');
+   
+   ta.push('PHP|sfo_custom_code_run_before_save');
+   ta.push('PHP|sfo_custom_code_run_before_browse');
+   ta.push('PHP|sfo_custom_code_run_before_open');
+   ta.push('PHP|sfo_custom_code_run_after_browse');
+   ta.push('PHP|sfo_custom_code_run_after_save');
+   ta.push('PHP|sfo_custom_code_run_after_delete');
+   ta.push('PHP|sob_lookup_php');
+   ta.push('PHP|slp_php');
+   
+   ta.push('Javascript|sfo_custom_code_run_javascript');
+   ta.push('Javascript|sev_javascript');
+   ta.push('Javascript|sob_lookup_javascript');
+   ta.push('Javascript|sfa_button_javascript');
+   
+   ta.push('HTML|sob_html_code');
+
+
+   for(var i = 0 ; i < ta.length ; i++){
+
+      var o     = String(ta[i]).split('|');
+	  
+        if(o[0] == 'SQL'){
+	  
+           $("textarea","[id*='"+o[1]+"']").dblclick(function() {
+               nuOpenAce('SQL', this.id);
+           });
+		 
+        }
+	  
+        if(o[0] == 'PHP'){
+	  
+           $("textarea","[id*='"+o[1]+"']").dblclick(function() {
+               nuOpenAce('PHP', this.id);
+           });
+		 
+        }
+	  
+        if(o[0] == 'Javascript'){
+	  
+           $("textarea","[id*='"+o[1]+"']").dblclick(function() {
+               nuOpenAce('Javascript', this.id);
+           });
+		 
+        }
+	  
+        if(o[0] == 'HTML'){
+	  
+           $("textarea","[id*='"+o[1]+"']").dblclick(function() {
+               nuOpenAce('HTML', this.id);
+           });
+		 
+        }
+    }   
+}
 
 function nuBuildEditForm(o){
 
