@@ -56,6 +56,7 @@ function nuLoadAce(){
    ta.push('Javascript|sfa_button_javascript');
    
    ta.push('HTML|sob_html_code');
+   ta.push('HTML|set_css');
 
 
    for(var i = 0 ; i < ta.length ; i++){
@@ -373,13 +374,13 @@ function nuSubformColumnTitles(o,i,e,objects){
         'top'                         : '0px',
         'left'                        : left+'px',
         'position'                    : 'absolute',
-        'border-color'                : '#CCCCCC',
+        'border-color'                : 'grey',
         'border-width'                : '1px',
         'border-style'                : 'solid',
-        '-moz-border-top-left-radius' : '0px',
-        'border-top-left-radius'      : '0px',
-        '-moz-border-top-right-radius': '0px',
-        'border-top-right-radius'     : '0px'
+        '-moz-border-top-left-radius' : '5px',
+        'border-top-left-radius'      : '5px',
+        '-moz-border-top-right-radius': '5px',
+        'border-top-right-radius'     : '5px'
     })
 	.addClass('nuUnselectedTab nuGradient');
 	
@@ -399,7 +400,7 @@ function nuSubformColumnTitles(o,i,e,objects){
                 'top'         : '0px',
                 'left'        : left+'px',
                 'position'    : 'absolute',
-                'border-color': '#CCCCCC',
+                'border-color': 'grey',
                 'border-width': '1px',
                 'border-style': 'solid'
             })
@@ -408,8 +409,8 @@ function nuSubformColumnTitles(o,i,e,objects){
             
 			if(I == 1){
 				$('#' + c.id).css({ 
-                    '-moz-border-top-left-radius' : '0px',
-                    'border-top-left-radius'      : '0px'
+                    '-moz-border-top-left-radius' : '5px',
+                    'border-top-left-radius'      : '5px'
                 })
 			}
 			
@@ -437,12 +438,12 @@ function nuSubformColumnTitles(o,i,e,objects){
 		'top'                         : '0px',
 		'left'                        : delete_left,
 		'position'                    : 'absolute',
-		'border-color'                : '#CCCCCC',
+		'border-color'                : 'grey',
 		'border-width'                : '1px',
 		'border-style'                : 'solid',
 		'font-size'                   : '12px',
-		'-moz-border-top-right-radius': '0px',
-		'border-top-right-radius'     : '0px'
+		'-moz-border-top-right-radius': '5px',
+		'border-top-right-radius'     : '5px'
 
 	})
 	.addClass('nuUnselectedTab nuGradient')
@@ -1161,9 +1162,10 @@ function nuRecordObjects(formType, formTop){
              'top'                         : '20px',
              'left'                        : '0px',
              'position'                    : 'absolute',
-             'background-color'            : '#F0F0F0',
-             '-moz-border-top-left-radius' : '0px',
-             'border-top-left-radius'      : '0px',
+             'background-color'            : '#E0E0E0',
+             '-moz-border-top-left-radius' : '5px',
+             'border-top-left-radius'      : '5px',
+            'box-shadow'                   : '5px 5px 5px #888888',
             'overflow'                     : 'auto'
         });
 		parent     = e.id;
