@@ -74,10 +74,23 @@ function nuResize(){
 
 function nuAceSave(){
 
+   nuEdited          = '0'
    opener.window.document.getElementById(window.o).value = editor.getValue();
+   opener.nuFORM.edited=1;
    window.close();
 
 }
+
+function nuWarning(){
+
+	if(window.nuEdited == '1'){
+		return "Close this window without Saving?";
+	}
+
+}
+
+var nuEdited          = '1';
+window.onbeforeunload = nuWarning;
 
 </script>
 
@@ -88,7 +101,7 @@ function nuAceSave(){
 	<span id='nu_code_type'   class='nuAce' style='left:10px;text-align:left;color:lightblue'></span>
 	<span id='nu_field_title' class='nuAce' style='left:800px;text-align:right;color:green'></span>
 
-	<div id='nu_editor'       style='width:1000px;height:700px;top:40px;left:0px;text-align:left;position:absolute'></div>
+	<div  id='nu_editor'       style='width:1000px;height:700px;top:40px;left:0px;text-align:left;position:absolute'></div>
 
 </body>
 </html> 
