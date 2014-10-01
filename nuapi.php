@@ -102,7 +102,16 @@ if (nuV('call_type') == 'savemovedobjects') {
 //==============================================================================
 if (nuV('call_type') == 'deleteform') {
 
-    nuSaveForm(nuV('form_data'), $hashData);
+	$nuHash             = $hashData;
+
+    $beforeDelete       = nuReplaceHashes(nuF('sfo_custom_code_run_before_delete'), $hashData);
+    
+    eval($beforeDelete);
+        
+    if (count($response['ERRORS']) == 0) {                                     //-- if still no error messages
+        nuSaveForm(nuV('form_data'), $hashData);
+    }
+    
 	$hashData         = nuHashData();
     $response['DATA'] = nuGetEditForm($hashData);
 }
