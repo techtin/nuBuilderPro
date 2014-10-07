@@ -862,8 +862,12 @@ function nuRecordObjects(formType, formTop){
 		$('#' + e.id).css( 'text-align', nuFormatAlign(o[i].align));
 
 		if(o[i].is_date && o[i].read_only != '1'){
+		
 			var currentOnClick = e.getAttribute('onclick');
 			e.setAttribute('onclick', currentOnClick+';nuPopupCalendar(this);');
+			var currentOnBlur = e.getAttribute('onblur');
+			e.setAttribute('onblur', currentOnBlur+';nuBlurDateField()');
+			
 		}
 		
 		if(o[i].text_type != ''){
@@ -884,8 +888,6 @@ function nuRecordObjects(formType, formTop){
 		
 			var currentOnChange = e.getAttribute('onchange');
 			e.setAttribute('onchange', currentOnChange+';nuSetEdited();nuBuilderFormat(this)');
-			var currentOnBlur = e.getAttribute('onblur');
-			e.setAttribute('onblur', currentOnChange+';nuBlurDateField()');
 			
 		}
 		
