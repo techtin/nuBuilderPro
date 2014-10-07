@@ -884,6 +884,8 @@ function nuRecordObjects(formType, formTop){
 		
 			var currentOnChange = e.getAttribute('onchange');
 			e.setAttribute('onchange', currentOnChange+';nuSetEdited();nuBuilderFormat(this)');
+			var currentOnBlur = e.getAttribute('onblur');
+			e.setAttribute('onblur', currentOnChange+';nuBlurDateField()');
 			
 		}
 		

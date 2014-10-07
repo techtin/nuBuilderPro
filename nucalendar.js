@@ -52,9 +52,13 @@ function nuPopupCalendar(pThis){
 		left                 = holder.left + right.left;
 	}
 	
-	
+	window.nuOnCalendar      = 0;          //-- cursor not in calendar
 	
 	var c                    = nuAppendChild(p,'div','nuCalendar');
+
+	c.onmouseover            = function(){window.nuOnCalendar = 1;};
+	c.onmouseout             = function(){window.nuOnCalendar = 0;};
+
 	c.style.backgroundColor  = window.nuCalColor;
 	c.style.position         = 'absolute';
 	c.style.top              = top + 'px';
@@ -74,7 +78,6 @@ function nuPopupCalendar(pThis){
 	var c = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalCloser');
 
 	c.setAttribute("onclick", "document.getElementById('nuCalendar').remove();");
-	
 	c.style.position         = 'absolute';
 	c.style.top              = (window.nuCalTop + 32) + 'px';
 	c.style.left             = '2px';
@@ -373,8 +376,7 @@ function nuCalChoice(){
 	var df            = document.getElementById(window.nuCalendarCaller);
 	var d             = new Date(window.nuCalYear, window.nuCalMonth, window.nuCalDay);
 	df.value          = nuFormatDateByString(d, nuFormats[df.getAttribute('data-nuformat')].format)
-//	df.value          = window.nuCalDay + '-' + (Number(window.nuCalMonth) + 1)+ '-' + window.nuCalYear;
-//	df.value          = formatter.formatField(df.getAttribute('data-nuformat') ,df.value);
+
 	$('#nuCalendar').remove();
 	$('#' + df.id).change();
 	
@@ -391,4 +393,14 @@ function nuMonthScope(m){
 	return m;
 
 }
+
+function nuBlurDateField(){
+
+	if(window.nuOnCalendar == 0){
+		c = document.getElementById('nuCalendar');
+		c.parentElement.removeChild(c);
+	}
+
+}
+
 
