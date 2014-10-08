@@ -374,7 +374,7 @@ class nuSECTION{
                 
             }else if($O[$i]->objectType == 'image'){                                        //-- image
 
-                $O[$i]->LINES                   = array('');
+				$O[$i]->LINES                   = array('');
                 $path                           = '';
                 $im                             = $O[$i]->image;
                 
@@ -934,7 +934,9 @@ function nuPrintImage($PDF, $S, $contents, $O){
     $path              = $contents->path;
     $top               = $S->sectionTop + $contents->top;
 
-    $PDF->Image($path, $left, $top, $width, $height);
+	if($path !=''){
+		$PDF->Image($path, $left, $top, $width, $height);
+	}
 
 }
 

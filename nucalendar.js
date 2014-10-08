@@ -394,12 +394,3 @@ function nuMonthScope(m){
 
 }
 
-function nuBlurDateField(){
-	
-	if(window.nuOnCalendar == 0){
-		$('#nuCalendar').remove();
-	}
-
-}
-
-

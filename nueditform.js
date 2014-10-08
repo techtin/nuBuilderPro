@@ -1684,3 +1684,13 @@ function nuHideSaveButtons(hide){
 	
 }
 
+
+function nuBlurDateField(){
+	
+	if(window.nuOnCalendar == 0){
+		$('#nuCalendar').remove();
+	}
+
+}
+
+
