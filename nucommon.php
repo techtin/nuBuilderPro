@@ -59,7 +59,7 @@ function nuDebug($t){
     global $nuDB;
 
     $i = nuID();
-    $d = date('Y-m-d h:i:s');
+    $d = date('Y-m-d H:i:s');
     $s = $nuDB->prepare("INSERT INTO zzzsys_debug (zzzsys_debug_id, deb_message, deb_added) VALUES (? , ?, ?)");
 
     $s->execute(array($i, $t, $d));
