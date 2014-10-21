@@ -20,7 +20,8 @@ window.t = opener.nuFORM.aceTitle;
 
 function nuLoad(){
 
-   window.editor = ace.edit('nu_editor');
+   window.editor     = ace.edit('nu_editor');
+   window.startValue = opener.window.document.getElementById(window.o).value;
    editor.setTheme("ace/theme/monokai");
    editor.setFontSize(16);
       
@@ -58,8 +59,10 @@ function nuLoad(){
    document.getElementById('nu_code_type').innerHTML   = window.c;
    document.getElementById('nu_field_title').innerHTML = window.t;
    nuResize();
-   editor.setValue(opener.window.document.getElementById(window.o).value);
+   editor.setValue(window.startValue);
+   editor.focus();
    editor.navigateFileStart();
+
 }
 
 function nuResize(){
@@ -74,16 +77,16 @@ function nuResize(){
 
 function nuAceSave(){
 
-   nuEdited          = '0'
+   nuEdited             = '0'
    opener.window.document.getElementById(window.o).value = editor.getValue();
-   opener.nuFORM.edited=1;
+   opener.nuFORM.edited = 1;
    window.close();
 
 }
 
 function nuWarning(){
 
-	if(window.nuEdited == '1'){
+	if(editor.getValue() != window.startValue){
 		return "Close this window without Saving?";
 	}
 
