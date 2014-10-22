@@ -69,7 +69,7 @@ nuPrintReport($PDF, $REPORT, $GLOBALS['nu_report'], $JSON);
 
 nuRunQuery("DROP TABLE IF EXISTS $TABLE_ID");
 nuRunQuery("DROP TABLE IF EXISTS $TABLE_ID".'_nu_summary');
-$PDF->Output('example_065.pdf', 'I');
+$PDF->Output('nureport.pdf', 'I');
 
 nuRemoveFiles();
 
