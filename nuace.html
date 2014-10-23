@@ -77,22 +77,22 @@ function nuResize(){
 
 function nuAceSave(){
 
-   nuEdited             = '0'
+   window.nuWarn      = 0;
    opener.window.document.getElementById(window.o).value = editor.getValue();
-   opener.nuFORM.edited = 1;
+   window.opener.nuSetEdited();
    window.close();
 
 }
 
 function nuWarning(){
 
-	if(editor.getValue() != window.startValue){
+	if(editor.getValue() != window.startValue && window.nuWarn == 1){
 		return "Close this window without Saving?";
 	}
 
 }
 
-var nuEdited          = '1';
+window.nuWarn         = 1;
 window.onbeforeunload = nuWarning;
 
 </script>
