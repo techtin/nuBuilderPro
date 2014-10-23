@@ -4,7 +4,7 @@ $sql = 'SELECT * FROM zzzsys_debug';
 $t   = nuRunQuery($sql);
 
 while($r = db_fetch_object($t)){
-    if(strtotime(date("Y-m-d h:i:s")) - strtotime($r->deb_added) > $seconds) {
+    if(strtotime(date("Y-m-d H:i:s")) - strtotime($r->deb_added) > $seconds) {
         nuRunQuery("DELETE FROM zzzsys_debug WHERE zzzsys_debug_id = '$r->zzzsys_debug_id'");
     }
 }
