@@ -576,6 +576,9 @@ function nuTextFormats(){
 
 //-----number formats
 	$format = array();
+ 	for ($i=0; $i < 33; $i++) {
+		$format[$i] = new stdClass;
+	}
 	
 	$format[0]->type         = 'number';
 	$format[0]->format       = '0';
