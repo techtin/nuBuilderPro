@@ -16,7 +16,6 @@
 <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <?php
-require_once('config.php');
 require_once('nucommon.php');
 
 jsinclude('nuformat.js');
