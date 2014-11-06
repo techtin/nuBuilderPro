@@ -128,6 +128,7 @@ function addButtons(buttons){
 		e.setAttribute('onclick', buttons[i].js);                          //-- add javascript
 		$('#nuActionButtonHolder').append(e);
 		$('#' + e.id).addClass('nuButton');
+		$('#' + e.id).addClass('nuActionButton');
 		
 	}
 
@@ -952,7 +953,7 @@ function nuCompleteSavingForm(sync,operation){                             //-- 
 
 function nuPrintPDF(pCode, id, pFilename){  //-- save data from form and rebuild form
 
-    var P               = new nuCopyJSObject(nuFORM);
+   var P               = new nuCopyJSObject(nuFORM);
 	
 	if(arguments.length < 3){               //-- don't create file
 		var pFilename   = '';
@@ -975,7 +976,10 @@ function nuPrintPDF(pCode, id, pFilename){  //-- save data from form and rebuild
 		data     : {nuWindow : P},
                 async    : false,
                 success  : function(data) {
+				
                     var obj          = $.parseJSON(data.DATA);
+					
+					if(data.ERRORS != ''){return;}
 					
 					if(pFilename == ''){
 					
@@ -993,7 +997,7 @@ function nuPrintPDF(pCode, id, pFilename){  //-- save data from form and rebuild
 		dataType : "json"
 		}).done(function(data){
 
-            if(nuErrorMessage(data.ERRORS)){return;}
+            if(nuErrorMessage(data.ERRORS, false)){return;}
                         
 	});
 
@@ -1005,7 +1009,7 @@ function nuRunPHP(pCode, id){
 	P.call_type         = 'runphp';
     P.parent_record_id  = pCode;
 	P.form_data         = nuGetData();
-    
+
     if(arguments.length > 1){
         P.iframe        = 1;
     }else{
@@ -1018,8 +1022,11 @@ function nuRunPHP(pCode, id){
 		data     : {nuWindow : P},
         async    : false,
         success  : function(data) {
-				
+
 				var obj          = $.parseJSON(data.DATA);
+
+				if(data.ERRORS != ''){return;}
+
 				var phpUrl       = 'nurunphp.php?i='+obj.id;
 				
 				if(obj.iframe == 0){
@@ -1035,7 +1042,7 @@ function nuRunPHP(pCode, id){
 		
 		}).done(function(data){
 
-			if(nuErrorMessage(data.ERRORS)){return;}
+			if(nuErrorMessage(data.ERRORS, false)){return;}
                         
 	});
 

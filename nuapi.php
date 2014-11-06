@@ -55,23 +55,19 @@ if (nuV('call_type') == 'validateaccess') {
 	nuV('call_type', 'validateaccess');                          //-- reset calltype
 }
 
-//==============================================================================
-//                                RUNPHP
-//==============================================================================
-if (nuV('call_type') == 'runphp') {
-
-    $J['id']          = nuPDForPHPParameters($hashData);         //-- puts a JSON string in zzzsys_debug and returns the primary key
-    $J['iframe']      = nuV('iframe') == 0 ? 0 : 1;
-    $response['DATA'] = json_encode($J);
-}
-
 
 //==============================================================================
-//                               PRINTPDF
+//                               PRINTPDF OR RUNPHP
 //==============================================================================
-if (nuV('call_type') == 'printpdf') {
+if (nuV('call_type') == 'printpdf' or nuV('call_type') == 'runphp') {
 
-    $J['id']          = nuPDForPHPParameters($hashData);         //-- puts a JSON string in zzzsys_debug and returns the primary key
+    $response['ERRORS'] = nuCheckParametersForm(nuV('form_data'));
+	
+	$nuHash             = $hashData;
+
+    if (count($response['ERRORS']) == 0) {                                         //-- if no error messages
+		$J['id']          = nuPDForPHPParameters($hashData);                       //-- puts a JSON string in zzzsys_debug and returns the primary key
+	}
     $J['iframe']      = nuV('iframe') == 0 ? 0 : 1;
     $response['DATA'] = json_encode($J);
 }
@@ -405,12 +401,16 @@ function nuValidateUser($session, $hashData) {
     $formID    = nuV('form_id');
     $recordID  = nuV('record_id');
 
+
     if(!in_array($formID, $_SESSION['nu_form_access'])){
     
+		nuHomeBug();
+		
         $t = nuRunQuery("SELECT CONCAT(sfo_name, ' - ', sfo_title) FROM zzzsys_form WHERE zzzsys_form_id = '$formID'");
         $r = db_fetch_row($t);
         nuDisplayError("You do not have access to this form ($r[0]). \r Please contact your system administrator");
         return;
+		
     }
 
 
@@ -430,7 +430,7 @@ function nuValidateUser($session, $hashData) {
     
     if (nuV('call_type') == 'deleteform') {
 
-		$sql       = "SELECt * FROM zzzsys_form WHERE zzzsys_form_id = '$formID'";
+		$sql       = "SELECT * FROM zzzsys_form WHERE zzzsys_form_id = '$formID'";
 		$t         = nuRunQuery($sql);
 		$r         = db_fetch_object($t);
 
@@ -453,6 +453,42 @@ function nuValidateUser($session, $hashData) {
     
     return '';
 }
+
+
+//=================test for losing access====================================
+function nuHomeBug(){
+
+     $a = print_r($_SESSION['nu_form_access'],1);
+	
+	$user        = nuV('nu_user_name') . ' ( ' . nuV('call_type') . ' )';
+	$array       = debug_backtrace();
+			$trace       = '';
+			
+			for($i = 0 ; $i < count($array) ; $i ++){
+				$trace  .= $array[$i]['file'] . ' - line ' . $array[$i]['line'] . ' (' . $array[$i]['function'] . ")\n\n";
+			}
+
+	$debug       = "
+
+** HOME BUG	**
+===USER==========
+
+$user
+
+===BACK TRACE====
+
+$trace
+
+===VARIABLE====
+
+$a
+
+	";
+                
+	nuDebug($debug);
+
+}
+//=====================================================
 
 
 function nuValidateRecord($r, $hashData) {
@@ -762,6 +798,32 @@ function nuIsForm($parentID) {
     }
 }
 
+function nuCheckParametersForm($d) {
+
+    $errors   = array();
+	$i        = $d['data'][0]['form_id'];
+	$fields   = $d['data'][0]['records'][0]['fields'];
+	$o        = array();
+
+	for($f = 0 ; $f < count($fields) ; $f ++){
+		$o[$fields[$f][field]] = $fields[$f][value];
+	}
+	
+	$s        = "SELECT * FROM zzzsys_object WHERE sob_all_no_blanks = '1' AND sob_zzzsys_form_id = '$i'";
+	$t        = nuRunQuery($s);
+	
+	while($r = db_fetch_object($t)){
+	
+		if($o[$r->sob_all_name] == ''){
+			$errors[] = "'" . addslashes($r->sob_all_title) . "' Cannot be left blank";
+		}
+		
+	}
+
+    return $errors;
+
+}
+
 function nuCheckForm($d) {
 
     $errors = array();
@@ -790,7 +852,6 @@ function nuCheckForm($d) {
             ";
             $mainForm = false;
         }
-
         $t = nuRunQuery($s);
         if (nuErrorFound()) {
             return;
@@ -806,7 +867,7 @@ function nuCheckForm($d) {
 
             if ($RECORD['delete_record'] <> 'yes') {                                    //-- does need to be checked 
                 for ($F = 0; $F < count($FIELDS); $F++) {
-                    $FIELD = $FIELDS[$F];
+                   $FIELD = $FIELDS[$F];
                     $error = nuValidField($FIELD, $validFields, $formInfo, $RECORD['primary_key'], $R + 1, $mainForm, $parentID);     //-- check for valid table fieldname and value
 
                     if (count($error) != 0) {
@@ -1491,6 +1552,7 @@ function nuGetBreadcrumb($sqlBreadcrumb, $recs, $hashData) {
             return $sql;                                      //-- no sql just using hash variables
         }
     }
+	
 }
 
 function nuGetRepositonObjects() {

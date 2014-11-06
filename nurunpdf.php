@@ -922,8 +922,12 @@ function nuPrintField($PDF, $S, $contents, $O, $LAY){
     $PDF->SetFillColor(255, 255, 255);
     $PDF->SetFillColor($backcolor[0], $backcolor[1], $backcolor[2]);
     
-    $PDF->MultiCell($width, $height, implode("\n", $contents->lines), $borderWidth == 0 ? 0 : 1, $textAlign, true);
-	
+    $PDF->MultiCell($width, $height, implode("\n", $contents->lines), $borderWidth == 0 ? 0 : 1, $textAlign, true); 
+/*
+	$text = implode("\n", $contents->lines);                                              //-- altered by Fike 2014-10-21
+	$text = utf8_decode($text);
+	$PDF->MultiCell($width, $height, $text, $borderWidth == 0 ? 0 : 1, $textAlign, true);	
+*/	
 }
 
 function nuPrintImage($PDF, $S, $contents, $O){

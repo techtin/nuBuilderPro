@@ -150,6 +150,7 @@ function nuBuildBrowsePage(o){
 	e.setAttribute('onclick', 'nuApplySearch()');
 	$('#nuActionButtonHolder').append(e);
 	$('#' + e.id).addClass('nuButton');
+	$('#' + e.id).addClass('nuActionButton');
 
 	addButtons(o.buttons);	
 	addBrowseTitles(o);
