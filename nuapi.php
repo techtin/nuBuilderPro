@@ -1774,7 +1774,7 @@ function nuGetEditButtons($f, $hashData) {
     } else if (nuV('parent_form_id') == 'nurunphp') {
     
         $code        = nuGetPhpCode(nuV('parent_record_id'));
-        $nuButtons[] = nuButtonClass('Run PHP', "nuRunPHP('$code')", $hashData);
+        $nuButtons[] = nuButtonClass('Run Procedure', "nuRunPHP('$code')", $hashData);
         
     } else {
         $save   = nuButtonTitle('Save', $r->sfo_save_button, $r->sfo_save_title, $r->sfo_save_button_display_condition, $hashData);
