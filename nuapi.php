@@ -809,7 +809,7 @@ function nuCheckParametersForm($d) {
 		$o[$fields[$f][field]] = $fields[$f][value];
 	}
 	
-	$s        = "SELECT * FROM zzzsys_object WHERE sob_all_no_blanks = '1' AND sob_zzzsys_form_id = '$i'";
+	$s        = "SELECT * FROM zzzsys_object WHERE sob_all_no_blanks = '1' AND sob_zzzsys_form_id = '$i' ORDER BY sob_all_tab_number, sob_all_column_number, sob_all_order_number";
 	$t        = nuRunQuery($s);
 	
 	while($r = db_fetch_object($t)){
