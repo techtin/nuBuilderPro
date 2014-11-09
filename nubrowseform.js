@@ -6,12 +6,13 @@ function nuBuildBrowseForm(o){
 	
 	window.nuSession.removeSubforms();
 
-	var formObjects     = o.objects;
-	var formRecords     = Array();
-	formRecords[0]      = o.records;
-	window.nu_user_name = o.nu_user_name;
-	nuFORM.sum          = o.sum;
-    window.nuStopPaging = false;
+	var formObjects      = o.objects;
+	var formRecords      = Array();
+	formRecords[0]       = o.records;
+	window.nu_user_name  = o.nu_user_name;
+	window.nuAllowSearch = 1;
+	nuFORM.sum           = o.sum;
+    window.nuStopPaging  = false;
 	nuCloseModal();
 
 	nuBuildHolder('nuHolder', 'nuHolder', 'body');
@@ -309,6 +310,9 @@ function nuSortBrowse(sort){
 
 function nuApplySearch(){
 
+	if(window.nuAllowSearch == 0){return;}
+	
+	window.nuAllowSearch = 0;
 	nuFORM.search      = $('#nuSearchField').val();
 	nuFORM.page_number = '1';
 	window.nuSession.breadCrumb.pop();  //-- remove breadcrumb before another is added
