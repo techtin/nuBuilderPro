@@ -375,12 +375,7 @@ function nuSubformColumnTitles(o,i,e,objects){
         'left'                        : left+'px',
         'position'                    : 'absolute',
         'border-color'                : 'grey',
-        'border-width'                : '1px',
-        'border-style'                : 'solid',
-        '-moz-border-top-left-radius' : '5px',
-        'border-top-left-radius'      : '5px',
-        '-moz-border-top-right-radius': '5px',
-        'border-top-right-radius'     : '5px'
+        'border-width'                : '0px'
     })
 	.addClass('nuUnselectedTab nuGradient');
 	
@@ -399,21 +394,10 @@ function nuSubformColumnTitles(o,i,e,objects){
                 'height'      : (o[i].title_height) +'px',
                 'top'         : '0px',
                 'left'        : left+'px',
-                'position'    : 'absolute',
-                'border-color': 'grey',
-                'border-width': '1px',
-                'border-style': 'solid'
+                'position'    : 'absolute'
             })
             .addClass('nuUnselectedTab nuGradient')
 			.html(objects[I].title);
-            
-			if(I == 1){
-				$('#' + c.id).css({ 
-                    '-moz-border-top-left-radius' : '5px',
-                    'border-top-left-radius'      : '5px'
-                })
-			}
-			
 			left       = left + width;
 
 		}
@@ -432,19 +416,12 @@ function nuSubformColumnTitles(o,i,e,objects){
 	$('#' + e.id).append(c);
 	$('#' + c.id).css({ 
 
-		'width'                       : '40px',
+		'width'                       : '42px',
 		'height'                      : (o[i].title_height) +'px',
-
 		'top'                         : '0px',
 		'left'                        : delete_left,
 		'position'                    : 'absolute',
-		'border-color'                : 'grey',
-		'border-width'                : '1px',
-		'border-style'                : 'solid',
-		'font-size'                   : '12px',
-		'-moz-border-top-right-radius': '5px',
-		'border-top-right-radius'     : '5px'
-
+		'border-width'                : '0px'
 	})
 	.addClass('nuUnselectedTab nuGradient')
 	
@@ -1167,10 +1144,7 @@ function nuRecordObjects(formType, formTop){
              'left'                        : '0px',
              'position'                    : 'absolute',
              'background-color'            : '#E0E0E0',
-             '-moz-border-top-left-radius' : '5px',
-             'border-top-left-radius'      : '5px',
-            'box-shadow'                   : '5px 5px 5px #888888',
-            'overflow'                     : 'auto'
+             'overflow'                    : 'auto'
         });
 		parent     = e.id;
 

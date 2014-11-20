@@ -524,10 +524,9 @@ function nuCustomIframeWindow(url, iframeID, startWidth, startHeight, startTop, 
             'left'             : sL,
             'position'         : 'absolute',
             'background-color' : '#E1E8EA',
-            'border-width'     : '1px',
+            'border-width'     : '0px',
             'border-color'     : '#01A6F5',
             'border-style'     : 'solid',
-            'border-radius'    : '5px',
             'filter'           : 'Alpha(Opacity=100)',
             'opacity'          : '1'
         })
@@ -543,9 +542,8 @@ function nuCustomIframeWindow(url, iframeID, startWidth, startHeight, startTop, 
             'top'              : '0px',
             'left'             : '0px',
             'position'         : 'absolute',
-            'background-color' : '#C0CDD1',
-            'z-index'          : '1',
-            'border-radius'    : '5px'
+            'background-color' : '#B6B6B6',
+            'z-index'          : '1'
         });
 
         var e = document.createElement('div');              //-- create draggable div
@@ -1884,10 +1882,9 @@ function nuObjectMover() {
 		'position'         : 'absolute',
 		'background-color' : '#E1E8EA',
 		'z-index'          : 5000,
-		'border-width'     : '1px',
+		'border-width'     : '0px',
 		'border-color'     : '#01A6F5',
 		'border-style'     : 'solid',
-		'border-radius'    : '5px',
 		'filter'           : 'Alpha(Opacity=100)',
 		'opacity'          : '1'
 	})
@@ -1901,10 +1898,8 @@ function nuObjectMover() {
 		'top'                     : '0px',
 		'left'                    : '0px',
 		'position'                : 'absolute',
-		'background-color'        : '#C0CDD1',
-		'z-index'                 : 5000,
-		'border-top-left-radius'  : '5px',
-		'border-top-right-radius' : '5px'
+		'background-color'        : '#B6B6B6',
+		'z-index'                 : 5000
 	})
 	.mousedown(function() {
 		$('#nuDrag').draggable();
