@@ -2424,12 +2424,18 @@ function nuSubformPageRecords($subformID, $o, $hashData) {  //-- get subform row
 
 //========= end of subform ==========//
 
-
-
 function nuUseDefault($o) {
 
-    return nuV('call_type') == 'cloneform' and $o->sob_all_clone != '1';  //-- clone the record but not this field - use a default instead
+	if(nuV('call_type') == 'cloneform' and $o->sob_all_clone != '1'){                    //-- clone the record but not this field - use a default instead
+		return true;
+	}
+	if(nuV('parent_form_id') == 'nurunreport' or nuV('parent_form_id') == 'nurunphp'){   //-- criteria screen
+		return true;
+	}
+	return false;
+	
 }
+
 
 function nuGetObjectHtml($o, $recordID, $hashData) {
 
