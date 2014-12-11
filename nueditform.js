@@ -44,7 +44,6 @@ function nuLoadAce(){
    ta.push('PHP|sfo_custom_code_run_before_save');
    ta.push('PHP|sfo_custom_code_run_before_browse');
    ta.push('PHP|sfo_custom_code_run_before_open');
-   ta.push('PHP|sfo_custom_code_run_after_browse');
    ta.push('PHP|sfo_custom_code_run_after_save');
    ta.push('PHP|sfo_custom_code_run_after_delete');
    ta.push('PHP|sob_lookup_php');
@@ -1665,6 +1664,46 @@ function nuBlurDateField(){
 		$('#nuCalendar').remove();
 	}
 
+}
+
+
+function nuDisable(i, v){                 //-- disable Edit Form Object and set value
+
+   $('#'+i).addClass('nuReadOnly');
+   $('#'+i).prop('readonly', true);
+   $('#'+i).prop('disabled', true);
+
+   $('#code'+i).addClass('nuReadOnly');
+   $('#code'+i).prop('readonly', true);
+   $('#code'+i).prop('disabled', true);
+
+   $('#btn_'+i).css('visibility', 'hidden');
+   
+   if(arguments.length == 2){
+      $('#'+i).val(v);
+      $('#'+i).change();
+   }
+   
+}
+
+
+function nuEnable(i, v){                 //-- enable Edit Form Object and set value
+
+   $('#'+i).removeClass('nuReadOnly');
+   $('#'+i).prop('readonly', false);
+   $('#'+i).prop('disabled', false);
+
+   $('#code'+i).removeClass('nuReadOnly');
+   $('#code'+i).prop('readonly', false);
+   $('#code'+i).prop('disabled', false);
+
+   $('#btn_'+i).css('visibility', 'visible');
+   
+   if(arguments.length == 2){
+      $('#'+i).val(v);
+      $('#'+i).change();
+   }
+   
 }
 
 
