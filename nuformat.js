@@ -449,9 +449,11 @@ function nuBuilderSession(){
 	}
 
 	this.addSubformRow = function(pthis){ //-- add subform row
+	
+		nuFORM.last_subform_row = pthis.id.substr(0, pthis.id.length-6);
 
-        if($('#'+pthis.id).attr('data-addable') == 'no'){return;}
-        var name      = pthis.getAttribute('data-subform');
+		if($('#'+pthis.id).attr('data-addable') == 'no'){return;}
+		var name      = pthis.getAttribute('data-subform');
 		var row       = Number(pthis.getAttribute('data-row'));
 		var i         = this.getSubformIndex(name);
 		var n         = Number(this.subformRowNumber[i]);
@@ -533,5 +535,11 @@ function nuSetEdited(){
 function nuBuilderFormat(pthis){
 
     pthis.value   = formatter.formatField(pthis.getAttribute('data-nuformat') ,pthis.value);
+
+}
+
+function nuThisRow(){
+
+	return String(nuFORM.last_subform_row);
 
 }
