@@ -538,7 +538,7 @@ function nuBuilderFormat(pthis){
 
 }
 
-function nuThisRow(){
+function nuCurrentRow(){
 
 	return String(nuFORM.last_subform_row);
 
