@@ -17,6 +17,7 @@
 window.c = opener.nuFORM.aceLanguage;
 window.o = opener.nuFORM.aceField;
 window.t = opener.nuFORM.aceTitle;
+window.s = JSON.parse(opener.nuFORM.schema);
 
 function nuLoad(){
 
@@ -62,7 +63,8 @@ function nuLoad(){
    editor.setValue(window.startValue);
    editor.focus();
    editor.navigateFileStart();
-
+	nuPopTables();
+	
 }
 
 function nuResize(){
@@ -92,6 +94,59 @@ function nuWarning(){
 
 }
 
+
+function nuPopTables(){
+
+	var t = window.s;
+	var s = document.getElementById('nuTable');
+	
+	for(var i = 0 ; i < t.length ; i++){
+
+		var o = document.createElement('option');
+		o.value = i;
+		o.innerHTML = t[i].table;
+		s.appendChild(o);
+	
+	}
+	
+}
+
+
+function nuPopFields(){
+
+	document.getElementById('nuField').options.length = 0;
+	
+	var n = document.getElementById('nuTable').value;
+	var t = window.s[n];
+	var s = document.getElementById('nuField');
+	
+	for(var i = 0 ; i < t.fields.length ; i++){
+
+		var o = document.createElement('option');
+		o.value = i;
+		o.innerHTML = t.fields[i];
+		s.appendChild(o);
+	
+	}
+
+	document.getElementById('nuDrag').value = t.table;
+	document.getElementById('nuDrag').select();
+	
+}
+
+
+function nuChooseFields(){
+
+	var n = document.getElementById('nuTable').value;
+	var t = window.s[n];
+	var f = document.getElementById('nuField').value;
+
+	document.getElementById('nuDrag').value = t.fields[f];
+	document.getElementById('nuDrag').select();
+	
+}
+
+
 window.nuWarn         = 1;
 window.onbeforeunload = nuWarning;
 
@@ -101,9 +156,11 @@ window.onbeforeunload = nuWarning;
 <body style='background-color:#000000' onload='nuLoad()' onresize='nuResize()'>
 
 	<span id='nuTool0' onclick='nuAceSave()' class='nuTool' style=''>Copy Changes</span>
+	<span style='color:white;font-family:helvetica;font-size:14px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tables </span><select id="nuTable" onchange='nuPopFields()' style='top:10px;width:200px'></select>
+	<span style='color:white;font-family:helvetica;font-size:14px;'> Fields </span><select id="nuField" onchange='nuChooseFields()' style='width:200px'></select>
+	<span style='color:white;font-family:helvetica;font-size:14px;'> Copy </span><input type='text' readonly id="nuDrag" style='width:200px' value='bob'>
 	<span id='nu_code_type'   class='nuAce' style='left:10px;text-align:left;color:lightblue'></span>
 	<span id='nu_field_title' class='nuAce' style='left:800px;text-align:right;color:green'></span>
-
 	<div  id='nu_editor'       style='width:1000px;height:700px;top:40px;left:0px;text-align:left;position:absolute'></div>
 
 </body>

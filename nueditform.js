@@ -127,6 +127,7 @@ function nuBuildEditForm(o){
 	window.hashData     = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
 	nuFORM.form_width   = o.form_width;
 	nuFORM.form_height  = o.form_height;
+	nuFORM.schema       = o.schema;
 	nuDisplayEditForm(formObjects,formRecords);
 	nuSelectTab(nuFORM.tab_number, o.form_height, o.form_width);
 

@@ -1492,7 +1492,8 @@ function nuGetEditForm($hashData) {
     $J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
     $J['formats']    = json_encode(nuTextFormats());
     $J['set_title']  = nuV('set_title');
-
+	$J['schema']     = nuSchemaJSON();
+	
     return json_encode($J);
 }
 
@@ -2974,5 +2975,70 @@ function nuGetUserName($id){
 	return $r[0];
 
 }
+
+
+function nuSchemaJSON(){
+
+    $tables = array();
+	$db = $_SESSION['DBName'];
+    
+    $s = "
+    
+        SELECT TABLE_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = '$db'
+        GROUP BY TABLE_NAME
+    
+    ";
+    nudebug($s);
+    $t = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+    
+        $S = "
+        
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = '$db'
+            AND TABLE_NAME = '$r->TABLE_NAME'
+            GROUP BY COLUMN_NAME
+        
+        ";
+    
+        
+        $T       = nuRunQuery($S);
+    
+        $fields  = array();
+    
+        while($R = db_fetch_object($T)){
+        
+            $fields[] = $R->COLUMN_NAME;
+        
+    
+        }
+    
+    
+        $tables[] = nuAddTableObject($r->TABLE_NAME, $fields);
+    
+    }
+
+    return json_encode($tables);
+    
+    
+}
+
+function nuAddTableObject($t, $f){
+
+    $c         = new stdClass;
+    
+    $c->table  = $t;
+    $c->fields = $f;
+    
+    return $c;
+    
+}
+
+
+
 
 ?>
