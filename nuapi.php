@@ -1492,7 +1492,12 @@ function nuGetEditForm($hashData) {
     $J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
     $J['formats']    = json_encode(nuTextFormats());
     $J['set_title']  = nuV('set_title');
-	$J['schema']     = nuSchemaJSON();
+
+	if(substr($formID,0,2) == 'nu'){                     //-- Forms that can use Ace Editor
+		$J['schema'] = nuSchemaJSON();
+	}else{
+		$J['schema'] = '[]';
+	}
 	
     return json_encode($J);
 }
@@ -2982,15 +2987,17 @@ function nuSchemaJSON(){
     $tables = array();
 	$db = $_SESSION['DBName'];
     
+//===================TABLES AND FIELDS=========================================
     $s = "
     
         SELECT TABLE_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = '$db'
+		AND TABLE_NAME NOT LIKE 'zzzsys_%'
         GROUP BY TABLE_NAME
     
     ";
-    nudebug($s);
+
     $t = nuRunQuery($s);
     
     while($r = db_fetch_object($t)){
@@ -3019,6 +3026,48 @@ function nuSchemaJSON(){
     
     
         $tables[] = nuAddTableObject($r->TABLE_NAME, $fields);
+    
+    }
+
+    
+//===================FORMS AND OBJECTS=========================================
+    $s = "
+    
+		SELECT CONCAT('FORM: ',sfo_name) AS t, sfo_name FROM zzzsys_form
+		INNER JOIN zzzsys_object ON zzzsys_form_id = sob_zzzsys_form_id
+		WHERE zzzsys_form_id NOT LIKE 'nu%'
+		GROUP BY sfo_name
+    
+    ";
+
+    $t = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+    
+        $S = "
+        
+            SELECT CONCAT('#', sob_all_name, '#') as t
+            FROM zzzsys_form
+			INNER JOIN zzzsys_object ON zzzsys_form_id = sob_zzzsys_form_id
+            WHERE sfo_name = '$r->sfo_name'
+            GROUP BY sob_all_name
+        
+        ";
+    
+        
+        $T       = nuRunQuery($S);
+    
+        $fields  = array();
+    
+        while($R = db_fetch_object($T)){
+        
+            $fields[] = $R->t;
+        
+    
+        }
+    
+    
+        $tables[] = nuAddTableObject($r->t, $fields);
     
     }
 

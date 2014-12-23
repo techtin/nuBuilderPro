@@ -1663,13 +1663,12 @@ function nuGetSafePHP($field, $id, $value) {
 function nuCheckSafePHPMode($id, $r) {
 
 	$fieldsToCheck = array(
-        	'sfo_custom_code_run_after_delete',
-                'sfo_custom_code_run_after_save',
-                'sfo_custom_code_run_before_browse',
-		'sfo_custom_code_run_after_browse',
-                'sfo_custom_code_run_before_open',
-                'sfo_custom_code_run_before_save'
-        );
+		'sfo_custom_code_run_after_delete',
+		'sfo_custom_code_run_after_save',
+		'sfo_custom_code_run_before_browse',
+		'sfo_custom_code_run_before_open',
+		'sfo_custom_code_run_before_save'
+	);
 
 	if ( $_SESSION['SafeMode'] === true ) {
 

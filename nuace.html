@@ -63,7 +63,7 @@ function nuLoad(){
    editor.setValue(window.startValue);
    editor.focus();
    editor.navigateFileStart();
-	nuPopTables();
+   nuPopTables();
 	
 }
 
@@ -108,7 +108,7 @@ function nuPopTables(){
 		s.appendChild(o);
 	
 	}
-	
+	nuPopFields();
 }
 
 
@@ -129,11 +129,19 @@ function nuPopFields(){
 	
 	}
 
-	document.getElementById('nuDrag').value = t.table;
-	document.getElementById('nuDrag').select();
+	if(String(t.table).substr(0,6) == 'FORM: '){
+		document.getElementById('nuDrag').value = document.getElementById('nuField')[0].innerHTML;
+	}else{
+		document.getElementById('nuDrag').value = t.table;
+	}
 	
 }
 
+function nuUpdateDrag(t){
+
+	document.getElementById('nuDrag').value = document.getElementById('nuField')[t.value].innerHTML;
+
+}
 
 function nuChooseFields(){
 
@@ -142,7 +150,6 @@ function nuChooseFields(){
 	var f = document.getElementById('nuField').value;
 
 	document.getElementById('nuDrag').value = t.fields[f];
-	document.getElementById('nuDrag').select();
 	
 }
 
@@ -157,8 +164,8 @@ window.onbeforeunload = nuWarning;
 
 	<span id='nuTool0' onclick='nuAceSave()' class='nuTool' style=''>Copy Changes</span>
 	<span style='color:white;font-family:helvetica;font-size:14px'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tables </span><select id="nuTable" onchange='nuPopFields()' style='top:10px;width:200px'></select>
-	<span style='color:white;font-family:helvetica;font-size:14px;'> Fields </span><select id="nuField" onchange='nuChooseFields()' style='width:200px'></select>
-	<span style='color:white;font-family:helvetica;font-size:14px;'> Copy </span><input type='text' readonly id="nuDrag" style='width:200px' value='bob'>
+	<span style='color:white;font-family:helvetica;font-size:14px;'> Fields </span><select id="nuField" onfocus='nuUpdateDrag(this)' onchange='nuChooseFields()' style='width:200px'></select>
+	<span style='color:white;font-family:helvetica;font-size:14px;'> Copy/Drag </span><input type='text' onfocus='this.select()' onclick='this.select()' readonly id="nuDrag" style='width:200px'>
 	<span id='nu_code_type'   class='nuAce' style='left:10px;text-align:left;color:lightblue'></span>
 	<span id='nu_field_title' class='nuAce' style='left:800px;text-align:right;color:green'></span>
 	<div  id='nu_editor'       style='width:1000px;height:700px;top:40px;left:0px;text-align:left;position:absolute'></div>
