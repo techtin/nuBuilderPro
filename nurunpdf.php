@@ -669,7 +669,11 @@ class nuSECTION{
 
         }
         
-        return $rows;
+		if($O->minRows == -1 and $rows[0] == '' ){                                    //-- reduce height to zero 
+			$rows = array();
+		}
+
+		return $rows;
         
         
     }

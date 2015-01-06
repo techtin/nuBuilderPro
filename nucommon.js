@@ -929,6 +929,8 @@ function nuCompleteSavingForm(sync,operation){                             //-- 
 					nuFORM.record_id    = '-1';
 					nuSession.breadCrumb.pop();
 					nuBuildForm(nuFORM);
+				} else if(operation == 2){
+					nuGoToForm(window.nuSession.breadCrumb.length-2, false);
 				}	
 			}
 			

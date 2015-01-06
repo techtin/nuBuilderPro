@@ -2990,25 +2990,26 @@ function nuSchemaJSON(){
 //===================TABLES AND FIELDS=========================================
     $s = "
     
-        SELECT TABLE_NAME
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = '$db'
-		AND TABLE_NAME NOT LIKE 'zzzsys_%'
-        GROUP BY TABLE_NAME
+	SELECT TABLE_NAME
+	FROM INFORMATION_SCHEMA.TABLES
+	WHERE TABLE_SCHEMA = '$db'
+	AND TABLE_NAME NOT LIKE 'zzzsys_%'
+	AND TABLE_TYPE != 'VIEW'
+	GROUP BY TABLE_NAME
     
     ";
-
+	nudebug($s);
     $t = nuRunQuery($s);
     
     while($r = db_fetch_object($t)){
-    
-        $S = "
+    nudebug($r->TABLE_NAME);
+		$S = "
         
-            SELECT COLUMN_NAME
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = '$db'
-            AND TABLE_NAME = '$r->TABLE_NAME'
-            GROUP BY COLUMN_NAME
+		SELECT COLUMN_NAME
+		FROM INFORMATION_SCHEMA.COLUMNS
+		WHERE TABLE_SCHEMA = '$db'
+		AND TABLE_NAME = '$r->TABLE_NAME'
+		GROUP BY COLUMN_NAME
         
         ";
     
