@@ -2998,11 +2998,10 @@ function nuSchemaJSON(){
 	GROUP BY TABLE_NAME
     
     ";
-	nudebug($s);
     $t = nuRunQuery($s);
     
     while($r = db_fetch_object($t)){
-    nudebug($r->TABLE_NAME);
+
 		$S = "
         
 		SELECT COLUMN_NAME
