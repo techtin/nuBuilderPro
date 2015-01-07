@@ -1686,4 +1686,26 @@ function nuCheckSafePHPMode($id, $r) {
 }
 
 
+
+function nuDownloadFile($i, $s = ''){               //-- $s can be used to get type, name and blob from another table
+	
+	if($s == ''){
+		
+		$s = "SELECT sfi_type AS file_type, sfi_name AS file_name, sfi_blob AS file_blob FROM zzzsys_file WHERE zzzsys_file_id = '$i'";
+		
+	}
+	
+	$t = nuRunQuery($s);
+	$r = db_fetch_object($t);
+	
+	header('Content-Type: '.$r->file_type.';');
+	header('Content-Disposition: attachement;filename="'.$r->file_name.'";');
+	
+	$f = fopen('php://output', 'w');
+	fwrite($f, $r->file_blob);
+	fclose($f);
+
+}
+
+
 ?>
