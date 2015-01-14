@@ -1524,6 +1524,7 @@ function nuLogin(u, p, k){
 				
 				window.nuSession.setSessionID(data.DATA['session_id']);
 				w.call_type           = 'geteditform';
+				w.record_id           = '-1';
                                 w.session_id          = data.DATA['session_id'];
                                 if(!window.nuTimeout){
                                     var request = $.ajax({
