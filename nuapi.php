@@ -61,12 +61,17 @@ if (nuV('call_type') == 'validateaccess') {
 //==============================================================================
 if (nuV('call_type') == 'printpdf' or nuV('call_type') == 'runphp') {
 
-    $response['ERRORS'] = nuCheckParametersForm(nuV('form_data'));
+
+	if(nuV('iframe') == '0'){                                                      //-- don't check for blanks if coming from an iFrame
+		$response['ERRORS'] = nuCheckParametersForm(nuV('form_data'));
+	}else{
+		$response['ERRORS'] = array();
+	}
 	
 	$nuHash             = $hashData;
 
     if (count($response['ERRORS']) == 0) {                                         //-- if no error messages
-		$J['id']          = nuPDForPHPParameters($hashData);                       //-- puts a JSON string in zzzsys_debug and returns the primary key
+		$J['id']          = nuPDForPHPParameters($hashData);                      //-- puts a JSON string in zzzsys_debug and returns the primary key
 	}
     $J['iframe']      = nuV('iframe') == 0 ? 0 : 1;
     $response['DATA'] = json_encode($J);
