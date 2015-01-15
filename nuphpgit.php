@@ -281,18 +281,21 @@ function backupFiles($tmp_folder, $files) {
 	for ( $x=0; $x < count($files); $x++) {
                 $file 	= $files[$x];
 		$source = $file->copy_dest;
-		$folder = $file->folder;
+
+		if ( file_exists($source) ) {
+			$folder = $file->folder;
 	
-		if ( $folder == '' ) {
-			$seperator = '';
-		} else {
-			$seperator = '/';
-		}
-		$dest   = $tmp_folder.'/'.$folder.$seperator.$file->name;	
-		@unlink($dest);
-                $copy 	= copy($source, $dest);
-		if (!$copy) { 
-			setError("Back up error: $dest");
+			if ( $folder == '' ) {
+				$seperator = '';
+			} else {
+				$seperator = '/';
+			}
+			$dest   = $tmp_folder.'/'.$folder.$seperator.$file->name;	
+			@unlink($dest);
+                	$copy 	= copy($source, $dest);
+			if (!$copy) { 
+				setError("Back up error: $dest");
+			}
 		}
         }
 }
@@ -342,6 +345,7 @@ function errorCount() {
 
 function buildFilesList($cache, &$files_list, $git_url, $exclude_files, $folder = '') {
 
+	/*
 	if ( $cache[1] == GITNEW ) {
 		buildFilesListFromGit($files_list, $git_url, $exclude_files, $folder);
 	}
@@ -349,6 +353,8 @@ function buildFilesList($cache, &$files_list, $git_url, $exclude_files, $folder 
 	if ( $cache[1] == GITCACHE ) {
 		buildFilesListFromCache($files_list, $cache[0], $folder);
 	}
+	*/
+	buildFilesListFromGit($files_list, $git_url, $exclude_files, $folder);
 }
 
 function buildFilesListFromCache(&$files_list, $cache_folder, $folder) {
