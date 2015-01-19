@@ -1616,11 +1616,12 @@ function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- 
         $filelist[$hashData['nu_email_file_name']]  = $tmp_nu_file;
     }
     
-	if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
+    /*  	
+    if(!nuEmailValidateAddress($pEmailTo)) {                                                          //-- check to see if to field email is valid
         nuDisplayError("To Email validation failed");
         return;
     }
-	
+    */	
 	return nuSendEmail($pEmailTo, $fromaddress, $fromname, $pMessage, $pSubject, $filelist);
 	
 }
