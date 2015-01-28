@@ -10,8 +10,9 @@ $_SESSION['DBUser']                 = $nuConfigDBUser;
 $_SESSION['DBPassword']             = $nuConfigDBPassword;
 $_SESSION['DBGlobeadminPassword']   = $nuConfigDBGlobeadminPassword;
 $_SESSION['title']                  = $nuConfigtitle; 
-$_SESSION['SafeMode']		    = (isset($nuConfigSafeMode) ? $nuConfigSafeMode : false);
-$_SESSION['SafePHP']		    = (isset($nuConfigSafePHP) ? $nuConfigSafePHP : array());
+$_SESSION['IsDemo']                 = $nuConfigIsDemo; 
+$_SESSION['SafeMode']               = (isset($nuConfigSafeMode) ? $nuConfigSafeMode : false);
+$_SESSION['SafePHP']                = (isset($nuConfigSafePHP) ? $nuConfigSafePHP : array());
 	
 require_once('nudatabase.php');
 

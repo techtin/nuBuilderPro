@@ -68,8 +68,6 @@ if (nuV('call_type') == 'printpdf' or nuV('call_type') == 'runphp') {
 		$response['ERRORS'] = array();
 	}
 	
-	$nuHash             = $hashData;
-
     if (count($response['ERRORS']) == 0) {                                         //-- if no error messages
 		$J['id']          = nuPDForPHPParameters($hashData);                      //-- puts a JSON string in zzzsys_debug and returns the primary key
 	}
@@ -93,9 +91,10 @@ if (nuV('call_type') == 'runprintbrowse') {
 //==============================================================================
 if (nuV('call_type') == 'savemovedobjects') {
 
-	nuSaveMovedObjects();
+	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
+
 	$hashData         = nuHashData();
-    $response['DATA'] = nuGetEditForm($hashData);
+	$response['DATA'] = nuGetEditForm($hashData);
 }
 
 //==============================================================================
@@ -103,9 +102,9 @@ if (nuV('call_type') == 'savemovedobjects') {
 //==============================================================================
 if (nuV('call_type') == 'deleteform') {
 
-	$nuHash             = $hashData;
+	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
 
-    $beforeDelete       = nuReplaceHashes(nuF('sfo_custom_code_run_before_delete'), $hashData);
+	$beforeDelete      = nuReplaceHashes(nuF('sfo_custom_code_run_before_delete'), $hashData);
     
     eval($beforeDelete);
         
@@ -114,7 +113,7 @@ if (nuV('call_type') == 'deleteform') {
     }
     
 	$hashData         = nuHashData();
-    $response['DATA'] = nuGetEditForm($hashData);
+	$response['DATA'] = nuGetEditForm($hashData);
 }
 
 //==============================================================================
@@ -122,12 +121,9 @@ if (nuV('call_type') == 'deleteform') {
 //==============================================================================
 if (nuV('call_type') == 'saveform') {
 
-    $response['ERRORS'] = nuCheckForm(nuV('form_data'));
+	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
 	
-	$nuHash             = $hashData;
-
-    $beforeSave         = nuReplaceHashes(nuF('sfo_custom_code_run_before_save'), $hashData);
-
+	$beforeSave         = nuReplaceHashes(nuF('sfo_custom_code_run_before_save'), $hashData);
     
     if (count($response['ERRORS']) == 0) {                                         //-- if no error messages
         eval($beforeSave);
@@ -173,9 +169,9 @@ if (nuV('call_type') == 'cloneform') {
 
     $response['ERRORS']   = nuCheckForm(nuV('form_data'));
     if (count($response['ERRORS']) == 0) {
-        nuSaveForm(nuV('form_data'), $hashData);
+		nuSaveForm(nuV('form_data'), $hashData);
 		$hashData         = nuHashData();
-        $response['DATA'] = nuGetEditForm($hashData);
+		$response['DATA'] = nuGetEditForm($hashData);
     }
 }
 
@@ -691,9 +687,6 @@ function nuSaveForm($d, $hashData) {
     }
     nuLogStamp($stamp);
     
-//    $nuHash = $GLOBALS['nu_POST'];                                             //-- array of posted variables from the calling Edit Form
-
-	$nuHash = $hashData;
 	
     if($d['data'][0]['records'][0]['delete_record'] == 'yes'){
         $eval = nuReplaceHashes(nuF('sfo_custom_code_run_after_delete'), $hashData);
