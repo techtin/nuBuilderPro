@@ -93,6 +93,10 @@ if (nuV('call_type') == 'savemovedobjects') {
 
 	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
 
+	if (count($response['ERRORS']) == 0) {                                     //-- if no error messages
+		nuSaveMovedObjects();
+    }
+
 	$hashData         = nuHashData();
 	$response['DATA'] = nuGetEditForm($hashData);
 }
@@ -108,7 +112,7 @@ if (nuV('call_type') == 'deleteform') {
     
     eval($beforeDelete);
         
-    if (count($response['ERRORS']) == 0) {                                     //-- if still no error messages
+    if (count($response['ERRORS']) == 0) {                                     //-- if no error messages
         nuSaveForm(nuV('form_data'), $hashData);
     }
     
