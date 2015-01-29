@@ -1,4 +1,5 @@
-<?
+<?php
+
 class nuupdatesch {
 
         var $sqlErrors       	= array();
