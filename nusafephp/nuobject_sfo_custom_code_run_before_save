@@ -102,7 +102,7 @@ if('#sob_all_type#' == 'html'){
 
     if('#sob_html_code#' == ''){
 
-        $MESS = "SQL cannot be left blank..  (TAB : HTML)"; 
+        $MESS = "HTML cannot be left blank..  (TAB : HTML)"; 
         nuDisplayError($MESS);
 
     }
