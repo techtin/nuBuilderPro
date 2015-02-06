@@ -125,9 +125,10 @@ if (nuV('call_type') == 'deleteform') {
 //==============================================================================
 if (nuV('call_type') == 'saveform') {
 
+    $response['ERRORS']   = nuCheckForm(nuV('form_data'));
+	
 	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
 	
-    $response['ERRORS']   = nuCheckForm(nuV('form_data'));
 
 	$beforeSave         = nuReplaceHashes(nuF('sfo_custom_code_run_before_save'), $hashData);
     
