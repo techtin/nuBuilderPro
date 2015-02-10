@@ -379,6 +379,7 @@ function nuCalChoice(){
 
 	$('#nuCalendar').remove();
 	$('#' + df.id).change();
+	$('#' + df.id).focus();
 	
 	
 	
