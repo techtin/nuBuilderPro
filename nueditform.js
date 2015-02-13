@@ -1670,41 +1670,55 @@ function nuBlurDateField(){
 
 function nuDisable(i, v){                 //-- disable Edit Form Object and set value
 
-   $('#'+i).addClass('nuReadOnly');
-   $('#'+i).prop('readonly', true);
-   $('#'+i).prop('disabled', true);
+	$('#'+i).addClass('nuReadOnly');
+	$('#'+i).prop('readonly', true);
+	$('#'+i).prop('disabled', true);
 
-   $('#code'+i).addClass('nuReadOnly');
-   $('#code'+i).prop('readonly', true);
-   $('#code'+i).prop('disabled', true);
+	$('#code'+i).addClass('nuReadOnly');
+	$('#code'+i).prop('readonly', true);
+	$('#code'+i).prop('disabled', true);
+	$('#btn_'+i).css('visibility', 'hidden');
 
-   $('#btn_'+i).css('visibility', 'hidden');
-   
-   if(arguments.length == 2){
-      $('#'+i).val(v);
-      $('#'+i).change();
-   }
+	var s = $('#'+i).attr('data-id');
+	var p = $('#'+i).attr('data-prefix');
+
+	$('#'+p+'code'+s).addClass('nuReadOnly');
+	$('#'+p+'code'+s).prop('readonly', true);
+	$('#'+p+'code'+s).prop('disabled', true);
+	$('#'+p+'btn_'+s).css('visibility', 'hidden');
+
+	if(arguments.length == 2){
+		$('#'+i).val(v);
+		$('#'+i).change();
+	}
    
 }
 
 
 function nuEnable(i, v){                 //-- enable Edit Form Object and set value
 
-   $('#'+i).removeClass('nuReadOnly');
-   $('#'+i).prop('readonly', false);
-   $('#'+i).prop('disabled', false);
+	$('#'+i).removeClass('nuReadOnly');
+	$('#'+i).prop('readonly', false);
+	$('#'+i).prop('disabled', false);
 
-   $('#code'+i).removeClass('nuReadOnly');
-   $('#code'+i).prop('readonly', false);
-   $('#code'+i).prop('disabled', false);
+	$('#code'+i).removeClass('nuReadOnly');
+	$('#code'+i).prop('readonly', false);
+	$('#code'+i).prop('disabled', false);
+	$('#btn_'+i).css('visibility', 'visible');
 
-   $('#btn_'+i).css('visibility', 'visible');
-   
-   if(arguments.length == 2){
-      $('#'+i).val(v);
-      $('#'+i).change();
-   }
-   
+	var s = $('#'+i).attr('data-id');
+	var p = $('#'+i).attr('data-prefix');
+
+	$('#'+p+'code'+s).removeClass('nuReadOnly');
+	$('#'+p+'code'+s).prop('readonly', false);
+	$('#'+p+'code'+s).prop('disabled', false);
+	$('#'+p+'btn_'+s).css('visibility', 'visible');
+
+	if(arguments.length == 2){
+		$('#'+i).val(v);
+		$('#'+i).change();
+	}
+
 }
 
 
