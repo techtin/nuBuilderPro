@@ -129,6 +129,7 @@ if (nuV('call_type') == 'saveform') {
 	
 	if($_SESSION['IsDemo'] == 1){$response['ERRORS'][] = 'Unavailable in Demo';}   //-- ($nuConfigIsDemo = 1 in config.php)
 	
+	$nuHash             = $hashData;                                               //-- used in eval() along with hash variables
 
 	$beforeSave         = nuReplaceHashes(nuF('sfo_custom_code_run_before_save'), $hashData);
     
@@ -694,6 +695,7 @@ function nuSaveForm($d, $hashData) {
     }
     nuLogStamp($stamp);
     
+	$nuHash  = $hashData;                                                       //-- used in eval() along with hash variables
 	
     if($d['data'][0]['records'][0]['delete_record'] == 'yes'){
         $eval = nuReplaceHashes(nuF('sfo_custom_code_run_after_delete'), $hashData);
