@@ -1759,6 +1759,6 @@ function nuGetJSONSubform(s){
 
 
 function nuObject(i){
-    this.index = i;
+    this.nuIndex = i;
 }
 
