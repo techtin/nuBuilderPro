@@ -1747,7 +1747,8 @@ function nuGetJSONSubform(s){
             
         }
         
-        o['delete'] = $('#' + R[r] + '_nuDelete').prop('checked');
+        o['nuDelete']     = $('#' + R[r] + '_nuDelete').prop('checked');
+        o['nuPrimaryKey'] = $('#' + R[r] + '_nuPrimaryKey').val();
         
         S.push(o);
     }
