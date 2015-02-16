@@ -1722,3 +1722,42 @@ function nuEnable(i, v){                 //-- enable Edit Form Object and set va
 }
 
 
+
+function nuGetJSONSubform(s){
+
+    var q = $("[data-prefix='"+s+"0000']");
+    var R = nuSubformArray(s);
+    var S = Array();
+    var C = Array();
+    var n,d,i;
+
+    for(i = 0 ; i < $(q).length ; i++){
+
+        C.push(String($(q)[i].id).substr(s.length + Number(4)));
+        
+    }
+
+    for(r = 0 ; r < R.length ; r++){
+        
+        var o = new nuObject(r);
+        
+        for(c = 0 ; c < C.length ; c++){
+        
+            o[C[c]] = $('#' + R[r] + C[c]).val();
+            
+        }
+        
+        o['delete'] = $('#' + R[r] + '_nuDelete').prop('checked');
+        
+        S.push(o);
+    }
+    
+    return JSON.stringify(S);
+    
+}
+
+
+function nuObject(i){
+    this.index = i;
+}
+
