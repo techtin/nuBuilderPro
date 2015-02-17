@@ -1074,7 +1074,6 @@ function nuRecordObjects(formType, formTop){
 		var e          = Object();
 		var sfObjects  = $.parseJSON(o[i].objects);
 		var sfRecords  = $.parseJSON(o[i].records);
-		
 		if(o[i].row_type == 'b'){    //-- grid like subform
 				width   = nuGetGridWidth(o,i,sfObjects)+60;
 		}
@@ -1422,6 +1421,14 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
                 cb           = document.createElement('input');              //-- create delete checkbox
                 cb.setAttribute('id', form.prefix+'_nuDelete');
                 cb.setAttribute('type', 'checkbox');
+
+				if(sfO[sfI].events.length > 2){                                //-- empty array  []
+					var events = $.parseJSON(sfO[sfI].events);
+					for(var E = 0 ; E < events.event.length ; E++){
+						cb.setAttribute(events.event[E],    events.js[E]);
+					}
+				}
+
                 if(formRecords[R][0] == '-1'){
                     cb.setAttribute('checked','true');
                 }
@@ -1595,11 +1602,11 @@ function nuBuildDefaultSql(e) {
 
     if (e.id == "sfo_table")
         if ($('#sfo_table').val() && !$('#sfo_sql').val())
-            $('#sfo_sql').val("select * from " + $('#sfo_table').val());
+            $('#sfo_sql').val("SELECT * FROM " + $('#sfo_table').val());
     
     if (e.id == "sob_subform_table" || e.id == "sob_subform_foreign_key" )
         if ($('#sob_subform_table').val() && $('#sob_subform_foreign_key').val() && !$('#sob_subform_sql').val())
-            $('#sob_subform_sql').val("select * from " + $('#sob_subform_table').val() + " where " + $('#sob_subform_foreign_key').val() + " = '#RECORD_ID#' ");
+            $('#sob_subform_sql').val("SELECT * FROM " + $('#sob_subform_table').val() + " where " + $('#sob_subform_foreign_key').val() + " = '#RECORD_ID#' ");
 
 }
 
