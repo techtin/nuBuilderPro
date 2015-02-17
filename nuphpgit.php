@@ -14,8 +14,8 @@
 
 	define('NUAGENT', 'nuSoftware/nuBuilderPro/AutoUpdater');	
 
-	$download_dest = dirname(__FILE__).'/tmp/';
-	$copy_dest     = dirname(__FILE__).'/';
+	$download_dest = dirname(__FILE__).DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR;
+	$copy_dest     = dirname(__FILE__).DIRECTORY_SEPARATOR;
 
 	define('DOWNLOAD_DEST', $download_dest);
 	define('COPY_DEST',     $copy_dest);
@@ -154,7 +154,7 @@ function checkIsWriteable($folders, $download_dest, $copy_dest) {
 
 		$folder = $folders[$x];
 		if ( $folder != '' ) {
-			$folder .= '/';
+			$folder .= DIRECTORY_SEPARATOR;
 		}
 		$search_folder = $copy_dest.$folder;
 
@@ -186,7 +186,7 @@ function checkIsWriteable($folders, $download_dest, $copy_dest) {
 function checkSubFolders($folders, $folder) {
 
         for ($x=0; $x < count($folders); $x++) {
-                $this_folder = $folder.'/'.$folders[$x];
+                $this_folder = $folder.DIRECTORY_SEPARATOR.$folders[$x];
                 if ( !is_dir($this_folder) ) {
                         setError("Error checking sub folder: $this_folder");
                 }
@@ -196,7 +196,7 @@ function checkSubFolders($folders, $folder) {
 function setupSubFolders($folders, $folder) {
 
 	for ($x=0; $x < count($folders); $x++) {
-		$this_folder = $folder.'/'.$folders[$x];
+		$this_folder = $folder.DIRECTORY_SEPARATOR.$folders[$x];
 		@mkdir($this_folder, 0755);
 		if ( !is_dir($this_folder) ) {
 			setError("Error creating sub folder: $this_folder");
@@ -288,9 +288,9 @@ function backupFiles($tmp_folder, $files) {
 			if ( $folder == '' ) {
 				$seperator = '';
 			} else {
-				$seperator = '/';
+				$seperator = DIRECTORY_SEPARATOR;
 			}
-			$dest   = $tmp_folder.'/'.$folder.$seperator.$file->name;	
+			$dest   = $tmp_folder.DIRECTORY_SEPARATOR.$folder.$seperator.$file->name;	
 			@unlink($dest);
                 	$copy 	= copy($source, $dest);
 			if (!$copy) { 
@@ -362,7 +362,7 @@ function buildFilesListFromCache(&$files_list, $cache_folder, $folder) {
 	if ( $folder == '' ) {
         	$seperator = '';
 	} else {
-        	$seperator = '/';
+        	$seperator = DIRECTORY_SEPARATOR;
 	}
 	$search_folder = $cache_folder.$folder.$seperator;
 
@@ -441,7 +441,7 @@ class nuFile {
 		if ( $folder == '' ) {
 			$seperator = '';
                 } else {
-			$seperator = '/';
+			$seperator = DIRECTORY_SEPARATOR;
                 }
 
 		$this->folder   	= $folder;
@@ -454,7 +454,7 @@ class nuFile {
 }
 
 function logger($msg) {
-	$log = dirname(__FILE__).'/nuphpgit-errors.log';
+	$log = dirname(__FILE__).DIRECTORY_SEPARATOR.'nuphpgit-errors.log';
 	error_log($msg, 3, $log);
 }
 
