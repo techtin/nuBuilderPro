@@ -26,6 +26,7 @@
 	$errors		= array();
 	$success	= array();
 	$cache		= array();
+	$cache[0]   = '';
 	$dbupdate	= array();
 	$finalResult 	= array( 'message'=>'', 'errors'=>array(), 'success'=>array(), 'cache'=>array(), 'dbupdate'=>array() );
 	$login 		= checkGlobeadmin($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
@@ -245,11 +246,12 @@ function setupTmpFolder($folders) {
 	date_default_timezone_set(@date_default_timezone_get());
 	$objDateTime 	= new DateTime('NOW');
 	$dateStr 	= $objDateTime->format(DateTime::ISO8601);
+	$dateStr 	= str_replace(":", "_", $dateStr);
+	$dateStr 	= str_replace("+", "_", $dateStr);
 	$tmp_folder	= DOWNLOAD_DEST.$dateStr;
-	$tmp_folder 	= str_replace(":", "_", $tmp_folder);
-
+	
 	@mkdir($tmp_folder, 0755);	
-
+	
 	if ( is_dir($tmp_folder) ) {
 		setupSubFolders($folders, $tmp_folder);
 		return $tmp_folder;
@@ -440,16 +442,18 @@ class nuFile {
 
 		if ( $folder == '' ) {
 			$seperator = '';
-                } else {
-			$seperator = DIRECTORY_SEPARATOR;
-                }
+			$seperator2 = '';
+		} else {
+			$seperator = '/';
+			$seperator2 = DIRECTORY_SEPARATOR;
+		}
 
 		$this->folder   	= $folder;
 		$this->name 		= $gitObj['name'];
 		$this->git_size 	= $gitObj['size'];
 		$this->raw_url  	= RAW.$folder.$seperator.$gitObj['name'];
-		$this->download_dest	= GIT_CACHE_DEST.$folder.$seperator.$gitObj['name'];
-		$this->copy_dest	= COPY_DEST.$folder.$seperator.$gitObj['name'];
+		$this->download_dest	= GIT_CACHE_DEST.$folder.$seperator2.$gitObj['name'];
+		$this->copy_dest	= COPY_DEST.$folder.$seperator2.$gitObj['name'];
 	}
 }
 
