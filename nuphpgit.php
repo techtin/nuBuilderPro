@@ -26,7 +26,7 @@
 	$errors		= array();
 	$success	= array();
 	$cache		= array();
-	$cache[0]   = '';
+	//$cache[0]   = '';
 	$dbupdate	= array();
 	$finalResult 	= array( 'message'=>'', 'errors'=>array(), 'success'=>array(), 'cache'=>array(), 'dbupdate'=>array() );
 	$login 		= checkGlobeadmin($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
