@@ -1,5 +1,4 @@
 <?php
-
 class nuinstall {
 
         var $debug           = true;
