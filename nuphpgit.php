@@ -1,6 +1,6 @@
 <?php
-	ob_start();
 	error_reporting( error_reporting() & ~E_NOTICE );
+	ob_start();
 
 	require_once("config.php");
 
@@ -27,7 +27,6 @@
 	$errors		= array();
 	$success	= array();
 	$cache		= array();
-	//$cache[0]   = '';
 	$dbupdate	= array();
 	$finalResult 	= array( 'message'=>'', 'errors'=>array(), 'success'=>array(), 'cache'=>array(), 'dbupdate'=>array() );
 	$login 		= checkGlobeadmin($nuConfigDBHost, $nuConfigDBName, $nuConfigDBUser, $nuConfigDBPassword);
