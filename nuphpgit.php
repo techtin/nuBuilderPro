@@ -1,6 +1,6 @@
 <?php
 	error_reporting( error_reporting() & ~E_NOTICE );
-	ob_start();
+	//ob_start();
 
 	require_once("config.php");
 
@@ -85,8 +85,8 @@
 
 	$json = json_encode($finalResult);
 
-	ob_flush();
-	flush();
+	//ob_flush();
+	//flush();
 
 	header('Content-Type: application/json');
 	echo $json;
