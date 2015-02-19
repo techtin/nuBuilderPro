@@ -1712,8 +1712,17 @@ function nuGetBrowseForm($hashData) {
 	}else{
 		    $J['records']  = $data['records'];
 	}
+	
+	$min      = 350;
+	
+	if(nuF('sfo_add_button') == '1'){
+		$min = $min + 50;
+	}
+	if(nuF('sfo_print_button') == '1'){
+		$min = $min + 50;
+	}
 
-	if($w < 400){                                           //-- minimum length for a Browse Form
+	if($w < $min){                                           //-- minimum length for a Browse Form
 	
 		$nuObject          = new stdClass;
 
@@ -1721,7 +1730,7 @@ function nuGetBrowseForm($hashData) {
 		$nuObject->value   = '';
 		$nuObject->align   = '';
 		$nuObject->format  = '';
-		$nuObject->width   = 400 - $w ;
+		$nuObject->width   = $min - $w ;
 		$nuObject->search  = '';
 
 		$data['objects'][] = $nuObject;
