@@ -1870,18 +1870,19 @@ function nuFile(c){
 }
 
 
-function nuObjectMover() {
+function nuObjectDraggableDialog(w) {
 
 	nuCloseModal();
+	$("[id^='nuButton']").css('visibility','hidden');
 	
 	var e = document.createElement('div');              //-- create draggable div
 	e.setAttribute('id', 'nuDrag');
 	$('body').append(e);
 	$('#' + e.id).css({
-		'width'            : 300,
+		'width'            : w,
 		'height'           : 450,
 		'top'              : 50,
-		'left'             : 50,
+		'left'             : 20,
 		'position'         : 'absolute',
 		'background-color' : '#E1E8EA',
 		'z-index'          : 5000,
@@ -1889,14 +1890,15 @@ function nuObjectMover() {
 		'border-color'     : '#01A6F5',
 		'border-style'     : 'solid',
 		'filter'           : 'Alpha(Opacity=100)',
-		'opacity'          : '1'
+		'opacity'          : '1',
+		'box-shadow'       : '5px 5px 5px #888888'
 	})
 
 	var e = document.createElement('div');              //-- create draggable div
 	e.setAttribute('id', 'nuDragBar');
 	$('#nuDrag').append(e);
 	$('#' + e.id).css({
-		'width'                   : '300px',
+		'width'                   : w+'px',
 		'height'                  : '25px',
 		'top'                     : '0px',
 		'left'                    : '0px',
@@ -1928,6 +1930,12 @@ function nuObjectMover() {
 	.mousedown(function() {
 		nuCloseModal();
 	});
+	
+}
+
+
+function nuObjectMover(){
+	
 	var e          = document.createElement('select');       //-- create a new listbox object
 	e.multiple     = 'multiple';
 	e.setAttribute('id', 'nuObjectList');
@@ -1962,9 +1970,8 @@ function nuObjectMover() {
 	nuMoverAlignTopButton(345, 170);
 	nuMoverAlignBottomButton(380, 170);
 	nuMoverSaveButton(415, 170);
-
+	
 }
-
 
 
 function nuMoveUpInObjectList(){

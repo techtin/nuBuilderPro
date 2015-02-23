@@ -23,6 +23,7 @@ jsinclude('nucalendar.js');
 jsinclude('nucommon.js');
 jsinclude('nueditform.js');
 jsinclude('nubrowseform.js');
+jsinclude('nuobject.js');
 
 print $GLOBALS['nuSetup']->set_css;  //-- html header
 $i = "";

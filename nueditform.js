@@ -203,6 +203,7 @@ function nuPoweredBy(t){
     
 	window.nuMoveable = true;
 	$('#'+t.id).attr('src', 'numove_red.png');
+	nuObjectDraggableDialog(300);
 	nuObjectMover();
 
 }
