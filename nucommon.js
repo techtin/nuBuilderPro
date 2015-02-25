@@ -1873,7 +1873,6 @@ function nuFile(c){
 function nuObjectDraggableDialog(w) {
 
 	nuCloseModal();
-	$("[id^='nuButton']").css('visibility','hidden');
 	
 	var e = document.createElement('div');              //-- create draggable div
 	e.setAttribute('id', 'nuDrag');

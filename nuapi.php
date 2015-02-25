@@ -1506,6 +1506,8 @@ function nuGetEditForm($hashData) {
 		$J['schema'] = '[]';
 	}
 	
+	$J['object_properties'] = nuObjectJSON();
+	
     return json_encode($J);
 }
 
@@ -3088,6 +3090,80 @@ function nuSchemaJSON(){
     }
 
     return json_encode($tables);
+    
+    
+}
+
+
+function nuObjectJSON(){
+
+	if(nuV('nu_user_name') != 'globeadmin'){
+		return '[]';
+	}
+
+    $j['object'] = array();
+    $j['form']   = array();
+    $j['report'] = array();
+    $j['php']    = array();
+	$i           = nuV('form_id');
+    
+    $s = "	SELECT * 
+			FROM zzzsys_object 
+			WHERE sob_zzzsys_form_id = '$i'
+		";
+		nudebug($s);
+    $t           = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+		$j['object'][] = $r;
+    }
+
+   $s = "	SELECT 
+			zzzsys_form_id,
+			sfo_name,
+			sfo_title
+			FROM zzzsys_form
+			WHERE zzzsys_form_id NOT LIKE 'nu%'
+			ORDER BY sfo_name
+		";
+    $t = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+		$j['form'][] = $r;
+    }
+
+
+   $s = "	SELECT 
+			zzzsys_report_id,
+			sre_code,
+			sre_description
+			FROM zzzsys_report
+			WHERE zzzsys_report_id NOT LIKE 'nu%'
+			ORDER BY sre_code
+		";
+    $t = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+		$j['report'][] = $r;
+    }
+
+
+   $s = "	SELECT 
+			zzzsys_php_id,
+			slp_code,
+			slp_description
+			FROM zzzsys_php
+			WHERE zzzsys_php_id NOT LIKE 'nu%'
+			ORDER BY slp_code
+		";
+    $t = nuRunQuery($s);
+    
+    while($r = db_fetch_object($t)){
+		$j['php'][] = $r;
+    }
+
+
+    return json_encode($j);
     
     
 }

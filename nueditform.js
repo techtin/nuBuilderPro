@@ -121,13 +121,14 @@ function nuBuildEditForm(o){
 	nuBuildHolder('nuTabTitleHolder', 'nuTabTitleHolder nuUnselectedTab nuGradient', 'nuShadeHolder');
 	nuBuildHolder('nuStatusHolder', 'nuStatusHolder nuUnselectedTab nuGradient', 'nuShadeHolder');
 	
-	window.hashData     = Array();
-	window.nuVALUES     = Array();
-    window.nuTab        = 5;
-	window.hashData     = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
-	nuFORM.form_width   = o.form_width;
-	nuFORM.form_height  = o.form_height;
-	nuFORM.schema       = o.schema;
+	window.hashData          = Array();
+	window.nuVALUES          = Array();
+    window.nuTab             = 5;
+	window.hashData          = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
+	nuFORM.form_width        = o.form_width;
+	nuFORM.form_height       = o.form_height;
+	nuFORM.schema            = o.schema;
+	nuFORM.object_properties = o.object_properties;
 	nuDisplayEditForm(formObjects,formRecords);
 	nuSelectTab(nuFORM.tab_number, o.form_height, o.form_width);
 
