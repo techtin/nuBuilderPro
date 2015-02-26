@@ -3119,9 +3119,9 @@ function nuObjectJSON(){
     }
 
    $s = "	SELECT 
-			zzzsys_form_id,
-			sfo_name,
-			sfo_title
+			zzzsys_form_id AS id,
+			sfo_name AS code,
+			sfo_title AS description
 			FROM zzzsys_form
 			WHERE zzzsys_form_id NOT LIKE 'nu%'
 			ORDER BY sfo_name
@@ -3134,9 +3134,9 @@ function nuObjectJSON(){
 
 
    $s = "	SELECT 
-			zzzsys_report_id,
-			sre_code,
-			sre_description
+			zzzsys_report_id AS id,
+			sre_code AS code,
+			sre_description AS description
 			FROM zzzsys_report
 			WHERE zzzsys_report_id NOT LIKE 'nu%'
 			ORDER BY sre_code
@@ -3149,9 +3149,9 @@ function nuObjectJSON(){
 
 
    $s = "	SELECT 
-			zzzsys_php_id,
-			slp_code,
-			slp_description
+			zzzsys_php_id AS id,
+			slp_code AS code,
+			slp_description AS description
 			FROM zzzsys_php
 			WHERE zzzsys_php_id NOT LIKE 'nu%'
 			ORDER BY slp_code

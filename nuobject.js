@@ -1,11 +1,9 @@
 
-function nuOneObject(id){
+function nuOneObject(id, o){
 
-	var o = JSON.parse(nuFORM.object_properties);
-	
-	for(var i = 0 ; i < o.object.length ; i++){
-		if(o.object[i]['zzzsys_object_id'] == id){
-			return o.object[i];
+	for(var i = 0 ; i < o.length ; i++){
+		if(o[i]['zzzsys_object_id'] == id){
+			return o[i];
 		}
 	}
 	
@@ -14,7 +12,8 @@ function nuOneObject(id){
 	
 function nuPropertiesObject(id){
 
-	this.o                  = nuOneObject(id);
+	this.j                  = JSON.parse(nuFORM.object_properties);
+	this.o                  = nuOneObject(id, this.j.object);
 	this.top                = 20;
 	this.types              = Array();
 	this.types_list         = 'browse|Browse||button|Button||display|Display||dropdown|Drop Down||checkbox|Check Box||html|HTML||iframe|iFrame||listbox|List Box||lookup|Lookup||subform|SubForm||text|Text||textarea|Textarea||words|Words|';
@@ -33,6 +32,11 @@ function nuPropertiesObject(id){
 	this.types['text']      = all + 'sob_all_width|sob_all_clone|sob_all_align|sob_all_no_blanks|sob_all_no_duplicates|sob_all_read_only|sob_all_display_condition|sob_all_default_value_sql|sob_text_format|sob_text_type';
 	this.types['textarea']  = all + 'sob_all_width|sob_all_height|sob_all_clone|sob_all_align|sob_all_no_blanks|sob_all_no_duplicates|sob_all_read_only|sob_all_display_condition|sob_all_default_value_sql';
 	this.types['words']     = all + 'sob_all_width|sob_all_align';
+	
+	this.yesno              = Array();
+	this.yesno.push(new nuO('','',''));
+	this.yesno.push(new nuO('1','Yes',''));
+	this.yesno.push(new nuO('0','No',''));
 
 	nuObjectDraggableDialog(450);
 
@@ -60,20 +64,20 @@ function nuPropertiesObject(id){
 
 	}
 
-	this.button = function(fld){                                    //-- property needing a textarea
+	this.button = function(fld, code){                             //-- property needing a textarea
 
-		var e = document.createElement('input');                   //-- create a new button object
+		var e = document.createElement('button');                   //-- create a new button object
 		e.setAttribute('id',   'property_'+fld);
-		e.setAttribute('type', 'button');
-
-	}
-	
-	this.checkbox = function(fld){                                  //-- property needing yes or no
-
-		var e = document.createElement('input');                   //-- create a new checkbox object
-		e.setAttribute('id',   'property_'+fld);
-		e.setAttribute('type', 'checkbox');
-		
+		$('#nuDragProperties').append(e);
+		$('#' + e.id).css({
+			'position'         : 'absolute',
+			'top'              : this.top - 20,
+			'height'           : 20,
+			'width'            : 220,
+			'left'             : 190,
+			'text-align'       : 'center'
+		})
+		$('#' + e.id).html(code + ' Code');
 	}
 	
 	this.dropdown = function(fld){                                 //-- property needing a choice from a list
@@ -83,8 +87,9 @@ function nuPropertiesObject(id){
 		$('#nuDragProperties').append(e);
 		$('#' + e.id).css({
 			'position'         : 'absolute',
-			'top'              : this.top - 25,
-			'width'            : 100,
+			'top'              : this.top - 20,
+			'height'           : 20,
+			'width'            : 220,
 			'left'             : 190,
 			'text-align'       : 'left'
 		})
@@ -99,8 +104,9 @@ function nuPropertiesObject(id){
 		$('#nuDragProperties').append(e);
 		$('#' + e.id).css({
 			'position'         : 'absolute',
-			'top'              : this.top - 25,
-			'width'            : 200,
+			'top'              : this.top - 20,
+			'height'           : 18,
+			'width'            : 220,
 			'left'             : 190,
 			'text-align'       : 'left'
 		})
@@ -124,33 +130,30 @@ function nuPropertiesObject(id){
 
 		$('#' + e.id).html(nuTranslate(title)+' :');
 
-		this.top = Number(this.top) + 25;
+		this.top = Number(this.top) + 20;
 		
 	}
 
 	this.sob_all_type = function(fld){
 		
 		this.label('Type', fld);
-		
 		var a = Array();
-		a.push(new this.O('','',''));
-		a.push(new this.O('browse','Browse',''));
-		a.push(new this.O('button','Button',''));
-		a.push(new this.O('display','Display',''));
-		a.push(new this.O('dropdown','Drop Down',''));
-		a.push(new this.O('checkbox','Check Box',''));
-		a.push(new this.O('html','HTML',''));
-		a.push(new this.O('iframe','iFrame',''));
-		a.push(new this.O('listbox','List Box',''));
-		a.push(new this.O('lookup','Lookup',''));
-		a.push(new this.O('subform','Subform',''));
-		a.push(new this.O('text','Text',''));
-		a.push(new this.O('textarea','Textarea',''));
-		a.push(new this.O('word','Word',''));
-
+		a.push(new nuO('','',''));
+		a.push(new nuO('browse','Browse',''));
+		a.push(new nuO('button','Button',''));
+		a.push(new nuO('display','Display',''));
+		a.push(new nuO('dropdown','Drop Down',''));
+		a.push(new nuO('checkbox','Check Box',''));
+		a.push(new nuO('html','HTML',''));
+		a.push(new nuO('iframe','iFrame',''));
+		a.push(new nuO('listbox','List Box',''));
+		a.push(new nuO('lookup','Lookup',''));
+		a.push(new nuO('subform','Subform',''));
+		a.push(new nuO('text','Text',''));
+		a.push(new nuO('textarea','Textarea',''));
+		a.push(new nuO('word','Word',''));
 		this.dropdown(fld);
 		this.nuFillDropdown(fld, a, this.o[fld]);
-		
 		
 	}
 	
@@ -206,38 +209,58 @@ function nuPropertiesObject(id){
 	
 	this.sob_all_clone = function(fld){
 		this.label('Allow Cloning', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_all_align = function(fld){
 		this.label('Align', fld);
+		var a = Array();
+		a.push(new nuO('','',''));
+		a.push(new nuO('l','Left',''));
+		a.push(new nuO('r','Right',''));
+		a.push(new nuO('c','Center',''));
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, a, this.o[fld]);
 	}
 	
 	this.sob_all_no_blanks = function(fld){
 		this.label('Stop Blanks', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_all_no_duplicates = function(fld){
 		this.label('Stop Duplicates', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_all_read_only = function(fld){
 		this.label('Read Only', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_all_display_condition = function(fld){
 		this.label('Display Condition', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_all_default_value_sql = function(fld){
 		this.label('Default Value', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_button_zzzsys_form_id = function(fld){
 		this.label('Form To Launch via Browse', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.j.form, this.o[fld]);
 	}
 	
 	this.sob_button_skip_browse_record_id = function(fld){
 		this.label('Record ID', fld);
+		this.text(fld);
 	}
 	
 	this.sob_button_browse_filter = function(fld){
@@ -247,14 +270,17 @@ function nuPropertiesObject(id){
 	
 	this.sob_display_sql = function(fld){
 		this.label('SQL', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_dropdown_sql = function(fld){
 		this.label('SQL', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_listbox_sql = function(fld){
 		this.label('SQL', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_lookup_id_field = function(fld){
@@ -284,18 +310,24 @@ function nuPropertiesObject(id){
 	
 	this.sob_lookup_autocomplete = function(fld){
 		this.label('Autocomplete', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_lookup_zzzsys_form_id = function(fld){
 		this.label('Form to Lookup', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.j.form, this.o[fld]);
 	}
 	
 	this.sob_lookup_javascript = function(fld){
 		this.label('Javascript', fld);
+		this.button(fld, 'JS');
 	}
 	
 	this.sob_lookup_php = function(fld){
 		this.label('PHP Functions', fld);
+		this.button(fld, 'PHP');
 	}
 	
 	this.sob_subform_table = function(fld){
@@ -320,30 +352,81 @@ function nuPropertiesObject(id){
 	
 	this.sob_subform_addable = function(fld){
 		this.label('Addable', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_subform_deletable = function(fld){
 		this.label('Deleteable', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_subform_type = function(fld){
 		this.label('Subform Type', fld);
+		var a = Array();
+		a.push(new nuO('','',''));
+		a.push(new nuO('g','Grid',''));
+		a.push(new nuO('f','Form',''));
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.yesno, this.o[fld]);
 	}
 	
 	this.sob_subform_sql = function(fld){
 		this.label('SQL', fld);
+		this.button(fld, 'SQL');
 	}
 	
 	this.sob_text_format = function(fld){
 		this.label('Format', fld);
+		var a = Array();
+		a.push(new nuO('', '', ''));
+		a.push(new nuO('0', '10000', ''));
+		a.push(new nuO('1', '10000.0', ''));
+		a.push(new nuO('2', '10000.00', ''));
+		a.push(new nuO('3', '10000.000', ''));
+		a.push(new nuO('4', '10000.0000', ''));
+		a.push(new nuO('5', '10000.00000', ''));
+		a.push(new nuO('6', '13-Jan-2007', ''));
+		a.push(new nuO('7', '13-01-2007', ''));
+		a.push(new nuO('8', 'Jan-13-2007', ''));
+		a.push(new nuO('9', '01-13-2007', ''));
+		a.push(new nuO('10', '13-Jan-07', ''));
+		a.push(new nuO('11', '13-01-07', ''));
+		a.push(new nuO('12', 'Jan-13-07', ''));
+		a.push(new nuO('13', '01-13-07', ''));
+		a.push(new nuO('14', '10,000', ''));
+		a.push(new nuO('15', '10,000.0', ''));
+		a.push(new nuO('16', '10,000.00', ''));
+		a.push(new nuO('17', '10,000.000', ''));
+		a.push(new nuO('18', '10,000.0000', ''));
+		a.push(new nuO('19', '10,000.00000', ''));
+		a.push(new nuO('20', '10000', ''));
+		a.push(new nuO('21', '10000,0', ''));
+		a.push(new nuO('22', '10000,00', ''));
+		a.push(new nuO('23', '10000,000', ''));
+		a.push(new nuO('24', '10000,0000', ''));
+		a.push(new nuO('25', '10000,00000', ''));
+		a.push(new nuO('26', '10.000', ''));
+		a.push(new nuO('27', '10.000,0', ''));
+		a.push(new nuO('28', '10.000,00', ''));
+		a.push(new nuO('29', '10.000,000', ''));
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, a, this.o[fld]);
 	}
 	
 	this.sob_text_type = function(fld){
 		this.label('Text Type', fld);
+		var a = Array();
+		a.push(new nuO('','',''));
+		a.push(new nuO('password','Password',''));
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, a, this.o[fld]);
 	}
 	
 	this.sob_html_code = function(fld){
 		this.label('HTML', fld);
+		this.button(fld, 'HTML');
 	}
 	
 	this.sob_browse_zzzsys_form_id = function(fld){
@@ -357,16 +440,20 @@ function nuPropertiesObject(id){
 	
 	this.sob_iframe_zzzsys_php_id = function(fld){
 		this.label('PHP to Run', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.j.php, this.o[fld]);
 	}
 	
 	this.sob_iframe_zzzsys_report_id = function(fld){
 		this.label('Report to Run', fld);
+		this.dropdown(fld);
+		this.nuFillDropdown(fld, this.j.report, this.o[fld]);
 	}
 
 
 
 	this.nuFillDropdown = function(fld, arr, val){
-debugger;
+
 		var e        = document.getElementById('property_'+fld);
 
 		for(var i = 0 ; i < arr.length ; i++){
@@ -374,7 +461,11 @@ debugger;
 			var o   = document.createElement('option');
 			o.value = arr[i].id;
 			
-			o.appendChild(document.createTextNode(arr[i].code));
+			if(arr[i].description == ''){
+				o.appendChild(document.createTextNode(arr[i].code));
+			}else{
+				o.appendChild(document.createTextNode(arr[i].code + ' : ' + arr[i].description));
+			}
 			
 			if(arr[i].id == val){
 				o.setAttribute('selected', 'selected');
@@ -386,17 +477,14 @@ debugger;
 
 	}
 
-	this.O = function(i, c, d){
-		
-		this.id          = i;
-		this.code        = c;
-		this.description = d;
-		
-	}
-	
-
-
-
-	
 }
+
+function nuO(i, c, d){
+		
+	this.id          = i;
+	this.code        = c;
+	this.description = d;
+		
+}
+
 
