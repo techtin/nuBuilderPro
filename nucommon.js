@@ -338,9 +338,6 @@ function nuOpenObjectForm(pThis){
 		}
 	}
 
-	nuOpenFormInFrame('nuobject',pThis.getAttribute("data-id"));           //-- added by sc 2015-02-27 (open properties in the same window)
-	return;
-	
 	var id                  = $('#'+pThis.id).attr('data-id');
 	if(window.nuShiftKey){
 		nuMoveObject(pThis.id.substr(6), 10, 0);	
@@ -421,19 +418,19 @@ function nuOpenFormInFrame(formID,recordID){
 	
 }
 
-function nuOpenNewWindowManager(w) {
+	function nuOpenNewWindowManager(w) {
 
-	if ( nuOpenNewWindowCheck() ) {
-		if (window.top === window.self) {
-                	nuOpenNewWindow(w);
-                } else {
-                        nuOpenNewWindowParent(w);
-                }
-	} else {
-        	nuSession.nuWindows.push(w);
-                window.open('index.php?i='+w.id);
+		if ( nuOpenNewWindowCheck() ) {
+			if (window.top === window.self) {
+				nuOpenNewWindow(w);
+			} else {
+				nuOpenNewWindowParent(w);
+			}
+		} else {
+			nuSession.nuWindows.push(w);
+			window.open('index.php?i='+w.id);
+		}
 	}
-}
 
 function nuOpenNewWindowCheck() {
 	
