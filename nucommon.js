@@ -1121,7 +1121,8 @@ function nuCloneForm(pThis, formID, recordID){
 
 	var w          = new nuWindow();
 	w.form_id      = formID;
-	w.title        = $('title').html();
+//	w.title        = $('title').html();
+	w.title        = window.nuSession.breadCrumb[window.nuSession.breadCrumb.length-1].title;
 	w.call_type    = 'cloneform';
 	w.cloned       = '1';
 	w.record_id    = recordID;
