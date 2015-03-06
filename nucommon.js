@@ -1874,6 +1874,7 @@ function nuFile(c){
 function nuObjectDraggableDialog(w) {
 
 	nuCloseModal();
+	$(".nuActionButton").remove();
 	
 	var e = document.createElement('div');              //-- create draggable div
 	e.setAttribute('id', 'nuDrag');
