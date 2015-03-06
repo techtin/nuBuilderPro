@@ -61,7 +61,7 @@ function getProperties($attr) {
 
 
 $form    = nuID();
-$sql     = "select * from #fw_table_name#";
+$sql     = "SELECT * FROM #fw_table_name#";
 $table   = '#fw_table_name#';
 $primary = '#fw_hidden_primary#';
 $columns = array();
