@@ -2958,6 +2958,23 @@ function nuSubformArray($sf, $all = true){
 	return $a;
 }
 
+
+function nuGetJSONSubform($s){
+
+	$h = $GLOBALS['hashData'];
+
+    for($i = 0 ; $i < count($h['form_data']['data']) ; $i++){
+        
+        if($h['form_data']['data'][$i]['subform'] == $s){
+            return $h['form_data']['data'][$i]['json'];
+        }
+        
+    }
+	
+	return '[]';
+    
+}
+
 function nuCheckEdit(){
 
 	$t = nuRunQuery("SELECT sfo_table, sfo_primary_key FROM zzzsys_form WHERE zzzsys_form_id = ? ", array(nuV('form_id')));
@@ -3111,7 +3128,6 @@ function nuObjectJSON(){
 			FROM zzzsys_object 
 			WHERE sob_zzzsys_form_id = '$i'
 		";
-		nudebug($s);
     $t           = nuRunQuery($s);
     
     while($r = db_fetch_object($t)){

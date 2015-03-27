@@ -402,7 +402,7 @@ function nuOpenForm(parentFormID, parentRecordID, formID, recordID, formTitle, f
 	
 }
 
-function nuOpenFormInFrame(formID,recordID){
+function nuOpenFormInFrame(formID,recordID,functionName){
 
 	var parent           = '';
 	var w                = new nuWindow();
@@ -412,6 +412,9 @@ function nuOpenFormInFrame(formID,recordID){
 	w.record_id			 = recordID;
 	w.tip				 = 'Edit';
 	w.type				 = 'Edit';
+	if(arguments.length == 3){
+		w.function_name    = functionName;
+	}
 
 	nuSession.nuWindows.push(w);
 	nuIframeWindow(w);
@@ -462,16 +465,23 @@ function nuIframeWindowSizer() {
 function nuIframeWindow(w) {
 
 	var url = 'index.php?i='+w.id;
-	nuCustomIframeWindow(url, w.id, '23px', '23px');
+	nuCustomIframeWindow(url, w, '23px', '23px');
 
 }
 
-function nuCustomIframeWindow(url, iframeID, startWidth, startHeight, startTop, startLeft) {
+function nuCustomIframeWindow(url, w, startWidth, startHeight, startTop, startLeft) {
 	
 
+	
 	if(arguments.length > 1){
-                var iframe_id  = iframeID;
-        } else {
+		if(typeof w == 'object'){
+			var iframe_id      = w.id;
+			var function_name  = w.function_name;
+		}else{
+			var iframe_id      = w;
+			var function_name  = '';
+		}
+	} else {
 		var iframe_id = 'custom';
 	}
 
@@ -561,8 +571,11 @@ function nuCustomIframeWindow(url, iframeID, startWidth, startHeight, startTop, 
         .addClass('nuClose')
         .html('&#10006;')
         .mousedown(function() {
-                $('#nuModal').remove();
-                $('#nuDrag').remove();
+			$('#nuModal').remove();
+			$('#nuDrag').remove();
+			if(function_name != ''){
+				window[function_name]();                      //-- run a function added as parameter 3 in nuOpenFormInFrame()
+			}
         });
 
 		var e = document.createElement('iframe');              //-- create iframe

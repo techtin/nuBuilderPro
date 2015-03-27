@@ -294,7 +294,7 @@ function nuWindow(){
 	this.php               = '';
     this.search_columns    = '';
     this.iframe            = 0;
-	
+    this.function_name	    = '';
 }
 
 

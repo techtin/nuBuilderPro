@@ -204,6 +204,7 @@ function nuPoweredBy(t){
     
 	window.nuMoveable = true;
 	$('#'+t.id).attr('src', 'numove_red.png');
+	$('#'+t.id).remove();
 	nuObjectDraggableDialog(300);
 	nuObjectMover();
 
@@ -1471,6 +1472,7 @@ function nuGetData(pAction){
 	var record      = {};
 	var fields      = [];
 	var field       = {};
+	var json        = '';
 	
 	if(arguments.length != 1){
 		var pAction = '';
@@ -1550,7 +1552,9 @@ function nuGetData(pAction){
 			records.push(record);
 		}
 
-		form = {subform : name, form_id : cols[0].f_id, records : records};
+		json = nuGetJSONSubform(name);
+		form = {subform : name, json : json, form_id : cols[0].f_id, records : records};
+//		form = {subform : name, form_id : cols[0].f_id, records : records};
 		forms.unshift(form);
 			
    }
