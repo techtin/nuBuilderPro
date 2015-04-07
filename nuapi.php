@@ -272,7 +272,8 @@ function nuBuildTable($f, $p, $hashData) {
         
         $nuObject               = new stdClass;
 
-        $nuObject->title  = $R->sbr_title;
+//        $nuObject->title  = $R->sbr_title;
+        $nuObject->title  = trim(preg_replace("/[^0-9a-zA-Z _]/", "", $R->sbr_title));      //-- changed 2015-04-07 by SC
         $nuObject->value  = $R->sbr_display;
         $nuObject->align  = $R->sbr_align;
         $nuObject->format = $R->sbr_format;
