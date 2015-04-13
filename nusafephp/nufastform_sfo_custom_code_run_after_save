@@ -308,6 +308,7 @@ function nuFastFormForm($FO){
     $tn  = nuGetTableName();
     $p   = $tn . '_id';
     $b   = nuID();
+    $a   = nuID();
 
     $s   = "
     
@@ -373,7 +374,27 @@ function nuFastFormForm($FO){
 
     ";
 
+    nuRunQuery($s);                                                             //-- add Form to Fast Form Access Level
+
+    $s   = "
+
+        INSERT INTO zzzsys_access_level_form 
+        (
+        zzzsys_access_level_form_id, 
+        slf_zzzsys_access_level_id, 
+        slf_zzzsys_form_id 
+        ) 
+        VALUES
+        (
+        '$a', 
+        'nufastformlevel', 
+        '$FO->zzzsys_form_id'
+        );
+
+    ";
+
     nuRunQuery($s);                                                             //-- add Button to Home
+    
     
     $s = "CREATE TABLE $tn ($p VARCHAR(25) NOT NULL, PRIMARY KEY ($p)) ENGINE = MyISAM";
 
