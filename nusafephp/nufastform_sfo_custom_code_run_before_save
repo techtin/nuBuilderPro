@@ -1,4 +1,3 @@
-
 $s = nuGetJSONSubform('fast_form_subform');
 $j = json_decode($s);
 

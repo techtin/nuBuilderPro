@@ -1,4 +1,3 @@
-
 $GLOBALS['nuObjectOrder']      = 100;
 
 $a  = array();
