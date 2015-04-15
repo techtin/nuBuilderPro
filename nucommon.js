@@ -421,6 +421,25 @@ function nuOpenFormInFrame(formID,recordID,functionName){
 	
 }
 
+
+function nuOpenBrowseInFrame(formID, functionName){
+
+	var parent           = '';
+	var w                = new nuWindow();
+	w.call_type          = 'getlookupform';
+	w.form_id            = formID;
+	w.breadcrumb         = '0';
+	w.tip                = 'Browse';
+	w.type               = 'Browse';
+	if(arguments.length == 2){
+		w.function_name    = functionName;
+	}
+
+	nuSession.nuWindows.push(w);
+	nuIframeWindow(w);
+	
+}
+
 	function nuOpenNewWindowManager(w) {
 
 		if ( nuOpenNewWindowCheck() ) {
