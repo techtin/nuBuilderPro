@@ -1035,6 +1035,26 @@ function nuPrintPDF(pCode, id, pFilename){  //-- save data from form and rebuild
 
 }
 
+
+
+function nuOpenReportForm(pCode){
+
+	var p = nuFORM.report_ids[pCode];
+	
+	nuOpenForm('nurunreport', p.record, p.form, p.record, 'Run Report');
+	
+}
+
+
+function nuOpenPHPForm(pCode){
+
+	var p = nuFORM.php_ids[pCode];
+	
+	nuOpenForm('nurunphp', p.record, p.form, p.record, 'Run Procedure');
+	
+}
+
+
 function nuRunPHP(pCode, id){
 
     var P               = new nuCopyJSObject(nuFORM);

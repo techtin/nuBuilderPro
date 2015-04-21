@@ -123,12 +123,15 @@ function nuBuildEditForm(o){
 	
 	window.hashData          = Array();
 	window.nuVALUES          = Array();
-    window.nuTab             = 5;
+	window.nuTab             = 5;
 	window.hashData          = nuGetHashData(formObjects,formRecords);  //-- to be used in Edit Browse Objects
 	nuFORM.form_width        = o.form_width;
 	nuFORM.form_height       = o.form_height;
 	nuFORM.schema            = o.schema;
 	nuFORM.object_properties = o.object_properties;
+	nuFORM.php_ids           = o.php_ids;
+	nuFORM.report_ids        = o.report_ids;
+
 	nuDisplayEditForm(formObjects,formRecords);
 	nuSelectTab(nuFORM.tab_number, o.form_height, o.form_width);
 

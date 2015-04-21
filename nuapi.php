@@ -1494,12 +1494,14 @@ function nuGetEditForm($hashData) {
 		$data['objects'][]       = $nuObject;
 	}
 		
-    $J['objects']    = $data['objects'];
-    $J['records']    = $data['records'];
-    $J['edited']     = $data['edited'];
-    $J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
-    $J['formats']    = json_encode(nuTextFormats());
-    $J['set_title']  = nuV('set_title');
+	$J['objects']    = $data['objects'];
+	$J['records']    = $data['records'];
+	$J['edited']     = $data['edited'];
+	$J['breadcrumb'] = nuGetBreadcrumb(nuF('sfo_breadcrumb'), $data['objects'], $hashData);
+	$J['formats']    = json_encode(nuTextFormats());
+	$J['set_title']  = nuV('set_title');
+	$J['php_ids']    = nuPHPJSON();
+	$J['report_ids'] = nuReportJSON();
 
 	if(substr($formID,0,2) == 'nu'){                     //-- Forms that can use Ace Editor
 		$J['schema'] = nuSchemaJSON();
@@ -2034,7 +2036,6 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     $start        = $nuBrowse->rows * ($p - 1);
     $row          = 0;
     $formattedSQL = nuReplaceHashes($SQL->SQL, $hashData);
-
     $t            = nuRunQuery($formattedSQL);
     
     if (nuErrorFound()) {
@@ -3196,7 +3197,48 @@ function nuAddTableObject($t, $f){
     
 }
 
+function nuPHPJSON(){
+	
+	$s = "SELECT * FROM zzzsys_php";
+	$t = nuRunQuery($s);
+	$a = array();
+	
+	while($r = db_fetch_object($t)){
+		
+		$c               = new stdClass;
+		$c->record       = $r->zzzsys_php_id;
+		$c->form         = $r->slp_zzzsys_form_id;
+		
+		$a[$r->slp_code] = $c;
+		
+	}
+	
+    return $a;
+    return json_encode($a);
+	
+}
 
+
+function nuReportJSON(){
+	
+	$s = "SELECT * FROM zzzsys_report";
+	$t = nuRunQuery($s);
+	$a = array();
+	
+	while($r = db_fetch_object($t)){
+		
+		$c               = new stdClass;
+		$c->record       = $r->zzzsys_report_id;
+		$c->form         = $r->sre_zzzsys_form_id;
+		
+		$a[$r->sre_code] = $c;
+		
+	}
+	
+    return $a;
+    return json_encode($a);
+	
+}
 
 
 ?>
