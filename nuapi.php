@@ -418,7 +418,7 @@ function nuValidateUser($session, $hashData) {
 		
         $t = nuRunQuery("SELECT CONCAT(sfo_name, ' - ', sfo_title) FROM zzzsys_form WHERE zzzsys_form_id = '$formID'");
         $r = db_fetch_row($t);
-        nuDisplayError("You do not have access to this form ($r[0]). \r Please contact your system administrator");
+        nuDisplayError("You do not have access to this form (" . $r[0] . "). \r Please contact your system administrator");
         return;
 		
     }
