@@ -544,11 +544,19 @@ function nuRecordArray($hashData){
 function nuReplaceHashes($str, $arr){
 
 	while(list($key, $value) = each($arr)){
-	
+
+
+		//Changed by SG on 20 April 2015
+		/*	
 		if(!is_array($value) and $str != '' and $key != ''){
 			$newValue = addslashes($value);
 			$str = str_replace('#'.$key.'#', $newValue, $str);
 		}
+		*/
+		 if( !is_object($value) and !is_array($value) and $str != '' and $key != ''){
+                        $newValue = addslashes($value);
+                        $str = str_replace('#'.$key.'#', $newValue, $str);
+                }
 		
 	}
 
