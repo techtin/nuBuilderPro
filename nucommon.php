@@ -1,9 +1,9 @@
 <?php
 
+session_start();
+
 error_reporting( error_reporting() & ~E_NOTICE );
 require_once('config.php'); 
-
-session_start();
 
 $_SESSION['DBHost']                 = $nuConfigDBHost;
 $_SESSION['DBName']                 = $nuConfigDBName;
