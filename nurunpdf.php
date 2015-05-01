@@ -1049,6 +1049,8 @@ function nuAddCriteriaValues($hashData){
 
     foreach($hashData AS $key => $value){
     
+	//Changed by SG 1 May 2015
+	/*
         if(!in_array($key, $c) and !is_array($value)){
             $v   = substr(addslashes($value),0,199);
             $l   = min(strlen($v), 200);
@@ -1056,8 +1058,17 @@ function nuAddCriteriaValues($hashData){
                 $a[] = " ADD `$key` VARCHAR($l) DEFAULT '$v' ";
             }
             $c[] = strtolower($key);
-        
         }
+	*/
+	if( !in_array($key, $c) and !is_array($value) and !is_object($value) ){
+            $v   = substr(addslashes($value),0,199);
+            $l   = min(strlen($v), 200);
+            if($l > 0){
+                $a[] = " ADD `$key` VARCHAR($l) DEFAULT '$v' ";
+            }
+            $c[] = strtolower($key);
+        }
+
         
     }
     
