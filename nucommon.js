@@ -1041,6 +1041,11 @@ function nuOpenReportForm(pCode){
 
 	var p = nuFORM.report_ids[pCode];
 	
+	if(p==undefined){
+		alert('Access not allowed to this Report');
+		return;
+	}
+	
 	nuOpenForm('nurunreport', p.record, p.form, p.record, 'Run Report');
 	
 }
@@ -1049,6 +1054,11 @@ function nuOpenReportForm(pCode){
 function nuOpenPHPForm(pCode){
 
 	var p = nuFORM.php_ids[pCode];
+	
+	if(p==undefined){
+		alert('Access not allowed to this Procedure');
+		return;
+	}
 	
 	nuOpenForm('nurunphp', p.record, p.form, p.record, 'Run Procedure');
 	
