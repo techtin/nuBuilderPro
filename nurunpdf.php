@@ -739,11 +739,15 @@ class nuSECTION{
             $fields         = explode(',', substr($O->fieldName, 8, -1));
         }
         if($type == ''){                                                                //-- normal value
-            if(array_key_exists($O->fieldName, $this->ROW)) {
-				$v          = $this->nuGetFormatting($O);
-                $value      = mb_convert_encoding($v['V'], "WINDOWS-1252", "UTF-8");
-//                $value          = mb_convert_encoding($this->ROW[$O->fieldName], "WINDOWS-1252", "UTF-8");
-            }
+	
+		//Add the 'is_array' check by SG 8th May 2015	
+		if ( is_array($this->ROW) ) {	    
+			if(array_key_exists($O->fieldName, $this->ROW)) {
+				$v = $this->nuGetFormatting($O);
+                		$value = mb_convert_encoding($v['V'], "WINDOWS-1252", "UTF-8");
+            		}
+		}
+
         }else{                                                                          //-- summed value
             $groups         = array();
             $where          = '';
