@@ -285,7 +285,7 @@ function nuBuildTable($f, $p, $hashData) {
             nuV('search_columns', nuV('search_columns') . ",$columnCount");    //--  create a comma delimited string of searchable columns
             $searchFields[] = $R->sbr_display;
         } else {
-            if (in_array($columnCount, $searchColumns)) {
+            if (in_array($columnCount - 1, $searchColumns)) {
                 $searchFields[] = $R->sbr_display;                           //-- searchable column
             }
         }
