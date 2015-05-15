@@ -1,3 +1,9 @@
+if('#replyto#' == ''){
+    nuDisplayError('User must have an Email Address');
+    return;
+}
+
+
 
 if('#nu_pdf_code#'!='') {
     nuEmail('#nu_pdf_code#', '#to#', '#subject#','#message#', $hashData);

@@ -1,5 +1,6 @@
 $GLOBALS['nuObjectOrder']      = 100;
 
+
 $a  = array();
 $t  = nuRunQuery("SELECT * FROM zzzsys_form WHERE zzzsys_form_id = '#RECORD_ID#'");
 $FO = db_fetch_object($t);
