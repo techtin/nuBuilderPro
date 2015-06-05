@@ -1565,7 +1565,6 @@ function nuLogin(u, p, k){
 		
 	}
 
-
 	var request = $.ajax({
 		url: "nuapi.php",
 		type: "POST",
@@ -1608,6 +1607,8 @@ function nuLogin(u, p, k){
 
 			}
 	});
+	
+	nuFORM.password = 'xxxx';
 
 }
 
