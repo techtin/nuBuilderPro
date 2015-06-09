@@ -650,6 +650,7 @@ function nuSaveForm($d, $hashData) {
                 $DEL         = $RECORD['delete_record'];
                 $validFields = nuValidateArray($parentID, $formInfo->parent_table);
 
+		$valid	     = array();	// ADDED by SG 9Jun2015
                 for ($V = 0; $V < count($validFields); $V++) {
                     $valid[] = $validFields[$V]->field_name;
                 }
