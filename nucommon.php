@@ -1565,7 +1565,7 @@ function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
 		@unlink($filesource);
 	}
 
-    return result;
+    return $result;
 }
 
 function nuEmail($pPDForPHP, $pEmailTo, $pSubject, $pMessage, $hashData) { //-- Emails a PDF,PHP generated file or plain email (Requires hashdata of form to generate file from)
