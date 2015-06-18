@@ -546,10 +546,6 @@ class nuSECTION{
         for($i = 0 ; $i < count($O) ; $i ++){
         
             $newO          = pdfObject($O[$i]->id, $O[$i]->top);                 //-- create Object
-			
-			if(isset($this->O[$i]->B)){$o->B = $this->O[$i]->B;$this->O[$i]->B = null;}
-			if(isset($this->O[$i]->F)){$o->F = $this->O[$i]->F;$this->O[$i]->F = null;}
-				
             $newO->lines   = $O[$i]->LINES;
             $newOs[]       = $newO;
             
