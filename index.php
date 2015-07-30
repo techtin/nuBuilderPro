@@ -1,3 +1,4 @@
+<?php require_once('nucommon.php'); ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -16,8 +17,6 @@
 <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <?php
-require_once('nucommon.php');
-
 jsinclude('nuformat.js');
 jsinclude('nucalendar.js');
 jsinclude('nucommon.js');
