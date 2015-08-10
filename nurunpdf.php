@@ -136,17 +136,16 @@ function nuPrintReport($PDF, $LAY, $DATA, $JSON){
 
         nuPrintBackground($PDF, $DATA[$s]->sectionTop, $DATA[$s]->sectionHeight, $color);
         
-        for($o = 0 ; $o < count($DATA[$s]->objects) ; $o++){
+		for($o = 0 ; $o < count($DATA[$s]->objects) ; $o++){
 
-            $O               = nuGetObjectProperties($LAY, $DATA[$s]->objects[$o]->id);
-            
-            if($O->objectType == 'field' or $O->objectType == 'label'){
-                nuPrintField($PDF, $DATA[$s], $DATA[$s]->objects[$o], $O, $LAY);
-            }
-            if($O->objectType == 'image'){
-                nuPrintImage($PDF, $DATA[$s], $DATA[$s]->objects[$o], $O);                                                           //-- print graphic
-            }
-        }
+			$O               = nuGetObjectProperties($LAY, $DATA[$s]->objects[$o]->id);
+			if($O->objectType == 'field' or $O->objectType == 'label'){
+				nuPrintField($PDF, $DATA[$s], $DATA[$s]->objects[$o], $O, $LAY);
+			}
+			if($O->objectType == 'image'){
+				nuPrintImage($PDF, $DATA[$s], $DATA[$s]->objects[$o], $O);                                                           //-- print graphic
+			}
+		}
         
     }
 }
@@ -927,23 +926,19 @@ function nuPrintField($PDF, $S, $contents, $O, $LAY){
     $PDF->SetFillColor($backcolor[0], $backcolor[1], $backcolor[2]);
     
     $PDF->MultiCell($width, $height, implode("\n", $contents->lines), $borderWidth == 0 ? 0 : 1, $textAlign, true); 
-/*
-	$text = implode("\n", $contents->lines);                                              //-- altered by Fike 2014-10-21
-	$text = utf8_decode($text);
-	$PDF->MultiCell($width, $height, $text, $borderWidth == 0 ? 0 : 1, $textAlign, true);	
-*/	
+	
 }
 
 function nuPrintImage($PDF, $S, $contents, $O){
 
-    $width             = $O->width;
-    $height            = $O->height;
-    $left              = $O->left;
-    $path              = $contents->path;
-    $top               = $S->sectionTop + $contents->top;
+	$width             = $O->width;
+	$height            = $O->height;
+	$left              = $O->left;
+	$path              = $contents->path;
+	$top               = $S->sectionTop + $contents->top;
 
-	if($path !=''){
-		$PDF->Image($path, $left, $top, $width, $height);
+	if($O->path != ''){
+		$PDF->Image($O->path, $left, $top, $width, $height);
 	}
 
 }
