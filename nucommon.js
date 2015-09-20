@@ -67,22 +67,24 @@ function nuKeyPressed(e, isPressed){
         $('.nuSelected').css( 'cursor',  'move');
 	}
 
-	$("#nuObjectList > option:selected").each(function() {
+	if(isPressed){
+		$("#nuObjectList > option:selected").each(function() {
 
-		var o       = nuDraggableObjectProperties(this.value);
-		var t       = Number(o.holder_top);          //-- top
-		var l       = Number(o.holder_left);         //-- left
-		
-        if (e.keyCode == 37){l--;}                   //-- left
-        if (e.keyCode == 39){l++;}                   //-- right
-        if (e.keyCode == 38){t--;}                   //-- up
-        if (e.keyCode == 40){t++;}                   //-- down
+			var o       = nuDraggableObjectProperties(this.value);
+			var t       = Number(o.holder_top);          //-- top
+			var l       = Number(o.holder_left);         //-- left
+			
+	        if (e.keyCode == 37){l--;}                   //-- left
+	        if (e.keyCode == 39){l++;}                   //-- right
+	        if (e.keyCode == 38){t--;}                   //-- up
+	        if (e.keyCode == 40){t++;}                   //-- down
 
-		nuMoveObject(this.value, t, l);              //-- move object
-		
-	});
-					
-	nuRecalculateCoordinates();
+			nuMoveObject(this.value, t, l);              //-- move object
+			
+		});
+						
+		nuRecalculateCoordinates();
+	}
 	
 }
 
@@ -1993,6 +1995,11 @@ function nuObjectDraggableDialog(w) {
 	.html('&#10006;')
 	.mousedown(function() {
 		nuCloseModal();
+		$('#nuMoveable').attr('src', 'numove_black.png');
+		window.nuMoveable = false;
+		$(".nuSelected").removeClass('nuSelected');
+		$("#nuObjectList option").remove();
+		$("[id^='nu_see_through_']").remove(); 
 	});
 	
 }
@@ -2674,6 +2681,10 @@ function nuAddSelectableObjects(){
 				handle: '#' + i,
 
 				drag: function( event, ui ){
+					if(!window.nuMoveable){
+						event.preventDefault();
+						return;
+					}
 					nuMoveSelected(this.id);
 				},
 
@@ -2705,7 +2716,6 @@ function nuRecalculateCoordinates(){
 }
     
 function nuMoveSelected(id){
-
 
     var p  = $('#' + id).position();
 	var t  = p.top -  Number(nuDraggableObjectProperties(id.substr(10), 'holder_top'));

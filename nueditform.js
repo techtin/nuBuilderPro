@@ -155,9 +155,9 @@ function nuBuildEditForm(o){
 		h    += '<img id="nuMoveable"    src="numove_black.png"    style="width:15px;height:15px;" onclick="nuPoweredBy(this);" title="Drag Objects">&nbsp;&nbsp;';
 	}
 	
-	if(nuFORM.record_id != '-1'){
+	//if(nuFORM.record_id != '-1'){
 		h    += '<img id="nuRefreshLogo" src="nurefresh_black.png" style="width:15px;height:15px;" onclick="nuReloadForm()"  title="Refresh Form" >';
-	}
+	//}
 	
 	e         = document.createElement('div');              //-- create a nuBuilder Advert
 	e.setAttribute('id', 'poweredBy');
@@ -207,7 +207,7 @@ function nuPoweredBy(t){
     
 	window.nuMoveable = true;
 	$('#'+t.id).attr('src', 'numove_red.png');
-	$('#'+t.id).remove();
+	//$('#'+t.id).remove();
 	nuObjectDraggableDialog(300);
 	nuObjectMover();
 
