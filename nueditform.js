@@ -128,7 +128,7 @@ function nuBuildEditForm(o){
 	nuFORM.form_width        = o.form_width;
 	nuFORM.form_height       = o.form_height;
 	nuFORM.schema            = o.schema;
-	nuFORM.object_properties = o.object_properties;
+	//nuFORM.object_properties = o.object_properties;
 	nuFORM.php_ids           = o.php_ids;
 	nuFORM.report_ids        = o.report_ids;
 

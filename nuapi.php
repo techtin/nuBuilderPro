@@ -1510,7 +1510,7 @@ function nuGetEditForm($hashData) {
 		$J['schema'] = '[]';
 	}
 	
-	$J['object_properties'] = nuObjectJSON();
+	//$J['object_properties'] = nuObjectJSON();
 	
     return json_encode($J);
 }
