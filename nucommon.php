@@ -1477,10 +1477,10 @@ function nuEmailValidateAddress($email) {
 
 
 
-function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist) {
+function nuSendEmail($to, $from, $fromname, $content, $subject, $filelist, $html = false) {
 
     $toname                                      = '';
-	$html                                        = false;
+	//$html                                        = false;
 	$wordWrap                                    = 120;
     
     $errorText                                   = "";
