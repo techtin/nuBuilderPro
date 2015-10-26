@@ -390,6 +390,7 @@ function nuPropertiesObject(id){
 		a.push(new nuO('6', '13-Jan-2007', ''));
 		a.push(new nuO('7', '13-01-2007', ''));
 		a.push(new nuO('8', 'Jan-13-2007', ''));
+		a.push(new nuO('33','2007-01-13', ''));
 		a.push(new nuO('9', '01-13-2007', ''));
 		a.push(new nuO('10', '13-Jan-07', ''));
 		a.push(new nuO('11', '13-01-07', ''));

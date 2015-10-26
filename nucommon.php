@@ -870,6 +870,15 @@ function nuTextFormats(){
 	$format[32]->phpdate     = '';
 	$format[32]->sql         = 'CONCAT(\'<input type="checkbox" \',IF(??,\'checked \',\'\'),\'disabled>\')';
 
+	$format[33]->type         = 'date';
+	$format[33]->format       = 'yyyy-mm-dd';
+	$format[33]->decimal      = '.';
+	$format[33]->separator    = '';
+	$format[33]->sample       = '2007-01-13';
+	$format[33]->phpdate      = 'Y-m-d';
+	$format[33]->sql          = 'DATE_FORMAT(??,"%Y-%m-%d")';
+	$format[33]->jquery       = 'yy-mm-dd';
+
 	return $format;
 
 }
