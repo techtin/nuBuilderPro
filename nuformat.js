@@ -166,6 +166,17 @@ function nuFormatter(){
 				}else{
 					aNew[1] = this.mmm[String(aValue[1]).toLowerCase()];
 				}
+			}else if(aFormat[0] == 'yyyy'){      //-- Year is first
+				aNew[0]	= y;
+				aSQL[0] = y;
+				aNew[2] = this.dd[aValue[2]];
+				aSQL[2]	= this.dd[aValue[2]];
+				aSQL[1]	= this.mm[String(aValue[1]).toLowerCase()];
+				if(aFormat[1] == 'mm'){
+					aNew[1] = this.mm[String(aValue[1]).toLowerCase()];
+				}else{
+					aNew[1] = this.mmm[String(aValue[1]).toLowerCase()];
+				}
 			}else{                               //-- Month Of Year is first
 
 				aNew[1]     = this.dd[aValue[1]];
@@ -178,23 +189,25 @@ function nuFormatter(){
 				}
 			}
 
-			if(aValue.length == 2){               //-- Add This Year
-				aNew[2]     = y;
-				aSQL[0]     = y;
-				aValue[2]   = y;
-			}
-			if(String(aValue[2]).length == 4){            //-- Make Year 4 Characters
-				aNew[2]     = aValue[2];
-				aSQL[0]     = aValue[2];
-			}else if(String(aValue[2]).length == 2){ 
-				aNew[2]     = '20' + aValue[2];
-				aSQL[0]     = '20' + aValue[2];
-			}else if(String(aValue[2]).length == 1){ 
-				aNew[2]     = '200' + aValue[2];
-				aSQL[0]     = '200' + aValue[2];
-			}
-			if(aFormat[2] == 'yy'){               //-- Make Year 2 Characters
-				aNew[2]     = aNew[2].substring(2);
+			if(aFormat[0] != 'yyyy') {
+				if(aValue.length == 2){               //-- Add This Year
+					aNew[2]     = y;
+					aSQL[0]     = y;
+					aValue[2]   = y;
+				}
+				if(String(aValue[2]).length == 4){            //-- Make Year 4 Characters
+					aNew[2]     = aValue[2];
+					aSQL[0]     = aValue[2];
+				}else if(String(aValue[2]).length == 2){
+					aNew[2]     = '20' + aValue[2];
+					aSQL[0]     = '20' + aValue[2];
+				}else if(String(aValue[2]).length == 1){
+					aNew[2]     = '200' + aValue[2];
+					aSQL[0]     = '200' + aValue[2];
+				}
+				if(aFormat[2] == 'yy'){               //-- Make Year 2 Characters
+					aNew[2]     = aNew[2].substring(2);
+				}
 			}
 			d.setFullYear(Number(aSQL[0]), Number(aSQL[1]) - 1, Number(aSQL[2]));
 			
