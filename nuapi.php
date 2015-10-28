@@ -2021,7 +2021,7 @@ function nuGetBrowseRecords($f, $p, $hashData) {
     }
 
 
-    if (nuV('search') != '' or nuV('filter') != '') {
+    if (trim(nuV('search')) != '' or nuV('filter') != '') {
         if ($SQL->getWhere() == '') {
             $searchString = ' WHERE ' . nuBrowseWhereClause($searchFields, nuV('search') . ' ' . nuV('filter'));
         } else {
