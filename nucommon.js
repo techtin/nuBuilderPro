@@ -1836,29 +1836,67 @@ function nuFormatAjaxErrorMessage(jqXHR, exception) {
     }
 }
 
+/*
+    Uses: 
+        nuAjax('PROCEDURE1');
+        nuAjax('PROCEDURE1', 'callbackFuncName');
+        nuAjax('PROCEDURE1', {async:true, data: {id: '1234'}, done: function(){}});
+        nuAjax('PROCEDURE1', 'callbackFuncName', {async:true, data: {id: '1234'}});
+*/
+function nuAjax(pCode, pFunctionName, pOptions){
 
-function nuAjax(pCode, pFunctionName){
-
-		var P       = new nuCopyJSObject(nuFORM);
+    if(typeof pFunctionName === 'object' && typeof pOptions === 'undefined'){
+        pOptions = pFunctionName;
+        pFunctionName = null;
+    }
+    var options = typeof pOptions !== 'undefined' ? pOptions : {};
+    var defaultData = {};
+    if(options.hasOwnProperty('data')){
+        defaultData = options.data;
+        defaultData.nuWindow = {session_id: nuFORM.session_id};
+    } else {
+        var P       = new nuCopyJSObject(nuFORM);
         P.form_data = nuGetData();
         P.phpCode   = pCode;
-		var request = $.ajax({
-		url      : "nucallsecure.php?c="+pCode,
-		type     : "POST",
-		data     : {nuWindow : P},
-		dataType : "json",
-		async	 :  false
-		}).done(function(data){
-		
-		if(nuErrorMessage(data.ERRORS, false)){
-			return;
-		}
-			
-		if(arguments.length == 1){return;}   //-- no js function to run
+        defaultData = {nuWindow : P};
+    }
+    var defaultAsync = options.hasOwnProperty('async') ? options.async : false;
+    var defaultDone = function(data){
+        if(nuErrorMessage(data.ERRORS, false)){
+            return;
+        }
+        if(window.hasOwnProperty(pFunctionName)){
+            if(typeof window[pFunctionName] === 'function'){
+                window[pFunctionName](data.DATA);
+            }
+        }
+    }
+    if(options.hasOwnProperty('done')){
+        if(typeof options.done === 'function'){
+            defaultDone = options.done;
+        }
+    }
+    var defaultFail = function(){};
+    if(options.hasOwnProperty('fail')){
+        if(typeof options.fail === 'function'){
+            defaultFail = options.fail;
+        }
+    }
+    var defaultAlways = function(){};
+    if(options.hasOwnProperty('always')){
+        if(typeof options.always === 'function'){
+            defaultAlways = options.always;
+        }
+    }
 
-		window[pFunctionName](data.DATA);
+    var request = $.ajax({
+    url      : "nucallsecure.php?c="+pCode,
+    type     : "POST",
+    data     : defaultData,
+    dataType : "json",
+    async    : defaultAsync
+    }).done(defaultDone).fail(defaultFail).always(defaultAlways);
 
-	});
 }
 
 function nuSetHash(name, value){
