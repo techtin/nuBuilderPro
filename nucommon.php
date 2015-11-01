@@ -505,22 +505,24 @@ function nuRecordArray($hashData){
 	}
 	
 	$table                 = nuReplaceHashes($r->sfo_table, $hashData);
-	$T                     = nuRunQuery("SELECT * FROM $table WHERE $r->sfo_primary_key = ? ", array(nuV('record_id')));
-	$R                     = db_fetch_array($T);
-   
-	if (is_array($R)) {
-	foreach($R as $key => $value){                                           //-- add current hash variables
+    if($table != ''){
+    	$T                     = nuRunQuery("SELECT * FROM $table WHERE $r->sfo_primary_key = ? ", array(nuV('record_id')));
+    	$R                     = db_fetch_array($T);
+       
+    	if (is_array($R)) {
+    	foreach($R as $key => $value){                                           //-- add current hash variables
 
-			$noResult          = false;
-		
-			if(!is_numeric($key)){
-			
-				if(!in_array($key, $ignore)){
-					$A[$key]   = $value;
-					}
-			}
-	  }
-	}	
+    			$noResult          = false;
+    		
+    			if(!is_numeric($key)){
+    			
+    				if(!in_array($key, $ignore)){
+    					$A[$key]   = $value;
+    					}
+    			}
+    	  }
+    	}
+    }
 	
 	if($noResult){                                                           //-- set fields to blank values
 		
