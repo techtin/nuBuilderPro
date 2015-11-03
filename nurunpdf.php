@@ -1057,6 +1057,8 @@ function nuAddCriteriaValues($hashData){
 	*/
 	if( !in_array($key, $c) and !is_array($value) and !is_object($value) ){
             $v   = substr(addslashes($value),0,199);
+            if(substr($v,(strlen($v)-1),1) == '\\')
+                $v = substr($v,0,strlen($v)-1);
             $l   = min(strlen($v), 200);
             if($l > 0){
                 $a[] = " ADD `$key` VARCHAR($l) DEFAULT '$v' ";
