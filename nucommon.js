@@ -692,13 +692,7 @@ function nuAddJavascript(o){
 	window.nuDraggableObjects = Array();
 	window.nuDraggableObjects = o.draggable_objects;
 
-	var e                     = document.createElement('script');
-        
-	e.setAttribute('type', "text/javascript");
-	
-	e.innerHTML               = o.form_javascript;
-	
-	$('#nuHolder').append(e);
+    $('#nuHolder').append('<script type="text/javascript">'+o.form_javascript+'</script>');
         
 }
 
