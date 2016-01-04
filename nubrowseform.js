@@ -406,7 +406,7 @@ function addBrowseRows(o){
                     function (){
                         if(o.edit_browse == 'true'){
                             window.nuControlKey = true;                       //-- faked keypress
-                            window.nuLastPressedTS = Math.floor(Date.now()/1000);
+                            window.nuLastCtrlPressedTS = Math.floor(Date.now()/1000);
                             nuBrowseClick(this, o.open_form_id);
                             window.nuControlKey = false;
                         }else{

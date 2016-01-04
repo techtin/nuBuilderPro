@@ -56,8 +56,6 @@ function nuSearchPressed(e){
 
 function nuKeyPressed(e, isPressed){
 
-    window.nuLastPressedTS = Math.floor(Date.now()/1000);
-
     if(!e){e=window.event;}
 
     if(e.keyCode == 16){                    //-- shift key
@@ -65,6 +63,7 @@ function nuKeyPressed(e, isPressed){
         $('.nuSelected').css( 'cursor',  'e-resize');
     }
     if(e.keyCode == 17 || e.keyCode == 18){ //-- control key or alt/option key
+        window.nuLastCtrlPressedTS = Math.floor(Date.now()/1000);
         window.nuControlKey   = isPressed;
         $('.nuSelected').css( 'cursor',  'move');
     }
@@ -347,7 +346,7 @@ function nuOpenObjectForm(pThis){
         nuMoveObject(pThis.id.substr(6), 10, 0);    
     }else{
         window.nuControlKey = true;
-        window.nuLastPressedTS = Math.floor(Date.now() /1000);
+        window.nuLastCtrlPressedTS = Math.floor(Date.now() /1000);
         nuOpenForm('nuobject', id, 'nuobject', id, 'nuBuilder Objects');
         window.nuControlKey = false;
     }
@@ -366,12 +365,12 @@ function nuOpenFormForm(pThis){
 
     var id              = $('#'+pThis.id).attr('data-id');
 
-    window.nuLastPressedTS = Math.floor(Date.now() /1000);
+    window.nuLastCtrlPressedTS = Math.floor(Date.now() /1000);
     if(window.nuControlKey){                              //-- held down manually
         nuOpenForm('nuobject', '', 'nuobject', '', 'nuBuilder Objects', id);
     }else{
         window.nuControlKey = true;                       //-- faked keypress
-        window.nuLastPressedTS = Math.floor(Date.now() /1000);
+        window.nuLastCtrlPressedTS = Math.floor(Date.now() /1000);
         nuOpenForm('nuform', id, 'nuform', id, 'nuBuilder Form');
     }
 
@@ -402,8 +401,8 @@ function nuOpenForm(parentFormID, parentRecordID, formID, recordID, formTitle, f
         w.type         = 'Edit';
     }
     var newTabKeyPressedRecently = false;
-    if(typeof window.nuLastPressedTS != 'undefined'){
-        if(Math.floor(Date.now() /1000) < (window.nuLastPressedTS+1))
+    if(typeof window.nuLastCtrlPressedTS != 'undefined'){
+        if(Math.floor(Date.now() /1000) < (window.nuLastCtrlPressedTS+2))
             newTabKeyPressedRecently = true;
     }
     if(newTabKeyPressedRecently){ //-- open in a new window

@@ -1240,7 +1240,7 @@ function nuDisplayEditForm(formObjects,formRecords,formParent,sfI,sfO){
 				var e     = document.createElement('div');         //-- create a TAB TITLE
 				e.setAttribute('id','tab'+TabNo);
 				e.setAttribute('onclick','nuSelectTab('+TabNo+ ', '+nuFORM.form_height + ', ' + nuFORM.form_width +')');
-				e.setAttribute('ondblclick',"if(!nuIsGA()){return;}window.nuControlKey = true;window.nuLastPressedTS = Math.floor(Date.now() /1000);nuOpenForm('nuobject', '', 'nuobject', '', 'nuBuilder Objects', '" + nuFORM.form_id + "');window.nuControlKey = false;");
+				e.setAttribute('ondblclick',"if(!nuIsGA()){return;}window.nuControlKey = true;window.nuLastCtrlPressedTS = Math.floor(Date.now() /1000);nuOpenForm('nuobject', '', 'nuobject', '', 'nuBuilder Objects', '" + nuFORM.form_id + "');window.nuControlKey = false;");
 				$('#nuTabTitleHolder').append(e);
 				$('#'+e.id).html('&nbsp;&nbsp;'+formObjects[i].tab_title+'&nbsp;&nbsp;');
 				$('#'+e.id).addClass("nuTabTitle nuUnselectedTab");
