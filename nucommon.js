@@ -371,6 +371,7 @@ function nuOpenFormForm(pThis){
         nuOpenForm('nuobject', '', 'nuobject', '', 'nuBuilder Objects', id);
     }else{
         window.nuControlKey = true;                       //-- faked keypress
+        window.nuLastPressedTS = Math.floor(Date.now() /1000);
         nuOpenForm('nuform', id, 'nuform', id, 'nuBuilder Form');
     }
 
@@ -400,12 +401,13 @@ function nuOpenForm(parentFormID, parentRecordID, formID, recordID, formTitle, f
         w.tip          = 'Edit';
         w.type         = 'Edit';
     }
-    if(window.nuControlKey && typeof window.nuLastPressedTS != 'undefined'){                  //-- open in a new window
-            if(Math.floor(Date.now() /1000) < (window.nuLastPressedTS+1)){
-                    nuOpenNewWindowManager(w);
-            } else {
-                    nuBuildForm(w);
-            }
+    var newTabKeyPressedRecently = false;
+    if(typeof window.nuLastPressedTS != 'undefined'){
+        if(Math.floor(Date.now() /1000) < (window.nuLastPressedTS+1))
+            newTabKeyPressedRecently = true;
+    }
+    if(newTabKeyPressedRecently){ //-- open in a new window
+        nuOpenNewWindowManager(w);
     } else {
         nuBuildForm(w);
     }
