@@ -151,6 +151,6 @@ $(document).ready(function() {
   
 </script>
 </head>
-<body onkeydown="nuKeyPressed(event, true);" onkeyup="nuKeyPressed(event, false);">
+<body onkeydown="nuKeyPressed(event, true);" onkeyup="nuKeyPressed(event, false);" onload="this.addEventListener('click',function(event){if(event.ctrlKey || event.altKey){window.nuLastCtrlPressedTS = Math.floor(Date.now()/1000);}}, true);">
 </body>
 </html> 
