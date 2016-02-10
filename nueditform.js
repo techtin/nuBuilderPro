@@ -1778,3 +1778,18 @@ function nuObject(i){
     this.nuIndex = i;
 }
 
+
+function nuSubformColumnNames(subformName){
+	
+	var j	= nuGetJSONSubform(subformName);
+	var o	= JSON.parse(j);
+	var c	= o[0];
+	var a	= [];
+
+	for (var f in c){
+	  a.push(f);
+	}
+
+	return a.splice(1,a.length-3);
+
+}
