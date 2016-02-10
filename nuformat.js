@@ -146,10 +146,9 @@ function nuFormatter(){
 
 			var d           = new Date();
 			y               = String(d.getFullYear());
-			v               = v.split('/').join('-');
-			v               = v.split('.').join('-');
-			var aFormat     = nuFormats[f].format.split("-");
-			var aValue      = v.split("-");
+			var aFormat     = nuFormats[f].format.split(/\W/);	//-- any separators
+			var aValue      = v.split(/\W/);
+			var jSep        = nuFormats[f].format.match(/\W/);
 
 			if(aValue.length != 3){return '';}
 
@@ -202,8 +201,8 @@ function nuFormatter(){
 					aNew[2]     = '20' + aValue[2];
 					aSQL[0]     = '20' + aValue[2];
 				}else if(String(aValue[2]).length == 1){
-					aNew[2]     = '200' + aValue[2];
-					aSQL[0]     = '200' + aValue[2];
+					aNew[2]     = '201' + aValue[2];
+					aSQL[0]     = '201' + aValue[2];
 				}
 				if(aFormat[2] == 'yy'){               //-- Make Year 2 Characters
 					aNew[2]     = aNew[2].substring(2);
@@ -218,7 +217,7 @@ function nuFormatter(){
 				if(arguments.length == 3){
 					return aSQL.join('-');            //-- Return valid SQL Date Format
 				}else{
-					return aNew.join('-');            //-- Return Custom Format
+					return aNew.join(jSep);            //-- Return Custom Format
 				}
 			}else{
 				return '';

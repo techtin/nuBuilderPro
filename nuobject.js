@@ -389,6 +389,7 @@ function nuPropertiesObject(id){
 		a.push(new nuO('5', '10000.00000', ''));
 		a.push(new nuO('6', '13-Jan-2007', ''));
 		a.push(new nuO('7', '13-01-2007', ''));
+		a.push(new nuO('34','13.01.2007', ''));
 		a.push(new nuO('8', 'Jan-13-2007', ''));
 		a.push(new nuO('33','2007-01-13', ''));
 		a.push(new nuO('9', '01-13-2007', ''));
@@ -412,6 +413,8 @@ function nuPropertiesObject(id){
 		a.push(new nuO('27', '10.000,0', ''));
 		a.push(new nuO('28', '10.000,00', ''));
 		a.push(new nuO('29', '10.000,000', ''));
+		a.push(new nuO('30', '10.000,0000', ''));
+		a.push(new nuO('31', '10.000,00000', ''));
 		this.dropdown(fld);
 		this.nuFillDropdown(fld, a, this.o[fld]);
 	}

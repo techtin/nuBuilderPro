@@ -588,7 +588,7 @@ function nuTextFormats(){
 
 //-----number formats
 	$format = array();
- 	for ($i=0; $i < 33; $i++) {
+ 	for ($i=0; $i < 35; $i++) {
 		$format[$i] = new stdClass;
 	}
 	
@@ -880,6 +880,15 @@ function nuTextFormats(){
 	$format[33]->phpdate      = 'Y-m-d';
 	$format[33]->sql          = 'DATE_FORMAT(??,"%Y-%m-%d")';
 	$format[33]->jquery       = 'yy-mm-dd';
+
+	$format[34]->type         = 'date';
+	$format[34]->format       = 'dd.mm.yyyy';
+	$format[34]->decimal      = '.';
+	$format[34]->separator    = '';
+	$format[34]->sample       = '13.01.2007';
+	$format[34]->phpdate      = 'd.m.Y';
+	$format[34]->sql          = 'DATE_FORMAT(??,"%d.%m.%Y")';
+	$format[34]->jquery       = 'dd.mm.yy';
 
 	return $format;
 

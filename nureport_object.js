@@ -101,9 +101,10 @@ function nuCreateInputs() {
     fo.push('27|10.000,0');
     fo.push('28|10.000,00');
     fo.push('29|10.000,000');
-    fo.push('30|10.000,000');
-    fo.push('31|10.000,0000');
+    fo.push('30|10.000,0000');
+    fo.push('31|10.000,00000');
     fo.push('33|2007-01-13');
+    fo.push('34|13.01.2007');
 
     var fw = Array();
     fw.push('|Normal');
