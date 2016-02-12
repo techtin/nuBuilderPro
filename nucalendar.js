@@ -232,7 +232,7 @@ function nuPopupCalendar(pThis){
 
 function nuTitleBox(n, l){
 
-	var t                    = 'SMTWTFS';
+	var t                    = nuTranslate('SMTWTFS');
 	var c                    = nuAppendChild(document.getElementById('nuCalendar'),'div','nuCalTitle'+n);
 	
 	
