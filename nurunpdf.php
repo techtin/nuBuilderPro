@@ -1,7 +1,8 @@
 <?php 
 require_once('nucommon.php'); 
-require_once('fpdf/fpdf.php');
-define('FPDF_FONTPATH','fpdf/font/');
+require_once('tfpdf/tfpdf.php');
+define('FPDF_FONTPATH','tfpdf/font/');
+define('FPDF_UNIFONTPATH','tfpdf/font/unifont');
 
 $GLOBALS['nu_report']       = array();
 $GLOBALS['nu_columns']      = array();
@@ -28,22 +29,10 @@ $hashData                   = nuBuildHashData($JSON, $TABLE_ID);
 
 nuRunQuery("DELETE FROM zzzsys_debug WHERE zzzsys_debug_id = ? ", array($jsonID));
 
-$PDF                        = new FPDF($pxREPORT->orientation, 'mm', $pxREPORT->paper);
+$PDF                        = new tFPDF($pxREPORT->orientation, 'mm', $pxREPORT->paper);
 $PDF->SetAutoPageBreak(false);
 
-
-
-$fonts      = explode("\n", trim($GLOBALS['nuSetup']->set_fonts));
-
-for($i = 0 ; $i < count($fonts) ; $i ++){
-
-    if(trim($fonts[$i]) != ''){
-        $PDF->AddFont($fonts[$i], '' , strtolower($fonts[$i]) . '.php');
-        $PDF->AddFont($fonts[$i], 'B', strtolower($fonts[$i]) . '.php');
-        $PDF->AddFont($fonts[$i], 'I', strtolower($fonts[$i]) . '.php');
-    }
-
-}
+nuAddReportUnifonts($PDF, $pxREPORT); //-- only use .ttf Unicode fonts (placed in tfpdf/font/unifont)
 
 $REPORT                     = nuSetPixelsToMM($pxREPORT);
 
@@ -739,7 +728,8 @@ class nuSECTION{
 		if ( is_array($this->ROW) ) {	    
 			if(array_key_exists($O->fieldName, $this->ROW)) {
 				$v = $this->nuGetFormatting($O);
-                		$value = mb_convert_encoding($v['V'], "WINDOWS-1252", "UTF-8");
+// changed by techtin                		$value = mb_convert_encoding($v['V'], "WINDOWS-1252", "UTF-8");
+				$value = $v['V'];
             		}
 		}
 
@@ -1115,6 +1105,46 @@ function nuRemoveFiles(){
         unlink($GLOBALS['nu_files'][$i]);
     }
     
+}
+
+
+function nuAddReportUnifonts($PDF, $report) {
+
+	$A = array();
+	$fwB = array('_Bold', '_bold', '-Bold', '-bold', 'b', 'B', 'bd', 'BD');
+	$fwI = array('_Italic', '_italic', '-Italic', '-italic', '_Oblique', '_oblique', '-Oblique', '-oblique', 'i', 'I');
+
+	for ($g = 0; $g < count($report->groups); $g++) {			//-- only used in this report
+		for ($s = 0; $s < count($report->groups[$g]->sections); $s++) {
+			for ($o = 0; $o < count($report->groups[$g]->sections[$s]->objects); $o++) {
+				$obj = $report->groups[$g]->sections[$s]->objects[$o];
+
+				if ($obj->objectType == 'field'	or $obj->objectType == 'label') {
+                  	if (!in_array($obj->fontFamily.$obj->fontWeight, $A)) {
+						$A[] = $obj->fontFamily.$obj->fontWeight;
+						if ($obj->fontWeight == '') {
+							$PDF->AddFont($obj->fontFamily, '', $obj->fontFamily.'.ttf', true);
+                        } elseif ($obj->fontWeight == 'B') {
+							foreach($fwB as $_fwB) {
+								if (is_readable(FPDF_UNIFONTPATH.'/'.$obj->fontFamily.$_fwB.'.ttf')) {
+									$PDF->AddFont($obj->fontFamily, 'B', $obj->fontFamily.$_fwB.'.ttf', true);
+									break;
+								}
+							}
+						} else {
+							foreach($fwI as $_fwI) {
+								if (is_readable(FPDF_UNIFONTPATH.'/'.$obj->fontFamily.$_fwI.'.ttf')) {
+									$PDF->AddFont($obj->fontFamily, 'I', $obj->fontFamily.$_fwI.'.ttf', true);
+									break;
+								}
+							}
+						}
+
+                	}
+                }
+			}
+		}
+	}
 }
 
 //-- was 1150 lines long
